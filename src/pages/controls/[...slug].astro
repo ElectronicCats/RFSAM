@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import Tags from '../../components/Tags.astro';
+import ReviewBadge from '../../components/ReviewBadge.astro';
+import Attacks from '../../components/Attacks.astro';
+import References from '../../components/References.astro';
+import DefersToBsam from '../../components/DefersToBsam.astro';
+import RelatedResources from '../../components/RelatedResources.astro';
+import Pager from '../../components/Pager.astro';
+import { protocols } from '../../data/protocols.js';
+import { layers } from '../../data/layers.js';
+
+export async function getStaticPaths() {
+  const controls = await getCollection('controls');
+  const byProto = (pid) => controls.filter((c) => c.data.protocol === pid).sort((a, b) => a.data.id.localeCompare(b.data.id));
+
+  const paths = [];
+  // section index at /controls
+  paths.push({ params: { slug: undefined }, props: { kind: 'index' } });
+  // per-protocol index at /controls/<proto>
+  for (const p of protocols) {
+    if (byProto(p.id).length) paths.push({ params: { slug: p.id.toLowerCase() }, props: { kind: 'proto', protocolId: p.id } });
+  }
+  // individual control at /controls/<id>
+  for (const p of protocols) {
+    const list = byProto(p.id);
+    list.forEach((c, i) => {
+      paths.push({
+        params: { slug: c.data.id.toLowerCase() },
+        props: { kind: 'control', id: c.data.id, prev: list[i - 1]?.data ?? null, next: list[i + 1]?.data ?? null },
+      });
+    });
+  }
+  return paths;
+}
+
+const { kind } = Astro.props;
+const allControls = await getCollection('controls');
+const layerName = (lid) => layers.find((l) => l.id === lid)?.name ?? lid;
+const layerColor = (lid) => layers.find((l) => l.id === lid)?.color ?? 'var(--orange)';
+const protoName = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
+
+let data, Content, prev, next, listForProto, protoId;
+if (kind === 'control') {
+  const entry = allControls.find((c) => c.data.id === Astro.props.id);
+  data = entry.data;
+  ({ Content } = await render(entry));
+  prev = Astro.props.prev; next = Astro.props.next;
+} else {
+  protoId = Astro.props.protocolId;
+  listForProto = allControls
+    .filter((c) => kind === 'index' ? true : c.data.protocol === protoId)
+    .sort((a, b) => a.data.id.localeCompare(b.data.id));
+}
+---
+{kind === 'control' ? (
+  <DocsLayout title={data.title} activeId={data.id}>
+    <div class="mono" style="font-size:11px;color:var(--mut2)">Controls / {protoName(data.protocol)} / {data.id}</div>
+    <div style={`border-left:4px solid ${layerColor(data.layer)};padding-left:18px;margin-top:14px`}>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="mono" style={`font-size:13px;color:${layerColor(data.layer)}`}>{data.id}</span>
+        <ReviewBadge status={data.reviewStatus} confidence={data.confidence} />
+      </div>
+      <h1 style="font-size:32px;margin-top:6px">{data.title}</h1>
+    </div>
+    {data.objective && <p style="color:var(--mut);font-style:italic;margin-top:10px">{data.objective}</p>}
+    <Tags control={data} />
+    {data.intro && <div style="background:var(--panel);border-left:3px solid var(--cyan);border-radius:8px;padding:16px 20px;margin:14px 0;font-size:16px">{data.intro}</div>}
+
+    <article class="prose"><Content /></article>
+
+    {data.attacks?.length > 0 && <><h2 class="mono" style="font-size:12px;letter-spacing:.14em;color:var(--mut2);margin-top:36px">KNOWN ATTACKS</h2><Attacks attacks={data.attacks} /></>}
+    {data.references?.length > 0 && <><h2 class="mono" style="font-size:12px;letter-spacing:.14em;color:var(--mut2);margin-top:36px">REFERENCES</h2><References references={data.references} /></>}
+    {data.resources?.length > 0 && <><h2 class="mono" style="font-size:12px;letter-spacing:.14em;color:var(--mut2);margin-top:36px">RELATED RESOURCES</h2><RelatedResources ids={data.resources} /></>}
+    {data.bsam?.length > 0 && <><h2 class="mono" style="font-size:12px;letter-spacing:.14em;color:var(--mut2);margin-top:36px">DEFERS TO BSAM</h2><DefersToBsam ids={data.bsam} deferred={data.deferred} /></>}
+
+    <Pager prev={prev} next={next} />
+  </DocsLayout>
+) : (
+  <DocsLayout title={kind === 'index' ? 'Controls' : protoName(protoId)}>
+    <h1 style="font-size:32px">{kind === 'index' ? 'Controls' : protoName(protoId)}</h1>
+    <p style="color:var(--mut);margin-top:8px">Select a control from the sidebar, or pick one below.</p>
+    <div style="margin-top:18px">
+      {listForProto.map((c) => (
+        <a href={`/controls/${c.data.id.toLowerCase()}`} style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+          <span style={`width:7px;height:7px;border-radius:50%;background:${layerColor(c.data.layer)};flex-shrink:0`}></span>
+          <span class="mono" style="font-size:11px;color:var(--mut2);width:170px;flex-shrink:0">{c.data.id}</span>
+          <span style="flex:1">{c.data.title}</span>
+          <ReviewBadge status={c.data.reviewStatus} />
+        </a>
+      ))}
+    </div>
+  </DocsLayout>
+)}
+
+<style>
+  .prose :global(h2) { font-family:var(--disp); font-size:18px; margin:30px 0 12px; }
+  .prose :global(p) { color:#CFD9E4; line-height:1.7; margin:0 0 14px; }
+  .prose :global(ol),.prose :global(ul) { margin:0 0 14px 22px; color:#CFD9E4; line-height:1.7; }
+  .prose :global(li) { margin:4px 0; }
+  .prose :global(blockquote) { border-left:3px solid var(--amber); background:rgba(255,194,75,.07); padding:10px 14px; margin:14px 0; border-radius:6px; }
+</style>

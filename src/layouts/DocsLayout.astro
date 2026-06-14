@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+const { title, activeId } = Astro.props;
+---
+<BaseLayout title={title}>
+  <div style="display:flex">
+    <Sidebar activeId={activeId} />
+    <div style="min-width:0;flex:1">
+      <div style="max-width:880px;padding:36px 48px 120px">
+        <slot />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
