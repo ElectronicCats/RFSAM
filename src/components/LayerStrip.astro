@@ -1,0 +1,14 @@
+---
+import { layers } from '../data/layers.js';
+const descent = layers.filter((l) => l.id !== 'IG');
+---
+<div style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:28px 0;flex-wrap:wrap">
+  {descent.map((l) => (
+    <div style="flex:1;min-width:140px;padding:14px;border-right:1px solid var(--line);position:relative">
+      <div style={`position:absolute;top:0;left:0;right:0;height:3px;background:${l.color}`}></div>
+      <div class="mono" style={`font-size:10px;color:${l.color}`}>{l.id}</div>
+      <div style="font-family:var(--disp);font-weight:600;font-size:13px;margin:5px 0 4px">{l.name}</div>
+      <div style="font-size:11px;color:var(--mut);line-height:1.45">{l.note}</div>
+    </div>
+  ))}
+</div>

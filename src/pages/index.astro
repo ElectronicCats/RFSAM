@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LayerStrip from '../components/LayerStrip.astro';
+import ProtocolCard from '../components/ProtocolCard.astro';
+import IqTrace from '../components/IqTrace.astro';
+import { meta } from '../data/meta.js';
+import { protocols } from '../data/protocols.js';
+
+const controls = await getCollection('controls');
+const countFor = (pid) => controls.filter((c) => c.data.protocol === pid).length;
+const withControls = protocols.filter((p) => countFor(p.id) > 0);
+---
+<BaseLayout title="A north for RF research and auditing">
+  <div class="container">
+    <div class="mono" style="font-size:11px;letter-spacing:.18em;color:var(--orange);text-transform:uppercase">Open methodology · {meta.org}</div>
+    <h1 style="font-size:46px;line-height:1.05;margin:16px 0 0;max-width:16ch">A <span style="color:var(--cyan)">north</span> for RF research and auditing.</h1>
+    <p style="font-size:17px;color:var(--mut);max-width:62ch;margin-top:18px">{meta.blurb}</p>
+    <IqTrace />
+    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2)">THE DESCENT</h2>
+    <LayerStrip />
+    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2);margin-top:40px">PROTOCOLS</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:16px">
+      {withControls.map((p) => <ProtocolCard protocol={p} count={countFor(p.id)} href={`/controls/${p.id.toLowerCase()}`} />)}
+    </div>
+  </div>
+</BaseLayout>
