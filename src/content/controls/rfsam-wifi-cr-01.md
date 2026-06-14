@@ -183,7 +183,7 @@ tools:
 resources:
   - RFSAM-RES-11
   - RFSAM-RES-12
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -253,19 +253,17 @@ This corpus is representative, not exhaustive — Wi-Fi attack surface and patch
 
 ## Field case
 
-A representative engagement against an authorised WPA2-PSK test AP (a consumer router in an RF-isolated lab, test passphrase, no production clients):
+Illustrative walkthrough — substitute the values you capture. This is a representative example of the two key-recovery paths against an authorised WPA2-PSK test AP (a consumer router in an RF-isolated lab, test passphrase, no production clients), not a logged engagement; treat the steps as the expected shape of the result and fill in the placeholders with your own measurements.
 
-A clientless PMKID grab in step 2 produced a PMKID for the target BSSID within roughly a minute of `hcxdumptool` running — no client was ever associated and no deauth was sent. `hcxpcapngtool -o target.hc22000 pmkid.pcapng` wrote a single PMKID hash. Running `hashcat -m 22000 target.hc22000 rockyou.txt` recovered the lab passphrase, confirming the offline path end to end.
+A clientless PMKID grab in step 2 produces a PMKID for the target BSSID shortly after `hcxdumptool` starts — no client need ever associate and no deauth is sent. `hcxpcapngtool -o target.hc22000 pmkid.pcapng` writes a single PMKID hash. Running `hashcat -m 22000 target.hc22000 rockyou.txt` recovers the lab passphrase, confirming the offline path end to end.
 
-The same AP had WPS left enabled (the factory default on this model). `reaver -i wlan0mon -b <BSSID> -c <CH> -K 1 -vv` completed the Pixie-Dust attack and returned the WPS PIN and the WPA PSK directly — the long lab passphrase was irrelevant once the PIN fell.
+Where the same AP has WPS left enabled (the factory default on many consumer models), `reaver -i wlan0mon -b <BSSID> -c <CH> -K 1 -vv` completes the Pixie-Dust attack and returns the WPS PIN and the WPA PSK directly — the passphrase length is irrelevant once the PIN falls.
 
 The numbers below are placeholders for whoever runs this against a real target; do not treat them as measured.
 
 - Time to first PMKID for the target BSSID: [FILL: measured seconds]
 - hashcat mode-22000 crack rate on the test GPU: [FILL: measured H/s]
 - Pixie-Dust completion time / chipset: [FILL: measured time and AP chipset]
-
-> [!FLAG] No measured field data is recorded here — the PMKID/Pixie-Dust walkthrough is a representative example, not a logged engagement. The `[FILL: …]` values must be replaced with real measurements (and the AP model/chipset named) before this section is treated as a verified war story.
 
 ## Remediation
 

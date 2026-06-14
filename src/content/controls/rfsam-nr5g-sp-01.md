@@ -115,8 +115,8 @@ resources:
   - RFSAM-RES-01
   - RFSAM-RES-22
   - RFSAM-RES-09
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -152,10 +152,11 @@ Whether there is a 5G core to talk to at all is part of this baseline: a Standal
 
 ## Field case
 
-> [!FLAG] No measured 5G NR field capture was performed for this draft; the
-> walk-through below is a representative reconstruction of running the procedure,
-> with the cell-specific values left as `[FILL: ...]` placeholders to be recorded
-> when the procedure is reproduced against a real cell. It is not a measured finding.
+Illustrative walkthrough — substitute the values you capture. No measured 5G NR
+field capture backs this example; it is a representative reconstruction of running
+the procedure, with every cell-specific value left as a `[FILL: ...]` placeholder to
+be recorded when the procedure is reproduced against a real cell. It is not a
+measured finding.
 
 A representative walk-through against an n78 (3.5 GHz TDD) cell: gqrx, fed from a USRP B210, showed a wide CP-OFDM downlink "wall" near 3.5 GHz whose width plainly exceeded the ~56 MHz B210 view — consistent with a 100 MHz n78 carrier of which only a slice is visible, enough to locate the SSB. The carrier centre was [FILL: record the measured centre frequency and map it to the NR-ARFCN]. A Quectel RM500Q on the same bench, read over its DIAG port with QCSuper into Wireshark, independently reported the serving cell: PLMN [FILL: MCC-MNC], PCI [FILL: 0–1007], TAC [FILL: ...], band n78, and mode [FILL: SA or NSA]. Confirming operator, band, NR-ARFCN and PCI from two routes — the SDR waterfall and the modem DIAG read — is the prerequisite; without it, capture is aimed at nothing. FR2 mmWave cells, if any operate in the area, could not be checked: the SDRs in this kit stop at 6 GHz [ts38101].
 

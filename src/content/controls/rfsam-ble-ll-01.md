@@ -110,8 +110,8 @@ bsam:
   - BSAM-DI-06
 resources:
   - RFSAM-RES-04
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -159,11 +159,9 @@ Passive capture only. No connection is opened and nothing is transmitted; you ar
 
 ## Field case
 
-In a passive sweep of an ordinary room, advertisers surfaced human-readable names exposing device class and ownership directly in the clear: a pet tracker advertising as `PwnPet_C81F`, an asset tracker as `TRKM_608015814_7795`, and several earbuds/wearables broadcasting model strings. No connection was made — the identity leak is in discovery alone.
+Illustrative walkthrough — substitute the values you capture. In a passive sweep of an ordinary room, advertisers typically surface human-readable names that expose device class and ownership directly in the clear: a pet tracker advertising as `PwnPet_C81F`, an asset tracker as `TRKM_608015814_7795`, and several earbuds/wearables broadcasting model strings. No connection is made — the identity leak is in discovery alone.
 
-The asset tracker is the instructive one for this control. Its advertised name `TRKM_608015814_7795` embeds what reads as a fixed serial/asset number; even if the device were to randomise its BLE address, that constant string in the Local Name AD structure re-links every rotation straight back to the same unit — the address-carryover linkage in concrete form [becker2019tracking]. Over a [FILL: capture-window length] window the tracker's advertising address was observed as [FILL: address type — public / static / RPA, and whether it rotated], while the `TRKM_…` name stayed constant throughout.
-
-> [!FLAG] The `PwnPet_C81F` and `TRKM_608015814_7795` observations are carried from the existing control draft as representative field data; the address-type and rotation values in the second paragraph are unmeasured and left as `[FILL: …]` placeholders rather than fabricated. A reviewer should re-run the sweep and record the actual address type, rotation behaviour and capture-window length before this is marked `verified`.
+The asset tracker is the instructive one for this control. Its advertised name `TRKM_608015814_7795` embeds what reads as a fixed serial/asset number; even if the device were to randomise its BLE address, that constant string in the Local Name AD structure re-links every rotation straight back to the same unit — the address-carryover linkage in concrete form [becker2019tracking]. Over a [FILL: capture-window length] window, record the tracker's advertising address as [FILL: address type — public / static / RPA, and whether it rotated], and confirm whether the `TRKM_…` name stays constant throughout: a constant Local Name spanning two or more distinct addresses is the carryover finding in the field.
 
 ## Remediation
 

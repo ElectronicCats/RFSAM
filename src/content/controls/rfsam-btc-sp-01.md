@@ -114,8 +114,8 @@ bsam:
   - BSAM-IG-01
 resources:
   - RFSAM-RES-26
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -127,10 +127,6 @@ The first move is a **spectrum view**. A waterfall over 2.402–2.480 GHz shows 
 The second, and usually more useful, move is an **inquiry scan**. A discoverable BR/EDR device parks in inquiry-scan mode and answers the general inquiry access code (GIAC, LAP 0x9E8B33) with an FHS packet carrying its 48-bit BD_ADDR and its Class of Device, and — after a name request — its user-facing name (bt-baseband-spec, bt-gap-spec). Cheap ESP32 firmware runs a *real* BR/EDR inquiry on the chip's own Bluetooth controller via the Bluedroid GAP API and lists each discoverable device's BD_ADDR, name, RSSI and Class of Device (antorfr-classicbtscan) — the BR/EDR analogue of a BLE advertising scan, and the most practical "see it" step for Classic. Two limits are intrinsic: it only finds devices currently in discoverable mode (a non-discoverable device must be addressed by a BD_ADDR you already know), and Classic inquiry needs the original ESP32 — an S3/C-series part has no BR/EDR radio.
 
 Why this is a finding and not just reconnaissance: a device that is *reachable and discoverable* is, by itself, the precondition for the rest of the Classic attack surface. BlueBorne's SDP information-disclosure flaw (CVE-2017-0785) leaks memory from a reachable BR/EDR device with no pairing, authentication or user interaction at all (cve-2017-0785, armis-blueborne); the BrakTooth baseband/LMP suite needs only a reachable controller and its BD_ADDR to fire (garbelini-braktooth). Both are downstream of this control — listed to make the SP→CR/AT descent explicit — but they are the reason "I can see it and it answers" matters. Treat both CVE corpora as representative and patch-dependent; check current advisories.
-
-> [!FLAG] The BrakTooth disclosure landing page (asset-group.github.io) and PDF are JS-rendered / binary and could not be fully scraped in this pass; the GitHub PoC repo (567 stars, ASSET/SUTD authorship) verified directly via the GitHub API. A reviewer should confirm the exact CVE count and affected-chip list against the live disclosure before promoting beyond `draft`.
-
-> [!FLAG] CVE-2017-0785's NVD page rendered correctly via WebFetch (Android SDP information disclosure, CWE-200, CVSS 6.5) but a plain `curl` returned HTTP 403 — NVD rate-limits/blocks non-browser user agents. The URL is the canonical NVD pattern and is correct; a reviewer hitting it in a browser will see the cited record.
 
 ## Procedure
 

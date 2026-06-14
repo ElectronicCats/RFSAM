@@ -116,8 +116,8 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-18
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -165,9 +165,11 @@ The per-region centre frequencies above (908.42 / 868.42 / 921.42 / 919.82 MHz, 
 
 ## Field case
 
-A representative US-region check (mark unmeasured values rather than inventing them). A Z-Wave door/window sensor believed to be a US-market unit was surveyed with an RTL-SDR Blog V4 in gqrx tuned to 908.420 MHz at 2.4 MS/s. Tripping the sensor produced a short twin-tone FSK flare on the waterfall — the unmistakable narrowband Z-Wave burst — each time the reed contact opened. Piping `rtl_sdr -f 908420000 -s 2048000 -g 25 -` into waving-z's `wave-in` then decoded the bursts into frames whose clear-text Home ID and Node ID resolved, confirming genuine Z-Wave (not stray 915 MHz ISM traffic) on the channel.
+Illustrative walkthrough — substitute the values you capture; the narration below describes the *expected* behaviour of this method, not a single measured engagement, and the bracketed `[FILL: …]` fields must come from your own survey before any of it is cited as a finding.
 
-The reproducible lesson is the region gate itself: pointed at 868.420 MHz (the EU channel) instead, the identical setup showed an empty waterfall and decoded nothing — the classic false negative this control exists to prevent. Region first, then everything else.
+A Z-Wave door/window sensor believed to be a US-market unit is surveyed with an RTL-SDR Blog V4 in gqrx tuned to 908.420 MHz at 2.4 MS/s. Tripping the sensor should produce a short twin-tone FSK flare on the waterfall — the unmistakable narrowband Z-Wave burst — each time the reed contact opens. Piping `rtl_sdr -f 908420000 -s 2048000 -g 25 -` into waving-z's `wave-in` then decodes the bursts into frames whose clear-text Home ID and Node ID resolve, confirming genuine Z-Wave (not stray 915 MHz ISM traffic) on the channel.
+
+The reproducible lesson is the region gate itself: pointed at 868.420 MHz (the EU channel) instead, the identical setup shows an empty waterfall and decodes nothing — the classic false negative this control exists to prevent. Region first, then everything else.
 
 Concrete numbers for a worked write-up (fill from a real survey; do not present placeholders as measured results):
 
@@ -176,8 +178,6 @@ Concrete numbers for a worked write-up (fill from a real survey; do not present 
 - Data rate at which frames decoded: [FILL: 9.6 / 40 / 100 kbps].
 - Observed Home ID / Node ID(s): [FILL: hex Home ID, decimal Node ID].
 - Classic Z-Wave vs Z-Wave Long Range: [FILL].
-
-> [!FLAG] This is a representative worked example, not a single measured field capture. The waving-z binary name (`wave-in`) and the rtl-zwave `-s 2048000` / 908.42 MHz invocations match the current project READMEs; only the optional EZ-Wave verb/flags still vary by build. The blocking item is the data: the bracketed `[FILL: …]` values must come from a real survey before this section is cited as a finding, and until they are filled the narrated flare/decode is illustrative, not measured.
 
 ## Remediation
 

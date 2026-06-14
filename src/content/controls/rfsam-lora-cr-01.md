@@ -145,8 +145,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-07
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -206,9 +206,9 @@ The IOActive findings (default/hardcoded/weak AppKeys) are reported across audit
 
 ## Field case
 
-The same authorised US915 capture used to profile this network at the link layer (RFSAM-LORA-LL-01) — 51,304 LoRaWAN frames, of which 45,815 (89.3%) were JoinRequests — is the input for the CR-layer key analysis: because the capture was so heavily dominated by JoinRequests, each device's DevNonce sequence was directly observable in the clear, which is the prerequisite for spotting reuse [loraalliance2020joinsync]. The application payloads stayed AES-128 protected throughout — confidentiality held against the *capture*; the question this control asks is whether it holds against the *key management*.
+Reported measurement (carried over from the paired link-layer control). The same authorised US915 capture used to profile this network at the link layer (RFSAM-LORA-LL-01) — 51,304 LoRaWAN frames, of which 45,815 (89.3%) were JoinRequests — is the input for the CR-layer key analysis: because the capture was so heavily dominated by JoinRequests, each device's DevNonce sequence was directly observable in the clear, which is the prerequisite for spotting reuse [loraalliance2020joinsync]. The application payloads stayed AES-128 protected throughout — confidentiality held against the *capture*; the question this control asks is whether it holds against the *key management*. This frame/JoinRequest count is the author's reported field figure, reproduced verbatim from the paired RFSAM-LORA-LL-01 control; it has not been independently re-measured here.
 
-To reproduce against your own authorised test network: stand up a couple of OTAA devices and one ABP device on a ChirpStack/RAK gateway, deliberately provision one OTAA device with a default/sample AppKey (so the key-candidate test in step 4 succeeds), and one 1.0.x device that re-joins on reboot (so step 3 shows a DevNonce repeat). Then run steps 3–5 and tabulate:
+Illustrative walkthrough — substitute the values you capture. To reproduce against your own authorised test network: stand up a couple of OTAA devices and one ABP device on a ChirpStack/RAK gateway, deliberately provision one OTAA device with a default/sample AppKey (so the key-candidate test in step 4 succeeds), and one 1.0.x device that re-joins on reboot (so step 3 shows a DevNonce repeat). Then run steps 3–5 and tabulate:
 
 ```text
 # per-device key-management findings from an authorised test capture
@@ -218,9 +218,7 @@ DevEUI / DevAddr        version  activation  DevNonce        AppKey test       A
 [FILL: id]              1.0.3    ABP         n/a              n/a               [FILL: y/n]
 ```
 
-The expected shape: the deliberately weak OTAA device yields a MIC match under the default key (its session keys are recoverable and traffic decryptable), the 1.0.x re-joining device shows a repeated DevNonce (join-replay exposure), and the ABP device's counter resets across reboot (keystream-reuse/replay exposure) — while a correctly provisioned 1.1 OTAA device passes all three.
-
-> [!FLAG] The 51,304-frame / 89.3%-JoinRequest figure is the author's reported field measurement, reproduced verbatim from the paired link-layer control and not independently re-measured in this draft. The `[FILL: …]` rows are placeholders for the reader's own authorised analysis — do not treat them as measured findings.
+The expected shape: the deliberately weak OTAA device yields a MIC match under the default key (its session keys are recoverable and traffic decryptable), the 1.0.x re-joining device shows a repeated DevNonce (join-replay exposure), and the ABP device's counter resets across reboot (keystream-reuse/replay exposure) — while a correctly provisioned 1.1 OTAA device passes all three. The `[FILL: …]` rows above are placeholders for the values you capture in your own authorised analysis — they are not measured findings.
 
 ## Remediation
 

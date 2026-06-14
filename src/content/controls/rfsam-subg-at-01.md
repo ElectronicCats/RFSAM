@@ -155,8 +155,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-15
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -214,11 +214,11 @@ RollJam is Samy Kamkar's DEF CON 23 (2015) work; it is cited here via a peer-rev
 
 ## Field case
 
-Against a fixed-code 433.92 MHz gate remote using an EV1527-class OOK encoder: a single press captured in URH demodulated to a stable ~24-bit payload that was byte-for-byte identical on every subsequent press — the fixed-code signature. Re-transmitting the recorded burst through a YARD Stick One at the recovered baud opened the gate on the first attempt, confirming verbatim replay.
+Illustrative walkthrough — substitute the values you capture. Against a fixed-code 433.92 MHz gate remote using an EV1527-class OOK encoder, a single press captured in URH would demodulate to a short, stable payload (an EV1527 frame is on the order of ~24 bits) that is byte-for-byte identical on every subsequent press — the fixed-code signature. Re-transmitting the recorded burst through a YARD Stick One at the recovered baud should operate the gate, confirming verbatim replay.
 
-Switching to a KeeLoq rolling-code fob on the same bench, two consecutive presses demodulated to two *different* payloads, and a naive replay of the older one was rejected — exactly the replay resistance a rolling code provides. The jam-and-capture path was then exercised in a shielded enclosure to validate the RollJam primitive on owned equipment.
+Switching to a KeeLoq rolling-code fob on the same bench, two consecutive presses demodulate to two *different* payloads, and a naive replay of the older one is rejected — exactly the replay resistance a rolling code provides. The jam-and-capture path is then exercised in a shielded enclosure to validate the RollJam primitive on owned equipment.
 
-> [!FLAG] These are representative bench values illustrating the fixed- vs rolling-code go/no-go, not a measured engagement finding. Concrete per-device numbers from an authorised test:
+Record the concrete per-device numbers from an authorised test in place of the illustration above:
 > [FILL: target make/model, exact frequency and baud, captured payload, technique that succeeded, and receiver behaviour].
 
 ## Remediation

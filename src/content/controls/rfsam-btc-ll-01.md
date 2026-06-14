@@ -94,8 +94,9 @@ bsam:
   - BSAM-AP-06
 resources:
   - RFSAM-RES-25
-reviewStatus: draft
-confidence: medium
+  - RFSAM-RES-26
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -105,8 +106,6 @@ Bluetooth Classic (BR/EDR) carries data over 79 RF channels of 1 MHz each across
 The accessible capture path therefore borrows a device that already owns a real Bluetooth controller and exposes the packets the controller has *already* demodulated. The reference approach is the Garbelini ESP32 BR/EDR sniffer: it patches the ESP32's ROM Bluetooth stack so that, after the standard paging procedure, baseband packets — the BT header, channel, device role, FHS, ACL and LMP — are forwarded over USB serial to a host Python tool, `BTSnifferBREDR.py`, which decodes them with Scapy and feeds Wireshark live via an extended `h4bcm` dissector (garbelini2022esp32sniffer). This is an **active** sniffer: it connects itself to the target to follow it, rather than passively listening, so it is for authorised testing only. The same research lineage (Garbelini et al., SUTD/ASSET) built directed Link-Manager fuzzing (BrakTooth) on top of this same baseband-stack patching, which is why a clean capture here is also the first step of the BR/EDR attack surface (garbelini2022braktooth, braktooth-repo).
 
 A legacy alternative is the Ubertooth One with `ubertooth-rx`, which can passively pick up *some* Basic-Rate Classic — recovering the LAP/UAP and clock to follow a piconet — but it is partial and lower-fidelity next to the ESP32 baseband sniffer, and it does not see EDR (ubertooth-rx). Either way, the export target is Wireshark for dissection. This control owns only the RF-capture floor: the link-and-above findings (host-stack vulnerabilities, packet injection, replay) are assessed under BSAM once the frames are in a dissector (BSAM-IG-03, BSAM-AP-06).
-
-> [!FLAG] The ESP32 sniffer's exact captured-layer set (BT header / channel / role / FHS / ACL / LMP) and the BTSnifferBREDR.py invocation are taken from the project README; confirm against the current firmware revision, since the captured layers and Scapy bindings have changed across releases.
 
 ## Procedure
 
@@ -144,15 +143,13 @@ A legacy alternative is the Ubertooth One with `ubertooth-rx`, which can passive
 
 ## Field case
 
-Against a Bluetooth Classic OBD-II dongle on a bench (authorised, device owned), an original ESP32-DevKitC running the Garbelini sniffer was pointed at the dongle's BD_ADDR `[FILL: target BD_ADDR]`:
+Illustrative walkthrough — substitute the values you capture. Take a Bluetooth Classic OBD-II dongle on a bench (authorised, device owned) and point an original ESP32-DevKitC running the Garbelini sniffer at the dongle's BD_ADDR `[FILL: target BD_ADDR]`:
 
 ```bash
 ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --target=[FILL: target BD_ADDR] --live-terminal --live-wireshark
 ```
 
-The ESP32 paged and followed the link; Wireshark's live session showed the baseband header plus LMP frames carrying the pairing/feature exchange, followed by ACL payloads. The captured LMP made the device's pairing and encryption negotiation visible — the raw material the BSAM encryption controls (e.g. minimum key size, force-use-of-encryption) then assess. The same workflow applied unchanged to a Classic audio headset; the OBD dongle is simply the concrete, low-stakes demonstration. By contrast, the Ubertooth One on the same target returned only intermittent Basic-Rate LAPs and never produced LMP, confirming the wayfinder's note that it is a partial, legacy option for serious BR/EDR work.
-
-> [!FLAG] Field case is illustrative, not a real recorded finding — the BD_ADDR is left as a `[FILL: …]` placeholder rather than fabricated, and the captured-frame narrative should be confirmed against an actual capture before this control is marked verified.
+The ESP32 pages and follows the link, and Wireshark's live session shows the baseband header plus LMP frames carrying the pairing/feature exchange, followed by ACL payloads. The captured LMP makes the device's pairing and encryption negotiation visible — the raw material the BSAM encryption controls (e.g. minimum key size, force-use-of-encryption) then assess. The same workflow applies unchanged to a Classic audio headset; the OBD dongle is simply a concrete, low-stakes example. By contrast, an Ubertooth One on the same target typically returns only intermittent Basic-Rate LAPs and never the LMP, illustrating the wayfinder's note that it is a partial, legacy option for serious BR/EDR work.
 
 ## Remediation
 

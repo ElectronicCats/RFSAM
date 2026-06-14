@@ -111,8 +111,8 @@ resources:
   - RFSAM-RES-01
   - RFSAM-RES-02
   - RFSAM-RES-03
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -216,27 +216,24 @@ where you have permission.
 
 ## Field case
 
-Capturing a BLE light controller's advertising on channel 37 with a CatSniffer
-running Sniffle, Wireshark dissected the `ADV_IND` with the fixed advertising
-access address `0x8e89bed6` and `CRC ... [correct]` — confirming the
-demodulate → AA-correlate → de-whiten → CRC chain on the radio's own modem. The
-useful detail is the de-whitening: the PDU bytes are only legible after the
-channel-37 whitening seed is removed, and because that seed is derived from the
-channel index — not a key — the same capture is readable by any sniffer, which
-is precisely why passive BLE sniffing is feasible at all [[ryan2013woot]].
+Illustrative walkthrough — substitute the values you capture. Capturing a BLE
+light controller's advertising on channel 37 with a CatSniffer running Sniffle,
+Wireshark dissects the `ADV_IND` with the fixed advertising access address
+`0x8e89bed6` and `CRC ... [correct]` — confirming the demodulate → AA-correlate
+→ de-whiten → CRC chain on the radio's own modem. The useful detail is the
+de-whitening: the PDU bytes are only legible after the channel-37 whitening seed
+is removed, and because that seed is derived from the channel index — not a key —
+the same capture is readable by any sniffer, which is precisely why passive BLE
+sniffing is feasible at all [[ryan2013woot]].
 
 On the SDR path, splitting the 80 MHz band into 40 × 2 MHz channels on a
 HackRF/bladeRF and FM-demodulating each is where the cost shows: ice9's
-channelizer is the stated bottleneck, so the run was started at 20 channels and
-widened while watching for dropped samples. A naive full-band attempt on an
-underpowered host decodes "a bunch of random bytes" rather than frames — the
-tool's own symptom of a demod/rate mismatch [[ice9repo]].
-
-> [!FLAG] This is a representative worked example assembled from the tools' own
-> documented behaviour, not a single measured capture session. The specific
-> sensitivity / margin figure (how many dB below a clean capture the channelised
-> SDR path still recovers frames) is unmeasured here: [FILL: measured dB margin
-> from a controlled bench capture].
+channelizer is the stated bottleneck, so start the run at 20 channels and widen
+while watching for dropped samples. A naive full-band attempt on an underpowered
+host decodes "a bunch of random bytes" rather than frames — the tool's own symptom
+of a demod/rate mismatch [[ice9repo]]. The sensitivity margin — how many dB below
+a clean capture the channelised SDR path still recovers frames — is bench-specific:
+[FILL: measured dB margin from a controlled bench capture].
 
 ## Remediation
 

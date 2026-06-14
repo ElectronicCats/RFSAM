@@ -172,8 +172,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-08
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -225,14 +225,14 @@ All steps below are passive inventory on equipment you own or are authorised to 
 
 ## Field case
 
-Working a fixed-LTE CPE (a UNISOC-based router) in an authorised lab, the inventory step ran before any RF capture. `AT+CGMI` / `AT+CGMM` / `AT+CGMR` over the device's AT port returned the UNISOC modem family and a firmware revision string; the device's reported security-patch level predated the UNISOC NAS fix. On inventory alone, that placed the device within the published exposure window of the UNISOC NAS-parsing overflow [cve-2022-20210] [cpr2022unisoc] — a CVE-tracked remote modem-crash reachable from a NAS message — so the engagement was reframed around that known finding rather than starting from blind fuzzing. The exact firmware revision and patch date are device-specific and are recorded per engagement:
+Illustrative walkthrough — substitute the values you capture. Working a fixed-LTE CPE (a UNISOC-based router) in an authorised lab, the inventory step runs before any RF capture. `AT+CGMI` / `AT+CGMM` / `AT+CGMR` over the device's AT port return the UNISOC modem family and a firmware revision string; if the device's reported security-patch level predates the UNISOC NAS fix, then on inventory alone that places the device within the published exposure window of the UNISOC NAS-parsing overflow [cve-2022-20210] [cpr2022unisoc] — a CVE-tracked remote modem-crash reachable from a NAS message — so the engagement is reframed around that known finding rather than starting from blind fuzzing. The exact firmware revision and patch date are device-specific and are recorded per engagement:
 
 - Baseband vendor/family: UNISOC (confirmed via `AT+CGMI`/`AT+CGMM`)
 - Firmware revision read: [FILL: AT+CGMR revision string for the unit under test]
 - Reported security-patch level: [FILL: patch date]
 - Verdict: within the published UNISOC NAS-overflow exposure window pending the exact patch-date check against the vendor bulletin
 
-> [!FLAG] This field case is a representative reconstruction of the inventory-first workflow, not a logged measurement; the bracketed `[FILL: …]` values must be supplied from the actual unit under test. Do not cite a specific revision string or patch date until measured.
+The bracketed `[FILL: …]` values must be supplied from the actual unit under test; do not cite a specific revision string or patch date until measured.
 
 The symmetric network-side version applies unchanged: if the in-scope eNodeB/EPC is an unpatched srsRAN or Open5GS build, the RANsacked corpus already lists single-packet MME-crash CVEs for affected versions before any custom fuzzing [bennett2024ransacked], so the inventory step can be decisive on its own.
 

@@ -130,8 +130,8 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-23
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -192,14 +192,14 @@ All steps are **passive reception** of what the network already broadcasts, on e
 
 ## Field case
 
-Working an authorised 2G assessment of a fixed cellular alarm panel on a private, RF-shielded test cell, the negotiated cipher and identity behaviour were read passively before any key work. `kal -s GSM900` located the test BTS's ARFCN; `grgsm_livemon_headless` decoded its downlink into GSMTAP, and Wireshark showed steady System Information and paging frames. Filtering the **Cipher Mode Command** revealed the algorithm the cell selected for the panel's signalling, and the **Paging Request** / **Identity Request** messages showed how the panel was identified on the air. The Oros42 IMSI-catcher, reading the same GSMTAP feed, confirmed the identity exposure passively (no transmit). The recorded findings for the unit under test:
+Illustrative walkthrough — substitute the values you capture. Assessing a fixed cellular alarm panel on a private, RF-shielded test cell, the negotiated cipher and identity behaviour are read passively before any key work. `kal -s GSM900` locates the test BTS's ARFCN; `grgsm_livemon_headless` decodes its downlink into GSMTAP, and Wireshark shows steady System Information and paging frames. Filtering the **Cipher Mode Command** reveals the algorithm the cell selected for the panel's signalling, and the **Paging Request** / **Identity Request** messages show how the panel is identified on the air. The Oros42 IMSI-catcher, reading the same GSMTAP feed, confirms the identity exposure passively (no transmit). Record the findings for the unit under test:
 
 - ARFCN / downlink: [FILL: channel and frequency measured]
 - Cipher Mode Command algorithm: [FILL: A5/0 | A5/1 | A5/2 | A5/3 read from the Cipher Mode Command]
 - Identity seen on the air: [FILL: TMSI only, or IMSI exposed via paging / Identity Response]
 - Verdict: [FILL: e.g. "A5/1 + IMSI exposed during location update — confidentiality and privacy finding" — fill from the measured cipher and identity above]
 
-> [!FLAG] This field case is a representative reconstruction of the passive cipher-and-identity workflow against a *test* cell, not a logged measurement; every bracketed `[FILL: …]` value must be supplied from the actual capture. Do not cite a specific A5 algorithm, ARFCN or identity finding until measured. No claim is made about any production network.
+This walkthrough illustrates the passive cipher-and-identity workflow against a *test* cell; every bracketed `[FILL: …]` value must be supplied from your own capture. Do not cite a specific A5 algorithm, ARFCN or identity finding until measured. No claim is made about any production network.
 
 ## Remediation
 

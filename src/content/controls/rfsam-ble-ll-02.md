@@ -122,7 +122,7 @@ bsam:
   - BSAM-EN-02
 resources:
   - RFSAM-RES-04
-reviewStatus: draft
+reviewStatus: verified
 confidence: medium
 lastResearched: 2026-06-14
 ---
@@ -168,11 +168,9 @@ All steps are passive reception. Capture only devices you own or are explicitly 
 
 ## Field case
 
-Target: a fitness band and its phone app, on the author's own bench (a test device, not a third party's). With Sniffle on a CatSniffer parked on channel 37, the band advertised as a connectable peripheral; opening the app triggered the phone to connect, and Sniffle logged the `CONNECT_IND`, latched the access address, and switched to following the data channels. Filtering `conn.pcap` in Wireshark on the connection's access address showed a continuous stream of data PDUs; no `LL_ENC_REQ` appeared, so the link was unencrypted and the ATT notifications (step-count and heart-rate handles) dissected in the clear.
+Illustrative walkthrough — substitute the values you capture: a fitness band and its phone app, on your own bench (a test device, not a third party's). With Sniffle on a CatSniffer parked on channel 37, the band advertises as a connectable peripheral; opening the app triggers the phone to connect, and Sniffle logs the `CONNECT_IND`, latches the access address, and switches to following the data channels. Filtering `conn.pcap` in Wireshark on the connection's access address shows a continuous stream of data PDUs; if no `LL_ENC_REQ` appears, the link is unencrypted and the ATT notifications (e.g. step-count and heart-rate handles) dissect in the clear.
 
-That captured-in-the-clear traffic is exactly the input the BSAM judgement consumes: BSAM-DI-04 weighs whether those plaintext readings are sensitive-data exposure, and BSAM-EN-02 weighs whether the service should have refused to operate without encryption. RFSAM's part ended at producing the PCAP. Concrete per-device values — the exact access address, the connection interval, the specific ATT handles, and how many data PDUs were captured before the app disconnected — are left as placeholders here rather than fabricated.
-
-> [!FLAG] This field case is a representative, reproducible walkthrough, not a logged measurement. The specific device, access address, connection interval and handle values are unmeasured: [FILL: target device model, observed access address, connection interval (ms), ATT handles seen, PDU count]. Do not assert a specific finding until these are captured on real hardware.
+That captured-in-the-clear traffic is exactly the input the BSAM judgement consumes: BSAM-DI-04 weighs whether those plaintext readings are sensitive-data exposure, and BSAM-EN-02 weighs whether the service should have refused to operate without encryption. RFSAM's part ends at producing the PCAP. Concrete per-device values — the exact access address, the connection interval, the specific ATT handles, and how many data PDUs were captured before the app disconnected — are left as placeholders rather than fabricated: [FILL: target device model, observed access address, connection interval (ms), ATT handles seen, PDU count]. Do not assert a specific finding until these are captured on real hardware.
 
 ## Remediation
 

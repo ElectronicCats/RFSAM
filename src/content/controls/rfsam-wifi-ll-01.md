@@ -113,7 +113,7 @@ bsam: []
 resources:
   - RFSAM-RES-11
   - RFSAM-RES-12
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -165,7 +165,7 @@ All capture below is **passive** and non-transmitting. Steps 1–4 observe only.
 
 ## Field case
 
-> [!FLAG] No measured field capture is included; the values below describe a representative, reproducible setup and mark every unmeasured datum with `[FILL: …]`. Do not cite these as a real finding.
+Illustrative walkthrough — not a measured engagement; substitute the values you capture. Every unmeasured datum is marked `[FILL: …]` and must not be cited as a real finding.
 
 A representative walk-through against a lab AP on channel 6 with an ALFA AWUS036ACH:
 

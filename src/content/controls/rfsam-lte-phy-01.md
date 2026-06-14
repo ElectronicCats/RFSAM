@@ -83,7 +83,7 @@ bsam: []
 resources:
   - RFSAM-RES-08
   - RFSAM-RES-09
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -138,9 +138,9 @@ All steps below are passive reception only. LTE is licensed spectrum: receiving 
 
 ## Field case
 
-> [!FLAG] No measured field capture was performed for this draft; the values below are a representative, reproducible example, with unmeasured quantities marked `[FILL: …]`. Do not cite them as an observed finding until a reviewer captures a live cell.
+Illustrative walkthrough — substitute the values you capture; this is a reproducible example, not a measured engagement, and every unmeasured quantity is marked `[FILL: …]`.
 
-Rig: a USRP B210 with the GPSDO option, fed a band-3 (1800 MHz FDD) downlink. After `uhd_usrp_probe` confirmed the GPSDO reference, `cell_search -b 3` returned a `Found CELL` line reporting `EARFCN=[FILL: e.g. 1500]`, `PHYID=[FILL: PCI 0–503]`, `[FILL: nof] PRB`, and `PSS power=[FILL: dBm]`. Pointing `pdsch_ue -f [FILL: RX Hz] -A 2` at that carrier produced a steady `Decoded MIB. SFN: [FILL]` and, at subframe 5, `PDCCH-Miss: [FILL: %]` / `PDSCH-BLER: [FILL: %]`. The control passed: synchronisation held, PCI was stable across three runs, and the grid demodulated without timing-induced corruption.
+Rig: a USRP B210 with the GPSDO option, fed a band-3 (1800 MHz FDD) downlink. After `uhd_usrp_probe` confirms the GPSDO reference, `cell_search -b 3` returns a `Found CELL` line reporting `EARFCN=[FILL: e.g. 1500]`, `PHYID=[FILL: PCI 0–503]`, `[FILL: nof] PRB`, and `PSS power=[FILL: dBm]`. Pointing `pdsch_ue -f [FILL: RX Hz] -A 2` at that carrier produces a steady `Decoded MIB. SFN: [FILL]` and, at subframe 5, `PDCCH-Miss: [FILL: %]` / `PDSCH-BLER: [FILL: %]`. The control passes when synchronisation holds, the PCI is stable across repeated runs, and the grid demodulates without timing-induced corruption.
 
 A documented degradation pattern worth reproducing: the *same* recorded carrier that decoded MIB cleanly on a desktop host failed intermittently on an underpowered mini-PC — the SDR was fine, but host I/O could not sustain the sample rate, surfacing as `Cell not found` retries and elevated PDCCH-Miss. This is the practical lesson of RFSAM-RES-09: coherent OFDM capture is bounded by the *whole* chain (reference clock and host throughput), not the radio alone.
 

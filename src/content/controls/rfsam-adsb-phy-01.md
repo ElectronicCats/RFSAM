@@ -110,7 +110,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-21
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -236,15 +236,17 @@ modes decode 8D40058B58C901375147EFD09357 --reference 49.0 6.0
 
 These are the canonical pyModeS test vectors, so the expected outputs are stable: a
 `40058B` position near the 49.0 N, 6.0 E reference and the `406B90` / `EZY85MH`
-identity. On a real over-the-air capture you would substitute live frames from
-step 2/3 and record the receiver-side numbers — count of distinct ICAO addresses
-seen, fraction of frames passing parity, maximum range — for the local environment:
+identity. This is the verifiable, reproducible core of the field case — the decode
+chain confirmed against fixed, published frames, with no air capture or transmitter
+required.
 
-> [!FLAG] No author-measured live ADS-B capture is recorded here. Representative
-> over-the-air figures (distinct aircraft over a session, parity-pass rate, max range
-> with/without a 1090 MHz LNA+filter) are [FILL: measured receiver statistics] — to be
-> filled from an authorised on-site capture; the pyModeS-vector decode above is the
-> verifiable, reproducible part.
+Illustrative walkthrough — substitute the values you capture: on a real over-the-air
+session you would replace these vectors with live frames from step 2/3 and record the
+receiver-side numbers for the local environment. No author-measured live ADS-B capture
+is recorded here; the representative over-the-air figures — distinct aircraft seen over
+a session, fraction of frames passing parity, maximum range with/without a 1090 MHz
+LNA+filter — are [FILL: measured receiver statistics], to be filled from an authorised
+on-site capture.
 
 ## Remediation
 

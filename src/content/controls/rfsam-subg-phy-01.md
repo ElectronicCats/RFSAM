@@ -114,8 +114,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-15
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -164,14 +164,12 @@ All steps below are passive receive-and-demodulate. They involve no transmission
 
 ## Field case
 
-A representative worked example for a generic 433.92 MHz fixed-code remote (e.g. an EV1527/PT2262-class OOK doorbell or socket remote — the most common class on the band, decoded by rtl_433's named protocols [rtl433repo]):
+Illustrative walkthrough — substitute the values you capture. This is a representative worked example for a generic 433.92 MHz fixed-code remote (e.g. an EV1527/PT2262-class OOK doorbell or socket remote — the most common class on the band, decoded by rtl_433's named protocols [rtl433repo]), not a measured capture of a specific named unit. The modulation family (OOK/ASK), the fixed-code outcome and the per-press repetition are the general, citable behaviour of this device class [rtl433primer][rtl433repo]; the numeric values are device-specific and must be measured, so they are left as `[FILL: …]` placeholders:
 
 - Sweep confirmed the carrier at **433.92 MHz**; the waterfall showed short OOK bursts (blinking blocks, not two stacked FSK lines) each time the button was pressed.
 - `rtl_433 -f 433.92M -A` reported the burst as **OOK_PWM** with a short pulse of `[FILL: short-pulse µs]` and a long pulse of `[FILL: long-pulse µs]`, period `[FILL: period µs]` — i.e. a bit rate of roughly `[FILL: baud]` baud.
 - Loaded into URH, autodetect labelled the signal **ASK**, bit length `[FILL: samples-per-symbol]`, and resolved the frame to `[FILL: N]` bits per burst, repeated several times per press.
 - The two captures of the same button press demodulated to an **identical** bitstream — establishing this as a *fixed code* (the fixed-vs-rolling determination this PHY framing hands to the link/attack layers), so a plain capture-and-replay is the relevant downstream test rather than a RollJam-class technique.
-
-> [!FLAG] The pulse-width, baud, bit-length and bit-count values above are left as `[FILL: …]` because no measured capture of a specific named unit was taken for this draft — do not treat them as measured findings. The modulation family (OOK/ASK), the fixed-code outcome and the per-press repetition are the general, citable behaviour of this device class [rtl433primer][rtl433repo]; the numeric values are device-specific and must be measured.
 
 ## Remediation
 

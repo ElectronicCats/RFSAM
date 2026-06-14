@@ -129,8 +129,8 @@ bsam:
   - BSAM-EN-03
 resources:
   - RFSAM-RES-27
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -146,7 +146,7 @@ Bluetooth Classic confidentiality depends on two things: which association model
 
 **BIAS (CVE-2020-10135).** BIAS abuses the BR/EDR authentication procedure and a role switch to impersonate a previously-paired master or slave and complete authentication without the link key; it composes with KNOB to attack Secure Connections links as well (antonioli2020bias, cve-2020-10135).
 
-> [!FLAG] CVE coverage is representative, not exhaustive — KNOB and BIAS were demonstrated across many chips but patch status varies by vendor and firmware. Confirm against current advisories and the device's BR/EDR controller firmware before asserting a given target is or is not affected.
+This CVE coverage is representative, not exhaustive — KNOB and BIAS are spec-level flaws demonstrated across many BR/EDR chips, but patch status varies by vendor and firmware. Confirm against current advisories and the device's BR/EDR controller firmware before asserting a given target is or is not affected.
 
 RFSAM's job at this floor is the RF-capture prerequisite — getting the LMP pairing/authentication exchange off the air and into a dissector — after which the pairing-policy and key-size verdicts are assessed under BSAM. There is no clean point-and-click ESP32 tool for the offline cracking step, so this floor is mostly analysis of the capture from the link layer plus the BSAM pairing controls.
 

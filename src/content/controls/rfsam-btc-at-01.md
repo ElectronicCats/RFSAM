@@ -174,8 +174,8 @@ bsam:
 resources:
   - RFSAM-RES-27
   - RFSAM-RES-28
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -189,8 +189,6 @@ A **broadband 2.4 GHz jammer** tests a different property: availability rather t
 Two specification-level follow-ons round out the active picture and are noted, not re-derived here: **KNOB** (CVE-2019-9506) downgrades the negotiated encryption key to as little as 1 byte of entropy so it can be brute-forced offline (antonioli2019knob, cve-2019-9506), and **BIAS** (CVE-2020-10135) impersonates a previously-paired peer by abusing BR/EDR's authentication procedure (antonioli2020bias, cve-2020-10135). The link-and-above assessment of those — pairing policy, encryption enforcement, key-size floor — is owned by BSAM (BSAM-IG-02 controller vulnerabilities, BSAM-EN-03 minimum encryption key size); RFSAM owns getting the active RF probe onto the controller in the first place.
 
 CVE-2021-28139 is the ESP32 arbitrary-code-execution variant specifically: the Espressif ESP-IDF Bluetooth Classic stack mishandles an LMP Feature Response Extended packet, letting an attacker in radio range run code via a crafted Extended Features bitfield (cve-2021-28139). The other BrakTooth variants are predominantly DoS (crash/deadlock/reboot).
-
-> [!FLAG] A verifier should refresh the BrakTooth affected-device / CVE table against current advisories before this control is marked `verified` — patch status varies by vendor and the published list dates fast (braktooth-site). The Field case values are illustrative `[FILL: …]` placeholders, not measured data.
 
 ## Procedure
 

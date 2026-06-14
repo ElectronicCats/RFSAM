@@ -115,7 +115,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-24
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -165,13 +165,13 @@ All steps are observational capture on your own equipment or with explicit autho
 
 ## Field case
 
-A representative, reproducible bring-up against a DW3000 development link you own (no third-party device required):
+Illustrative walkthrough — substitute the values you capture on your own bench. A representative, reproducible bring-up against a DW3000 development link you own (no third-party device required):
 
-- Flash the SEEMOO sniffer firmware to a DWM3000EVB on a NUCLEO-F429ZI; in a second board run a foldedtoad/dwm3000 TWR example as the controllable peer. Configure both to the same parameters — a common dev default is **channel 5 (6489.6 MHz), preamble code 9, 64 MHz PRF, 6.81 Mbps**, STS mode as set by the example.
+- Flash the SEEMOO sniffer firmware to a DWM3000EVB on a NUCLEO-F429ZI; in a second board run a foldedtoad/dwm3000 TWR example as the controllable peer. Configure both to the same parameters — the shipped default config (`config_options.c`, `CONFIG_OPTION_01`) is **channel 5 (6489.6 MHz), preamble code 9, 64 MHz PRF, 850 kbps**, with STS mode 1 / STS length 64 as set by the example [foldedtoad-dwm3000].
 - Start capture with `python3 sensniff.py -DINFO` and attach Wireshark to the `/tmp/sensniff` pipe.
 - Result: the TWR poll / response / final frames appear in Wireshark with 15.65 ps reception timestamps; deliberately changing the sniffer's preamble code away from the peer's produces the malformed long frames the README warns about — a clean demonstration that UWB capture is parameter-locked, not scanned.
 
-> [!FLAG] This is a representative bring-up, not measured author field data. The channel-5 / code-9 / 64 MHz PRF combination matches the default config options shipped in foldedtoad/dwm3000 (`config_options.c`), so it is a real example default rather than an invented one — but the end-to-end capture was not bench-run for this control, and the asserted result (the TWR frame list and 15.65 ps timestamps) is still to be recorded on hardware: [FILL: bench-captured frame list, timestamps, and the working `config` struct values].
+This is an illustrative bring-up, not measured author field data: the end-to-end capture was not bench-run for this control, so the asserted result (the TWR frame list and 15.65 ps timestamps) is still to be recorded on hardware: [FILL: bench-captured frame list, timestamps, and the working `config` struct values]. The configuration values are the real shipped default — channel 5, preamble code 9, 64 MHz PRF, 850 kbps, STS mode 1 / length 64 — confirmed against `CONFIG_OPTION_01` in foldedtoad/dwm3000 `config_options.c`, not invented.
 
 ## Remediation
 

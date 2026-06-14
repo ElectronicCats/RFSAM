@@ -104,7 +104,7 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-23
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -160,9 +160,9 @@ The survey is also the entry point of GSM identity reconnaissance. GSM authentic
 
 > Authorised testing only — receive-only carrier survey on your own equipment.
 
-A representative survey of a GSM-900 band runs `kal -s GSM900 -g 40` and surfaces a handful of live ARFCNs, the strongest reading as `chan: 12 (937.4MHz - 8.146kHz) power: 124847.16`. Re-running `kal -c 12` averages the FCCH tone to an `average absolute error: 1.243 ppm` clock offset, and tuning gqrx to that centre confirms a steady 200 kHz downlink picket. Carried forward into the capture step, `grgsm_livemon -f 937.4M` on the same ARFCN (with the measured ppm) demodulates the BCCH and streams GSMTAP into Wireshark — at which point the Oros42 IMSI-catcher reads the GSMTAP feed and prints the IMSI/TMSI the cell pages, with no transmit [grgsm][imsicatcher]. The carrier survey is the prerequisite: without the ARFCN, power and ppm from this step, the capture is aimed at nothing.
+Illustrative walkthrough — substitute the values you capture. The figures below are a representative, plausibly-shaped example of kalibrate's output format, not a measured engagement; reproduce on your own authorised equipment and replace them with real measured values before treating any number here as a finding.
 
-> [!FLAG] The specific kalibrate output lines (`chan: 12 (937.4MHz - 8.146kHz) power: 124847.16`, `average absolute error: 1.243 ppm`) are a representative, plausibly-shaped example of kalibrate's output format, NOT a measured capture taken for this control. Reproduce on your own authorised equipment and replace with real measured values — ARFCN, frequency, power and ppm — before treating any number here as a finding. [FILL: measured ARFCN / centre frequency / power / ppm from a real authorised survey]
+A survey of a GSM-900 band runs `kal -s GSM900 -g 40` and surfaces a handful of live ARFCNs, the strongest reading as `chan: 12 (937.4MHz - 8.146kHz) power: 124847.16`. Re-running `kal -c 12` averages the FCCH tone to an `average absolute error: 1.243 ppm` clock offset, and tuning gqrx to that centre confirms a steady 200 kHz downlink picket. Carried forward into the capture step, `grgsm_livemon -f 937.4M` on the same ARFCN (with the measured ppm) demodulates the BCCH and streams GSMTAP into Wireshark — at which point the Oros42 IMSI-catcher reads the GSMTAP feed and prints the IMSI/TMSI the cell pages, with no transmit [grgsm][imsicatcher]. The carrier survey is the prerequisite: without the ARFCN, power and ppm from this step, the capture is aimed at nothing. [FILL: measured ARFCN / centre frequency / power / ppm from a real authorised survey]
 
 ## Remediation
 

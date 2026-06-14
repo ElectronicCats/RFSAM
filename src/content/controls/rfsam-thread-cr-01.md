@@ -134,7 +134,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-17
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -175,7 +175,7 @@ Run every active or decrypt step only against your own equipment, test devices, 
 
 ## Field case
 
-> [!FLAG] No measured field capture was performed for this control. The walkthrough below is a representative example showing how the procedure reads out; every device-specific value is marked `[FILL: …]` and must not be treated as an observed finding.
+Illustrative walkthrough — substitute the values you capture. This is a representative example showing how the procedure reads out, not a measured engagement; every device-specific value is marked `[FILL: …]` and must not be treated as an observed finding.
 
 A bench Matter-over-Thread sensor is profiled. Its label carries a QR code and an 11-digit manual setup code; decoding it yields a setup passcode of `[FILL: 8-digit setup passcode read from label]`, discriminator `[FILL: discriminator]`, and VID/PID `[FILL: VID]/[FILL: PID]`. An 802.15.4 capture on channel `[FILL: channel 11–26]` shows 6LoWPAN + MLE frames — confirming Thread, not Zigbee — with the MAC payload encrypted; without the network key, Wireshark leaves the payloads opaque (the expected, healthy state).
 

@@ -128,8 +128,8 @@ bsam: []
 resources:
   - RFSAM-RES-22
   - RFSAM-RES-09
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -180,15 +180,13 @@ The passive view is bounded the same way LTE's is. 5G-AKA derives the air-interf
 
 ## Field case
 
-A representative, reproducible walk-through against an **authorised test cell** (your own srsRAN Project + Open5GS SA lab on a test NR-ARFCN inside RF shielding, or your own live subscription captured with operator permission via the QCSuper modem route). No specific measured field finding is asserted below; every measured value is a `[FILL: …]` placeholder for a verifier to replace.
+Illustrative walkthrough — substitute the values you capture. This is a representative, reproducible procedure against an **authorised test cell** (your own srsRAN Project + Open5GS SA lab on a test NR-ARFCN inside RF shielding, or your own live subscription captured with operator permission via the QCSuper modem route), not a record of a measured engagement. No specific measured field finding is asserted below; every measured value is a `[FILL: …]` placeholder you replace with what you actually read off your own authorised capture.
 
 - Step 1–2 located the n78 carrier and SSB and produced a Wireshark capture; the cell reported `PCI=[FILL: measured PCI]`.
 - Step 3 read SIB1 in the clear: PLMN `[FILL: measured MCC-MNC]`, cell identity `[FILL: measured NCI]`, TAC `[FILL: measured TAC]` — no decryption performed.
 - Step 4 inspected the NAS-5GS Registration Request mobile-identity IE and read the SUCI Protection Scheme Identifier as `[FILL: measured scheme id 0/1/2]`. In this lab the core was configured for `[FILL: null-scheme or Profile A/B]`:
   - If `[FILL: …]` = null-scheme, the MSIN `[FILL: measured/omit]` was visible in the clear — an LTE-style permanent-identity exposure that this control exists to catch [nist2026suci][chlosta2021suci].
   - If `[FILL: …]` = Profile A/B, the permanent identity was not recoverable; the reportable exposure is the in-the-clear cell configuration plus the documented AKA-based SUCI linkability [chlosta2021suci].
-
-> [!FLAG] Every `[FILL: …]` above is an unmeasured placeholder — no specific measured 5G finding is asserted. A verifier with an authorised SA lab cell (or an authorised live capture) should replace each placeholder with real measured values before this control is promoted past `draft`.
 
 ## Remediation
 

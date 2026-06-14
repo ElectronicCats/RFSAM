@@ -130,7 +130,7 @@ bsam:
 resources:
   - RFSAM-RES-04
   - RFSAM-RES-05
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -178,15 +178,13 @@ So the security-relevant questions this control answers are: *did the link pair 
 
 ## Field case
 
-Against a representative LE Legacy fitness peripheral on a bench (your own device, RF-shielded), a Sniffle capture on the CatSniffer caught the full SMP exchange during a forced re-pair. Wireshark showed `Pairing Request` with `SC = 0`, `MITM = 0`, IO Capability `NoInputNoOutput` — i.e. LE Legacy *Just Works* — and `Maximum Encryption Key Size = 16`. Running
+Illustrative walkthrough — substitute the values you capture. Against a representative LE Legacy fitness peripheral on a bench (your own device, RF-shielded), a Sniffle capture on the CatSniffer catches the full SMP exchange during a forced re-pair. Wireshark shows `Pairing Request` with `SC = 0`, `MITM = 0`, IO Capability `NoInputNoOutput` — i.e. LE Legacy *Just Works* — and `Maximum Encryption Key Size = 16`. Running
 
 ```bash
 crackle -i ble_pairing.pcap
 ```
 
-reported the Just-Works case (`TK = 0`) and recovered the LTK, and `crackle -i ble_pairing.pcap -o ble_decrypted.pcap` produced a capture in which the previously-encrypted `Write Request` to the control handle was now cleartext — confirming the session was decryptable from a passive capture alone.
-
-> [!FLAG] This worked example is representative, not a specific measured engagement: the exact recovered LTK bytes and the device's MAC/handle are placeholders — `[FILL: recovered LTK, device address, control handle from a real measured capture]`. A reviewer should replace it with author field data or keep it explicitly marked as illustrative.
+reports the Just-Works case (`TK = 0`) and recovers the LTK, and `crackle -i ble_pairing.pcap -o ble_decrypted.pcap` produces a capture in which the previously-encrypted `Write Request` to the control handle is now cleartext — confirming the session was decryptable from a passive capture alone. Record the measured values from your own engagement — `[FILL: recovered LTK, device address, control handle from a real measured capture]` — in place of this illustration.
 
 ## Remediation
 

@@ -46,7 +46,7 @@ attacks:
       repetition — bootstraps the first key when no default key works.
   - name: Nested attack
     refs:
-      - garcia2008dismantling
+      - garcia2009pickpocket
     impact: Recovers all remaining sector keys once any one key is known, by triggering nested (sector-to-sector) authentications.
     preconditions: At least one known key (often a default/transport key) and a predictable PRNG so encrypted nonces can be guessed via the parity leak.
     summary: >-
@@ -84,6 +84,13 @@ references:
     venue: 'ESORICS 2008, LNCS 5283, pp. 97–114'
     year: 2008
     url: 'http://www.cs.ru.nl/~rverdult/Dismantling_MIFARE_Classic-ESORICS_2008.pdf'
+    type: paper
+  - key: garcia2009pickpocket
+    title: Wirelessly Pickpocketing a Mifare Classic Card
+    authors: 'F. D. Garcia, P. van Rossum, R. Verdult, R. Wichers Schreur'
+    venue: 'IEEE Symposium on Security and Privacy (S&P) 2009, pp. 3–15'
+    year: 2009
+    url: 'https://doi.org/10.1109/SP.2009.6'
     type: paper
   - key: courtois2009darkside
     title: 'The Dark Side of Security by Obscurity — and Cloning MiFare Classic Rail and Building Passes, Anywhere, Anytime'
@@ -139,7 +146,7 @@ tools:
 resources:
   - RFSAM-RES-13
   - RFSAM-RES-14
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -150,7 +157,7 @@ MIFARE Classic protects each sector with a pair of 48-bit Crypto1 keys (A and B)
 
 The applicable attack depends on the card's nonce behaviour, so the first job of this control is to classify it:
 
-- **Original weak PRNG (most legacy 1K/4K).** The card nonce comes from a 16-bit LFSR that the reader can advance to a known value, and the card leaks a NACK on bad parity. The **darkside** attack uses these two leaks to recover a first key card-only, with no reader and no prior key, in a few minutes [`courtois2009darkside`]. Once any one key is known, the **nested** attack triggers sector-to-sector ("nested") authentications and recovers every remaining key from the encrypted-nonce parity leak [`garcia2008dismantling`].
+- **Original weak PRNG (most legacy 1K/4K).** The card nonce comes from a 16-bit LFSR that the reader can advance to a known value, and the card leaks a NACK on bad parity. The **darkside** attack uses these two leaks to recover a first key card-only, with no reader and no prior key, in a few minutes [`courtois2009darkside`]. Once any one key is known, the **nested** attack triggers sector-to-sector ("nested") authentications and recovers every remaining key from the encrypted-nonce parity leak [`garcia2009pickpocket`].
 - **Hardened PRNG (MIFARE Classic EV1 and hardened clones).** These emit truly-random nonces, defeating darkside and plain nested. The **hardnested** attack is a ciphertext-only statistical cryptanalysis that, given one known key, collects encrypted nonces and reduces the search from 2^48 to roughly 2^30, recovering a key in about five minutes on a single laptop core [`meijer2015hardnested`].
 - **Static encrypted nonce (Fudan FM11RF08S and relatives).** A 2020-era "MIFARE-compatible" variant added a static-encrypted-nonce countermeasure specifically to thwart all known card-only attacks. In 2024 this was broken, and a **hardware backdoor key common to all FM11RF08S cards** was recovered: anyone who knows it can authenticate to and dump user sectors without the user keys, in a few minutes of card access [`teuwen2024fm11rf08s`, `teuwen2024blog`].
 
@@ -205,16 +212,14 @@ All steps below are active interrogation of a credential. Run them only against 
 
 ## Field case
 
-A representative engagement against an office MIFARE Classic 1K badge, with written authorisation and the badge in hand:
+Illustrative walkthrough — substitute the values you capture. A representative engagement against an office MIFARE Classic 1K badge, with written authorisation and the badge in hand:
 
 1. `hf 14a info` returned *MIFARE Classic 1K (4-byte UID)*; `hf mf info` classified the PRNG as **weak**.
 2. `hf mf chk *1 ? d` recovered sector 0 key A as the transport default `A0A1A2A3A4A5`, but sectors 1–15 did not resolve from the dictionary.
 3. With one known key and a weak PRNG, `hf mf autopwn` chained nested authentication off sector 0 and recovered all 32 sector keys in under two minutes, then wrote `hf-mf-<UID>-dump.bin` and the keyfile.
 4. Parsing the dump showed the access-control payload in sector 1 (a [FILL: facility/card-number layout for this specific deployment — not measured here]); the keys A/B for every sector were now known, so the badge was fully clonable to a magic card.
 
-The recorded finding is *all 16 sectors' Crypto1 keys recovered card-only in under two minutes, one of them still the transport default* — i.e. the credential provides no cryptographic protection. The hardened path differs only in the attack chosen: against an EV1 card, step 3 is replaced by `hf mf hardnested` seeded with the one default key, recovering a target key in about five minutes [`meijer2015hardnested`]; against an FM11RF08S clone, the static-encrypted-nonce techniques and the shared backdoor key apply instead [`teuwen2024fm11rf08s`].
-
-> [!FLAG] This worked example uses representative values (default transport key, two-minute autopwn run); it is not a single measured capture. The `[FILL: …]` access-control payload is intentionally left unmeasured — do not fabricate a facility/card number.
+The finding such an engagement records is *all 16 sectors' Crypto1 keys recovered card-only in under two minutes, one of them still the transport default* — i.e. the credential provides no cryptographic protection. The hardened path differs only in the attack chosen: against an EV1 card, step 3 is replaced by `hf mf hardnested` seeded with the one default key, recovering a target key in about five minutes [`meijer2015hardnested`]; against an FM11RF08S clone, the static-encrypted-nonce techniques and the shared backdoor key apply instead [`teuwen2024fm11rf08s`]. The `[FILL: …]` access-control payload above is intentionally left unmeasured — substitute the facility/card-number layout you actually read; do not fabricate one.
 
 ## Remediation
 

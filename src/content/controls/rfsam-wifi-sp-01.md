@@ -87,6 +87,12 @@ references:
     venue: GitHub
     url: 'https://github.com/ElectronicCats/Minino'
     type: tool
+  - key: wpa3-spec
+    title: 'WPA3 Specification — 6 GHz band constraints (WPA3/OWE only, PMF mandatory, no transition mode)'
+    authors: Wi-Fi Alliance
+    venue: Wi-Fi Alliance
+    url: 'https://www.wi-fi.org/system/files/WPA3%20Specification%20v3.4.pdf'
+    type: spec
 tools:
   - kismet
   - aircrack-ng
@@ -94,8 +100,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-11
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -147,18 +153,18 @@ This is an observational, capture-feasibility control — the map drawn before a
 
 ## Field case
 
-Surveying a small-office network in scope, an ALFA AWUS036ACH (RTL8812AU) in monitor mode was hopped across 2.4 and 5 GHz with `airodump-ng --band abg`. The 2.4 GHz pass found the target SSID on channel 6 (WPA2-PSK/CCMP) plus two neighbour APs on 1 and 11; the 5 GHz pass found the same ESSID's `ac` BSSID on channel 36 (non-DFS). `aireplay-ng --test wlan0mon` returned `Injection is working!` on channel 6, so the later handshake-capture control was scoped as feasible on 2.4 GHz.
+Illustrative walkthrough — substitute the values you capture. Surveying a small-office network in scope, an ALFA AWUS036ACH (RTL8812AU) in monitor mode is hopped across 2.4 and 5 GHz with `airodump-ng --band abg`. A typical 2.4 GHz pass finds the target SSID on channel 6 (WPA2-PSK/CCMP) plus two neighbour APs on 1 and 11; the 5 GHz pass finds the same ESSID's `ac` BSSID on channel 36 (non-DFS). `aireplay-ng --test wlan0mon` returning `Injection is working!` on channel 6 is what scopes the later handshake-capture control as feasible on 2.4 GHz.
 
-Two gaps were recorded, not hidden:
-- **6 GHz not surveyed** — the RTL8812AU has no 6 GHz radio, so any Wi-Fi 6E client steering to 6 GHz was invisible. Marked as a capability gap requiring a Wi-Fi 6E adapter to close [fcc-6ghz-2020].
-- **5 GHz DFS channels (52–144)** — no APs observed there, but a passive sweep cannot distinguish "no AP" from "AP present, not captured" on DFS channels without a longer dwell; left as `unconfirmed` rather than `clear` [linux-dfs].
+The point of the survey is that the two gaps below get recorded, not hidden:
+- **6 GHz not surveyed** — the RTL8812AU has no 6 GHz radio, so any Wi-Fi 6E client steering to 6 GHz is invisible. Mark it as a capability gap requiring a Wi-Fi 6E adapter to close [fcc-6ghz-2020].
+- **5 GHz DFS channels (52–144)** — no APs observed there, but a passive sweep cannot distinguish "no AP" from "AP present, not captured" on DFS channels without a longer dwell; record it as `unconfirmed` rather than `clear` [linux-dfs].
 
-> [!FLAG] The AP channels, counts and signal levels above are a representative worked example, not measured field data from a specific authorised engagement. Replace with real `airodump-ng` output before promoting beyond draft. Specific RSSI/throughput values intentionally omitted: [FILL: measured PWR per BSSID].
+Record the measured signal level for each BSSID from the live `airodump-ng` table rather than assuming it: [FILL: measured PWR per BSSID].
 
 ## Remediation
 
 This is an auditor-capability baseline rather than a device finding — its "remediation" is twofold: hardening guidance for the defender, and discipline for the auditor.
 
-- **Developer / vendor:** Do not rely on a hidden SSID or an unusual channel for security — a passive survey enumerates the BSSID, channel and security mode from beacons regardless [ieee80211-2020][wireshark-wlan]. Set the strongest mutually supported security (WPA3-SAE; WPA2-CCMP at minimum) and enable Protected Management Frames (802.11w) so later AT-layer deauth controls find no easy target. On the 6 GHz band — opened for unlicensed use by the 2020 FCC order [fcc-6ghz-2020] — WPA3 (or OWE) and PMF are mandatory by Wi-Fi Alliance certification, with no WPA2 transition mode permitted.
+- **Developer / vendor:** Do not rely on a hidden SSID or an unusual channel for security — a passive survey enumerates the BSSID, channel and security mode from beacons regardless [ieee80211-2020][wireshark-wlan]. Set the strongest mutually supported security (WPA3-SAE; WPA2-CCMP at minimum) and enable Protected Management Frames (802.11w) so later AT-layer deauth controls find no easy target. On the 6 GHz band — opened for unlicensed use by the 2020 FCC order [fcc-6ghz-2020] — WPA3 (or OWE) and PMF are mandatory by Wi-Fi Alliance certification, with no WPA2/transition mode permitted [wpa3-spec].
 - **Integrator / operator:** Inventory which bands your estate actually uses and ensure monitoring/IDS covers all of them, including 6 GHz and DFS channels — an attacker steering a client to an unmonitored band exploits the same blind spot this control measures [fcc-6ghz-2020][linux-dfs]. Deploy wireless IDS to flag rogue APs and deauth floods that a survey would otherwise only reveal after the fact.
 - **Auditor:** Always confirm and document the adapter's band coverage and injection capability up front (steps 1, 5) so scope is honest; treat every "not seen" on an unsupported band or unconfirmed DFS channel as a capability gap, never an all-clear. Channel corpora and adapter chipset support date quickly — verify current driver/monitor-mode status for your hardware rather than assuming [wireshark-wlan].

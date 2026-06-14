@@ -128,7 +128,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-16
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -149,7 +149,7 @@ Authorised testing only: capture on a network you own or are explicitly permitte
    ```bash
    kismet -c nrf52840_154-0:channels="11,15,20,25,26"
    ```
-   Kismet channel-hops the 802.15.4 band and logs every PAN, coordinator and device it hears to pcapng without ever transmitting [killerbee-repo is active; kismet is passive]. Note which channel(s) show Zigbee PANs. (Channels 15, 20, 25 and 26 sit in the Wi-Fi gaps and are common Zigbee choices.)
+   Kismet channel-hops the 802.15.4 band and logs every PAN, coordinator and device it hears to pcapng without ever transmitting. Note which channel(s) show Zigbee PANs. (Channels 15, 20, 25 and 26 sit in the Wi-Fi gaps and are common Zigbee choices.)
 
 2. **Park and capture on the target channel.** Pick the capture path for your radio. On an nRF52840 dongle with the nRF Sniffer 802.15.4 firmware, capture straight into Wireshark via its extcap; on a CC2531:
    ```bash
@@ -181,7 +181,7 @@ Authorised testing only: capture on a network you own or are explicitly permitte
 
 ## Field case
 
-> [!FLAG] No measured field capture was performed for this draft; the values below are a representative, reproducible example. Replace the bracketed `[FILL: …]` items with your own measured data and re-run before citing as evidence.
+Illustrative walkthrough — substitute the values you capture. The flow below is reproducible against any consenting network, but the specific identifiers are an example; replace each bracketed `[FILL: …]` item with your own measured data before citing this as evidence.
 
 Target: a residential Zigbee 3.0 hub with a handful of sensors and a smart plug, assessed with passive authorisation. A Kismet survey across channels 11/15/20/25/26 showed a single PAN active on **channel 20**. Parking a CC2531 there with `whsniff -c 20 | wireshark -k -i -` produced a steady stream of 802.15.4 frames.
 

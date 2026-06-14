@@ -123,17 +123,15 @@ bsam:
   - BSAM-SE-03
 resources:
   - RFSAM-RES-29
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
 
 Bluetooth Classic exposes its application surface through profiles, and every profile is advertised in the Service Discovery Protocol (SDP) directory. Querying SDP returns the device's service records — each naming a profile (Serial Port / RFCOMM, HID, A2DP, HFP/HSP, OBEX Object Push, PBAP, and so on) and the L2CAP PSM or RFCOMM channel behind it. SDP is therefore the map of what the device trusts above the link, and enumerating it is the first move at this layer. The standard driver is a Linux host's BlueZ stack over a commodity USB adapter — the same host workflow BSAM's Bluetooth controls assume — so RFSAM owns only the RF prerequisite (reaching the device's host stack over the air) and defers the service-access-control judgement (which of those profiles may be reached without authentication) to BSAM-SE-03 (bluez-project).
 
-The reason this layer matters is that the SDP directory is not merely descriptive — it is reachable, and so is everything behind it. **BlueBorne** is the canonical demonstration: a family of host-stack vulnerabilities reached over Bluetooth without pairing and without the target being discoverable (armis2017blueborne). On Linux the SDP server itself leaks `bluetoothd` process memory through crafted search-attribute requests (CVE-2017-1000250), and the kernel L2CAP layer that every profile rides on can be driven to remote code execution (CVE-2017-1000251) (cve-2017-1000250, cve-2017-1000251). The Android arm of the same family adds RCE and an SDP-reachable information leak (CVE-2017-0781, CVE-2017-0785), with proof-of-concept code published by Armis (armis2017blueborne-poc, cve-2017-0781, cve-2017-0785). Treat this CVE set as representative of the above-the-link/host-stack class, not as a current advisory list — check vendor advisories for the target's controller SoC and host OS before testing.
-
-> [!FLAG] CVE-2017-0785 is recorded on NVD as an Android Bluetooth information-disclosure issue; the specific attribution to the SDP server comes from the Armis BlueBorne PoC repository (armis2017blueborne-poc), not the NVD text — a reviewer should confirm the SDP-leak framing against the Armis whitepaper before promotion to verified.
+The reason this layer matters is that the SDP directory is not merely descriptive — it is reachable, and so is everything behind it. **BlueBorne** is the canonical demonstration: a family of host-stack vulnerabilities reached over Bluetooth without pairing and without the target being discoverable (armis2017blueborne). On Linux the SDP server itself leaks `bluetoothd` process memory through crafted search-attribute requests (CVE-2017-1000250), and the kernel L2CAP layer that every profile rides on can be driven to remote code execution (CVE-2017-1000251) (cve-2017-1000250, cve-2017-1000251). The Android arm of the same family adds RCE (CVE-2017-0781) and an information leak in the Android Bluetooth SDP server (CVE-2017-0785), with proof-of-concept code published by Armis (armis2017blueborne-poc, cve-2017-0781, cve-2017-0785). The SDP framing of CVE-2017-0785 is Armis's own: NVD records it simply as an Android Bluetooth information-disclosure issue, while the Armis PoC `android/` exploit uses it explicitly as "the SDP Information leak vulnerability (CVE-2017-0785) to bypass ASLR" ahead of the CVE-2017-0781 RCE (armis2017blueborne-poc). Treat this CVE set as representative of the above-the-link/host-stack class, not as a current advisory list — check vendor advisories for the target's controller SoC and host OS before testing.
 
 ## Procedure
 
@@ -184,9 +182,7 @@ The reason this layer matters is that the SDP directory is not merely descriptiv
 
 ## Field case
 
-Against a generic Bluetooth hands-free car kit on the bench, `sdptool browse` returned a Serial Port (RFCOMM) record on channel 1 and a Handsfree Gateway record, alongside the expected A2DP sink. `l2ping` answered immediately even though the unit was not in pairing mode, confirming the host stack was reachable from its BD_ADDR alone. Binding RFCOMM channel 1 with `rfcomm connect /dev/rfcomm0 <addr> 1` and sending `AT` over `screen /dev/rfcomm0 115200` produced an `OK` — the serial channel answered AT commands before any pairing completed, which is exactly the unauthenticated-service condition BSAM-SE-03 exists to flag. The harmless car kit is the demonstrator; the same enumeration step against an OBD-II dongle or a point-of-sale terminal is where an exposed RFCOMM/AT or OBEX channel becomes consequential.
-
-> [!FLAG] This field case is an illustrative bench example, not a logged engagement finding. The specific values — RFCOMM channel 1, the `OK` to bare `AT`, the immediate `l2ping` reply on a non-discoverable unit — are plausible-but-representative; replace with [FILL: real device model, BD_ADDR OUI, exact sdptool record and channel] when a verified capture is available.
+Illustrative walkthrough — substitute the values you capture. Against a generic Bluetooth hands-free car kit on the bench, the pattern looks like this: `sdptool browse` returns a Serial Port (RFCOMM) record on channel 1 and a Handsfree Gateway record, alongside the expected A2DP sink. `l2ping` answers immediately even though the unit is not in pairing mode, confirming the host stack is reachable from its BD_ADDR alone. Binding RFCOMM channel 1 with `rfcomm connect /dev/rfcomm0 <addr> 1` and sending `AT` over `screen /dev/rfcomm0 115200` produces an `OK` — the serial channel answering AT commands before any pairing completed, which is exactly the unauthenticated-service condition BSAM-SE-03 exists to flag. A harmless car kit is the demonstrator; the same enumeration step against an OBD-II dongle or a point-of-sale terminal is where an exposed RFCOMM/AT or OBEX channel becomes consequential. Record the real values from your own engagement: [FILL: real device model, BD_ADDR OUI, exact sdptool record and channel].
 
 ## Remediation
 

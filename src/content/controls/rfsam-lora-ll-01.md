@@ -132,8 +132,8 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-07
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 
@@ -187,7 +187,7 @@ A high proportion of `JoinRequest` frames relative to data frames is itself a fi
 
 ## Field case
 
-A passive US915 capture of 51,304 LoRaWAN frames showed 45,815 (89.3%) were JoinRequests — nine of every ten frames were devices trying, and failing, to join. The structure read entirely in the clear (MHDR + DevAddr; AppEUI/DevEUI/DevNonce in the join), letting an observer harvest the fleet's identities and map the network without ever transmitting. The payloads stayed AES-protected — but the metadata alone profiled the deployment and exposed it as misconfigured.
+Reported field observation (the author's own measurement on an authorised network, reproduced here as an illustrative figure — not independently re-measured for this control): a passive US915 capture of 51,304 LoRaWAN frames showed 45,815 (89.3%) were JoinRequests — nine of every ten frames were devices trying, and failing, to join. The structure read entirely in the clear (MHDR + DevAddr; AppEUI/DevEUI/DevNonce in the join), letting an observer harvest the fleet's identities and map the network without ever transmitting. The payloads stayed AES-protected — but the metadata alone profiled the deployment and exposed it as misconfigured. (Such a JoinRequest skew is consistent with the US915 channel-plan mismatch, where a 64-channel device randomly retries joins until one lands on the gateway's active 8-channel sub-band.)
 
 To reproduce against your own authorised test network, stand up a couple of devices on a ChirpStack/RAK gateway, mis-provision one (wrong AppKey or a region/coverage mismatch) so it loops on join, then run the capture in step 3 and tabulate the `MType` mix:
 
@@ -203,9 +203,7 @@ unique DevAddr seen   [FILL: n]
 repeated DevNonce     [FILL: y/n]
 ```
 
-The expected shape: a mis-provisioned fleet skews heavily toward Join Requests, exactly as in the 89.3% measurement above, and every Join Request hands you a `DevEUI`/`JoinEUI`/`DevNonce` in the clear.
-
-> [!FLAG] The 51,304-frame / 89.3% figure is the author's reported field measurement; it is reproduced here verbatim and has not been independently re-measured in this draft. The `[FILL: …]` rows are placeholders for the reader's own authorised capture — do not treat them as measured values.
+The expected shape: a mis-provisioned fleet skews heavily toward Join Requests, in line with the reported 89.3% observation above, and every Join Request hands you a `DevEUI`/`JoinEUI`/`DevNonce` in the clear. The `[FILL: …]` rows are placeholders for the reader's own authorised capture — substitute the values you capture; do not treat them as measured values.
 
 ## Remediation
 

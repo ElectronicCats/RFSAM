@@ -124,7 +124,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-15
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -172,7 +172,7 @@ The canonical example of a fixed address is the EV1527/PT2262 OOK encoder family
 
 ## Field case
 
-Worked example against an EV1527-class 433.92 MHz fixed-code remote (a representative device; substitute your own authorised target). Pointing `rtl_433` at the band and pressing the button produced repeated decoded lines naming the device class and a stable identifier:
+Illustrative walkthrough — substitute the values you capture against your own authorised target. Take an EV1527-class 433.92 MHz fixed-code remote as the representative device. Point `rtl_433` at the band and press the button; a recognised class decodes to repeated lines naming the device and a stable identifier:
 
 ```bash
 rtl_433 -f 433.92M -F json
@@ -182,9 +182,7 @@ rtl_433 -f 433.92M -F json
 {"model":"[FILL: decoded model name]","id":[FILL: decoded id],"cmd":[FILL: button code]}
 ```
 
-The `id` did not change across presses of the same remote and matched the value from a different button on the same remote — confirming it is the device address, not the command [rtl433dataformat]. Loading three captures into URH and diffing them, the leading [FILL: N]-bit field was constant (preamble + address), a 4-bit field changed only with the button (the command), and there was no incrementing field — a **fixed code, identification only, no counter, no checksum over a secret** [urh] [ev1527]. The security finding writes itself: the receiver acts on any frame carrying that address, so the recovered frame is everything it trusts. Because this class's address is often a short DIP-switch or OTP field, the same recovery that read the address also bounds the keyspace — the kind of small fixed-code space OpenSesame enumerated in seconds [opensesame] [hackaday-opensesame] — though the active replay and brute force themselves are assessed under RFSAM-SUBG-AT-01.
-
-> [!FLAG] The bracketed `[FILL: …]` values are placeholders, not measured data — this is a representative example, not a specific captured finding. Replace each `[FILL: …]` with values measured against your own authorised device before citing this as a result.
+If the `id` does not change across presses of the same remote and is the same when you press a different button on it, that confirms the `id` is the device address, not the command [rtl433dataformat]. Loading three captures into URH and diffing them, expect the leading [FILL: N]-bit field to be constant (preamble + address), a 4-bit field to change only with the button (the command), and no incrementing field — the signature of a **fixed code: identification only, no counter, no checksum over a secret** [urh] [ev1527]. The security finding then writes itself: the receiver acts on any frame carrying that address, so the recovered frame is everything it trusts. Because this class's address is often a short DIP-switch or OTP field, the same recovery that reads the address also bounds the keyspace — the kind of small fixed-code space OpenSesame enumerated in seconds [opensesame] [hackaday-opensesame] — though the active replay and brute force themselves are assessed under RFSAM-SUBG-AT-01.
 
 ## Remediation
 

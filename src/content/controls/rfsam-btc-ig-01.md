@@ -169,7 +169,7 @@ bsam:
   - BSAM-IG-04
 resources:
   - RFSAM-RES-26
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -223,16 +223,14 @@ BSAM already provides mature, dedicated controls for exactly this triage: contro
 
 ## Field case
 
-A representative engagement against a Bluetooth-Classic hands-free car module:
+Illustrative walkthrough — substitute the values you capture. The target is a Bluetooth-Classic hands-free car module:
 
 - **Step 1 (label):** the FCC ID's internal photos showed a [FILL: controller SoC part number read from the FCC internal photos / teardown], placing the controller on the BSAM-IG-02 lookup.
 - **Step 2 (air):** the `esp32-classic-bt-scan` inquiry returned the unit answering a BR/EDR inquiry — confirming Classic, not LE-only — with `BD_ADDR [FILL: 48-bit address from the inquiry response]`, a friendly name matching the head unit, and a Class of Device with the Audio major class set. The BD_ADDR's upper-24-bit OUI resolved to the module vendor, consistent with the label.
 - **Step 3 (dual-mode):** `esp32-bt-exp` showed the same unit on the Classic list only and not on BLE — a Classic-only target, so the assessment stays on the BR/EDR descent.
 - **Step 5 (BSAM):** running BSAM-IG-02/IG-04 against the identified controller and its claimed Core-Spec version is the decisive step. If the controller predates the vendor's BrakTooth fix, the unit is exposed to the relevant baseband/LMP crash-or-RCE variant regardless of how strong the pairing *looks*; if it claims Core Spec ≤ 5.1, KNOB applies at the standard level.
 
-The value RFSAM adds here is sequencing, not a new finding: the cheap inquiry-scan component inventory from this step scopes which SP/PHY/LL capture controls are worth running at all.
-
-> [!FLAG] This field case is a *representative* illustration of the workflow, not a measured engagement. The `[FILL: …]` placeholders (controller part number, BD_ADDR) are intentional — replace them only with values actually read from a device before claiming a specific finding.
+The value RFSAM adds here is sequencing, not a new finding: the cheap inquiry-scan component inventory from this step scopes which SP/PHY/LL capture controls are worth running at all. The `[FILL: …]` placeholders (controller part number, BD_ADDR) are intentional — replace them only with values actually read from a device before claiming a specific finding.
 
 ## Remediation
 

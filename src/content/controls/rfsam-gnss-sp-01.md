@@ -108,7 +108,7 @@ resources:
   - RFSAM-RES-01
   - RFSAM-RES-19
 bsam: []
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -155,7 +155,7 @@ All steps are passive receive-only. No transmission is involved at the SP layer,
 
 ## Field case
 
-A representative bench survey at a single test site, illustrating the read rather than reporting a measured incident.
+Illustrative walkthrough — substitute the values you capture. This is a representative bench survey at a single test site, illustrating how to read the two views rather than reporting a measured incident; the bracketed `[FILL: …]` figures are placeholders to be replaced with your own bench data, not asserted findings.
 
 Antenna: active L1 patch through a bias-tee into an RTL-SDR V4 (`rtl_biast -b 1`), with a u-blox NEO-class module on `/dev/ttyACM0` for the receiver-eye view.
 
@@ -163,8 +163,6 @@ Antenna: active L1 patch through a bias-tee into an RTL-SDR V4 (`rtl_biast -b 1`
 - **Injected interference (contained).** With a CW source placed on L1 in a contained setup, gqrx showed a discrete spike at 1575.42 MHz rising above the floor; simultaneously C/N0 on every tracked PRN fell together and satellites-used dropped to [FILL: N], losing the fix — the jamming signature: a tell on the waterfall *and* a coordinated C/N0 collapse [qiao2023survey][kriezis2025cots].
 
 The point is the two-view method: the waterfall says *something is on L1*, and the receiver's C/N0/satellite count says *and it is denying the fix*. Either alone is weaker than both together. The real-world stakes are not hypothetical — aviation regulators report GPS signal-loss events up roughly 220% from 2021 to 2024 across affected regions [easa2025gnss].
-
-> [!FLAG] The [FILL: ...] values above are placeholders for a real measured run — no specific satellite count or C/N0 figure is asserted. Replace with your own bench data; do not cite these as findings.
 
 ## Remediation
 

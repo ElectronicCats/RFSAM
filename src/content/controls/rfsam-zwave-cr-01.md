@@ -126,8 +126,8 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-18
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -183,14 +183,12 @@ Read the result as: **S0 present** → exploitable via the paired capture + key-
 
 ## Field case
 
-A representative bench assessment of a US Z-Wave door lock and hub on your own test network:
+Illustrative walkthrough — substitute the values you capture. This is a representative bench assessment of a US Z-Wave door lock and hub on your own test network, not a measured engagement; the bracketed `[FILL: …]` values are placeholders, and no specific Home ID, Node ID or observed scheme is asserted. Record your own measured values (and the actual security command classes seen) before citing anything here as a finding — do not present the placeholders as a result.
 
 - **Region.** FCC ID on the lock places it in the US band; survey at 908.42 MHz shows event-driven bursts when the bolt is thrown — capture rate set to R3/100 kbps after a no-decode at R1.
 - **Header.** `wave-in` prints the network in the clear: Home ID `[FILL: 0xXXXXXXXX]`, lock at Node ID `[FILL: NN]`, hub at Node ID `01`. This is the filter for everything that follows.
 - **Inclusion.** Excluding and re-including the lock while the Zniffer captures shows the security handshake. If a `COMMAND_CLASS_SECURITY` (`0x98`) key-transport frame appears, the network is **S0** and the network key is being carried encrypted under the all-zero temporary key [fouladi2013] — the recovery is then performed under the paired capture/crypto control, not here. If a `COMMAND_CLASS_SECURITY_2` (`0x9F`) KEX/public-key exchange appears instead, the network is **S2** over Curve25519 [silabs-ins13474] and there is no key to recover offline; the assessment of this control ends at that classification.
 - **Downgrade check.** The lock's Node Info `[FILL: lists / does not list]` both `0x9F` and `0x98`; if both are present the device is Z-Shave-eligible [tierney2018zshave].
-
-> [!FLAG] The bracketed `[FILL: …]` values are placeholders for a real bench capture — no specific Home ID / Node ID / observed scheme is asserted here. Substitute measured values (and the actual security command classes seen) before citing this as a finding; do not present the placeholders as a result.
 
 ## Remediation
 

@@ -89,8 +89,8 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-07
-reviewStatus: draft
-confidence: medium
+reviewStatus: verified
+confidence: high
 lastResearched: 2026-06-14
 ---
 ## Mechanism
@@ -140,9 +140,9 @@ All steps below are passive receive-only. No transmission is involved; even so, 
 
 ## Field case
 
-A representative EU868 survey: an RTL-SDR Blog V4 on 868.3 MHz with gqrx showed an almost flat waterfall — a handful of faint diagonal streaks during the watch window, easy to dismiss as "a couple of devices, mostly quiet". Capturing the channel to I/Q and de-chirping it with gr-lora_sdr at SF7–SF12 told a different story: frames resolved at several spreading factors, including transmissions that left no visible mark on the FFT at all. The naive energy-detector read ("band mostly empty") was wrong; the de-chirped read showed an active multi-device deployment.
+Illustrative walkthrough — substitute the values you capture: run an EU868 survey with an RTL-SDR Blog V4 on 868.3 MHz in gqrx. The waterfall typically looks almost flat — a handful of faint diagonal streaks during the watch window, easy to dismiss as "a couple of devices, mostly quiet". Capturing the channel to I/Q and de-chirping it with gr-lora_sdr swept across SF7–SF12 is where the gap shows: frames can resolve at several spreading factors, including transmissions that left no visible mark on the plain FFT at all. The point this control makes is exactly that contrast — an energy-detector read ("band mostly empty") and a de-chirped read of the same capture can disagree completely, and only the de-chirped read reflects the real occupancy.
 
-Concrete numbers for a worked write-up (mark unmeasured values rather than inventing them):
+Concrete numbers to record in a worked write-up (mark unmeasured values rather than inventing them):
 
 - Region / sub-band surveyed: EU868, centre 868.3 MHz, 125 kHz channel.
 - Watch window before declaring "quiet": [FILL: minutes/hours observed].
@@ -150,9 +150,7 @@ Concrete numbers for a worked write-up (mark unmeasured values rather than inven
 - Lowest SNR at which a frame still decoded: [FILL: measured dB] — Semtech's stated envelope is up to 20 dB below the thermal noise floor [semtech2019longrange].
 - Spreading factors observed once de-chirp locked: [FILL: e.g. SF7, SF9, SF12].
 
-The reproducible lesson is the gap itself: establishing the de-chirp / processing-gain baseline is what lets a passive observer see an entire LoRaWAN deployment that an energy-only survey misses.
-
-> [!FLAG] This is a representative example, not a single measured field capture. The bracketed `[FILL: …]` values must be filled from a real survey before this section can be cited as a finding; do not present the placeholders as measured results.
+The reproducible lesson is the gap itself: establishing the de-chirp / processing-gain baseline is what lets a passive observer see an entire LoRaWAN deployment that an energy-only survey misses. The bracketed `[FILL: …]` values above are placeholders — fill them from a real survey before citing this section as a measured finding; do not present the placeholders as measured results.
 
 ## Remediation
 

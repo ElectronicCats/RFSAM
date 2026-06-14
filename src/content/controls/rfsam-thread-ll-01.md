@@ -120,7 +120,7 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-16
-reviewStatus: draft
+reviewStatus: verified
 confidence: high
 lastResearched: 2026-06-14
 ---
@@ -219,28 +219,23 @@ identity, topology and commissioning state the mesh discloses to a passive obser
 
 ## Field case
 
-A representative Matter-over-Thread smart-home bulb assessed on a lab bench (your own
-devices, shielded). A wideband sweep showed activity around channel 15; an nRF52840 RCP
-driven by `python sniffer.py -c 15 -u /dev/ttyACM0 --crc -b 460800` streamed frames into
-Wireshark. With the filter `wpan.frame_type == 0x0 || mle`, the beacon response disclosed, with no
-key supplied:
+Illustrative walkthrough — substitute the values you capture. Take a representative
+Matter-over-Thread smart-home bulb on a lab bench (your own devices, shielded). A wideband
+sweep shows activity around channel 15; an nRF52840 RCP driven by
+`python sniffer.py -c 15 -u /dev/ttyACM0 --crc -b 460800` streams frames into Wireshark.
+With the filter `wpan.frame_type == 0x0 || mle`, the beacon response discloses, with no
+key supplied, the identifiers below — record the actual values from your own capture:
 
 - PAN ID: `[FILL: 0xNNNN]`
 - Extended PAN ID: `[FILL: NN:NN:NN:NN:NN:NN:NN:NN]`
 - Network Name: `[FILL: e.g. "OpenThread-abcd"]`
 - Channel: 15
 
-`avahi-browse -rt _meshcop._udp` on the same LAN returned a Border Agent entry,
-confirming a reachable commissioning path. MAC payloads remained AES-128-CCM* encrypted
-and were left undecrypted (no network key in scope), so the finding was strictly the
+`avahi-browse -rt _meshcop._udp` on the same LAN returns a Border Agent entry when a
+commissioning path is reachable. MAC payloads remain AES-128-CCM* encrypted and are left
+undecrypted (no network key in scope), so the finding is strictly the
 **identifier and commissioning-posture exposure** — exactly the link-layer leak this
 control inventories — not message content.
-
-> [!FLAG] The bracketed `[FILL: …]` values above are author-capture-pending placeholders:
-> no measured field capture has been taken yet. The mechanism, procedure, references and
-> remediation are verified, but this field case asserts observed identifiers that depend on
-> unfilled `[FILL:]` values, so the control stays `draft` until real capture data replaces
-> them (or the example is rewritten without claiming an observed finding).
 
 ## Remediation
 
