@@ -51,10 +51,11 @@ Write content under the **layer** keys; the page maps them to the steps above.
    step …, save it from Wireshark, then feed it to crackle.'` The `needs` text appears in
    the detail box.
 
-5. **Software-led where the user picks a technique** (Capture, Attack): the bubble is the
-   software/technique; the radio is its `deps`. **Hardware-led only when the radio itself is
-   the choice** (rare). For BLE everything is software-led except Ubertooth, which still goes
-   through its host software (`ubertooth-tools` → `ubertooth-one`).
+5. **Software-led where the user picks a technique** (Capture, Attack, Spectrum): the bubble
+   is the software/technique and the radio is its `deps`. For BLE *every* capture/attack tool
+   is software-led — even the radio-native Ubertooth goes through its host software
+   (`ubertooth-tools` → `ubertooth-one`) rather than appearing as a bare radio. Only use a
+   hardware bubble as the primary when there genuinely is no software layer.
 
 6. **Every `tool` and `dep` slug must exist in the tools catalogue** (`seed-tools.mjs`), and
    every catalogue entry must have a **verified** `repo` or `homepage`. **NEVER invent a URL.**
