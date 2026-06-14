@@ -4,30 +4,70 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { coverageMap } from '../data/coverage-map.js';
 import { protocols } from '../data/protocols.js';
 import { layers } from '../data/layers.js';
+import { toolchains } from '../data/toolchains.js';
 
 const controls = await getCollection('controls');
 const statusOf = (id) => controls.find((c) => c.data.id === id)?.data.reviewStatus;
 const color = (lid) => layers.find((l) => l.id === lid)?.color ?? 'var(--mut)';
 const nameOf = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
+
+// --- Wayfinder track (the interactive per-technology kits) ---
+const wayfinder = protocols.map((p) => ({
+  ...p,
+  status: toolchains[p.id]?.status ?? 'planned',
+  steps: Object.keys(toolchains[p.id]?.layers ?? {}).length,
+}));
+const wfDone = wayfinder.filter((w) => w.status === 'complete').length;
+
+// --- Controls track ---
+const existingCount = controls.length;
+const plannedCount = coverageMap.reduce((n, p) => n + p.controls.filter((c) => c.status === 'planned').length, 0);
+const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').length;
 ---
 <BaseLayout title="Roadmap">
   <div class="container">
     <h1 style="font-size:34px">Roadmap</h1>
-    <p style="color:var(--mut);margin-top:8px">Target coverage across protocols and layers. <span class="mono" style="color:var(--mut2)">existing</span> controls have a page; <span class="mono" style="color:var(--mut2)">planned</span> entries are proposed scope.</p>
+    <p style="color:var(--mut);margin-top:8px;max-width:74ch;line-height:1.6">
+      RFSAM is built in two tracks. The <strong style="color:var(--ink)">Wayfinder</strong> — the interactive
+      per-technology kits — is complete across the technologies below. The <strong style="color:var(--ink)">Controls</strong>
+      — the written verification procedures, with field cases and remediation — are being authored, and most existing
+      pages are still drafts or stubs being deepened.
+    </p>
+
+    <h2 class="track-h">Wayfinder toolchains <span class="badge done">{wfDone}/{wayfinder.length} complete</span></h2>
+    <p style="color:var(--mut2);font-size:13px;margin-top:4px">Each technology mapped down the full six-step descent, with a verified hardware + software kit at every step.</p>
+    <div class="wf-grid">
+      {wayfinder.map((w) => (
+        <a href={`/wayfinder/${w.id.toLowerCase()}`} class="wf-card">
+          <div class="wf-top">
+            <span class="nm">{w.name}</span>
+            <span class={`pill ${w.status === 'complete' ? 'ok' : 'plan'}`}>{w.status === 'complete' ? 'COMPLETE' : 'PLANNED'}</span>
+          </div>
+          <div class="mono band">{w.band}</div>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="track-h">Controls <span class="badge">{existingCount} pages · {draftCount} draft · {plannedCount} planned</span></h2>
+    <p style="color:var(--mut2);font-size:13px;margin-top:4px">
+      <span class="mono" style="color:var(--cyan)">DRAFT</span> = written and being reviewed ·
+      <span class="mono" style="color:var(--amber)">STUB</span> = page exists, prose still to be deepened ·
+      <span class="mono" style="color:var(--mut)">PLANNED</span> = proposed scope, unwritten.
+    </p>
     {coverageMap.map((p) => (
-      <section style="margin-top:28px">
-        <h2 style="font-family:var(--disp);font-size:18px">{nameOf(p.protocol)}</h2>
+      <section style="margin-top:26px">
+        <h3 style="font-family:var(--disp);font-size:17px">{nameOf(p.protocol)}</h3>
         <div style="margin-top:8px">
           {p.controls.map((c) => {
             const live = statusOf(c.id);
             return (
               <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)">
                 <span style={`width:8px;height:8px;border-radius:50%;background:${color(c.layer)};display:inline-block;flex-shrink:0`}></span>
-                <span class="mono" style="font-size:11px;color:var(--mut2);width:170px;flex-shrink:0">{c.id}</span>
+                <span class="mono" style="font-size:11px;color:var(--mut2);width:175px;flex-shrink:0">{c.id}</span>
                 <span style="flex:1">{c.title}</span>
                 {c.status === 'existing'
-                  ? <a class="review" style="color:var(--cyan)" href={`/controls/${c.id.toLowerCase()}`}>{(live ?? 'existing').toUpperCase()}</a>
-                  : <span class="review stub">PLANNED</span>}
+                  ? <a class="review" style={`color:${live === 'draft' ? 'var(--cyan)' : 'var(--amber)'}`} href={`/controls/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
+                  : <span class="review stub" style="color:var(--mut)">PLANNED</span>}
               </div>
             );
           })}
@@ -35,4 +75,20 @@ const nameOf = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
       </section>
     ))}
   </div>
+
+  <style>
+    .track-h { font-family: var(--disp); font-size: 21px; margin-top: 48px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .badge { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--mut2); letter-spacing: .04em; }
+    .badge.done { color: var(--green); }
+    .wf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 14px; }
+    .wf-card { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 13px 15px; transition: border-color .15s; }
+    .wf-card:hover { border-color: var(--line2); }
+    .wf-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .wf-card .nm { font-family: var(--disp); font-weight: 600; font-size: 14.5px; color: var(--ink); }
+    .wf-card .band { font-size: 10px; color: var(--mut2); margin-top: 4px; }
+    .pill { font-family: var(--mono); font-size: 8.5px; letter-spacing: .08em; padding: 2px 6px; border-radius: 3px; border: 1px solid; }
+    .pill.ok { color: var(--green); border-color: rgba(63, 209, 124, .4); }
+    .pill.plan { color: var(--mut); border-color: var(--line2); }
+    .review { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; }
+  </style>
 </BaseLayout>

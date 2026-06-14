@@ -6,23 +6,89 @@ import ToolCard from '../components/ToolCard.astro';
 const tools = await getCollection('tools');
 const hardware = tools.filter((t) => t.data.type === 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
 const software = tools.filter((t) => t.data.type !== 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+// Map the free-form protocol tags in the catalogue onto the 14 technology pages.
+const ALIAS = {
+  BLE: ['BLE', 'Bluetooth'], WIFI: ['Wi-Fi'], LORA: ['LoRa', 'LoRaWAN'], LTE: ['LTE'],
+  RFID: ['RFID', 'NFC', 'MagStripe'], SUBG: ['Sub-GHz'], ZIGBEE: ['Zigbee', '802.15.4'],
+  ZWAVE: ['Z-Wave'], THREAD: ['Thread', 'Matter', '802.15.4'], GNSS: ['GNSS', 'GPS'],
+  ADSB: ['ADS-B'], NR5G: ['5G NR'], GSM: ['GSM', '2G'], UWB: ['UWB'],
+};
+const CHIP = {
+  BLE: 'BLE', WIFI: 'Wi-Fi', LORA: 'LoRa', LTE: 'LTE', RFID: 'RFID/NFC', SUBG: 'Sub-GHz',
+  ZIGBEE: 'Zigbee', ZWAVE: 'Z-Wave', THREAD: 'Thread', GNSS: 'GNSS', ADSB: 'ADS-B',
+  NR5G: '5G NR', GSM: 'GSM', UWB: 'UWB',
+};
+const UNIVERSAL = ['Wide-band SDR', 'RX-only SDR', 'any SDR', 'any'];
+const techsFor = (p = []) => Object.entries(ALIAS).filter(([, tags]) => p.some((x) => tags.includes(x))).map(([id]) => id);
+const isUniversal = (p = []) => p.some((x) => UNIVERSAL.includes(x));
+const dataTech = (d) => [...techsFor(d.protocols || []), ...(isUniversal(d.protocols || []) ? ['universal'] : [])].join(' ');
+const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.filter((t) => techsFor(t.data.protocols || []).includes(id)).length }));
 ---
 <BaseLayout title="Tools">
   <div class="container">
     <h1 style="font-size:34px">Tools</h1>
     <p style="color:var(--mut);margin-top:8px;max-width:64ch">
-      Hardware first — open a device to see the software and projects that pair with it. Representative,
-      not exhaustive; check current advisories. Repo links go to each project's source.
+      The hardware and software behind the wayfinder kits. Hardware first — open a device to see the software that
+      pairs with it. Representative, not exhaustive; check current advisories. Repo links go to each project's source.
     </p>
 
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2);margin-top:32px">HARDWARE</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:14px">
-      {hardware.map((t) => <ToolCard tool={t.data} />)}
+    <div class="tfilter" role="tablist">
+      <button data-k="all" class="on">All</button>
+      {chips.map((c) => <button data-k={c.id}>{c.label}<span class="c">{c.n}</span></button>)}
+    </div>
+    <p class="hint mono">SDRs and Wireshark are cross-protocol — they stay visible under every filter.</p>
+
+    <h2 id="hw-h" class="mono sect">HARDWARE</h2>
+    <div id="hw-grid" class="grid">
+      {hardware.map((t) => <div class="tool-item" data-tech={dataTech(t.data)}><ToolCard tool={t.data} /></div>)}
     </div>
 
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2);margin-top:40px">SOFTWARE &amp; PROJECTS</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:14px">
-      {software.map((t) => <ToolCard tool={t.data} />)}
+    <h2 id="sw-h" class="mono sect">SOFTWARE &amp; PROJECTS</h2>
+    <div id="sw-grid" class="grid">
+      {software.map((t) => <div class="tool-item" data-tech={dataTech(t.data)}><ToolCard tool={t.data} /></div>)}
     </div>
+
+    <p id="empty" class="empty" hidden>No tools tagged for this technology yet.</p>
   </div>
+
+  <style>
+    .tfilter { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+    .tfilter button { font-family: var(--mono); font-size: 11px; color: var(--mut); background: rgba(255, 255, 255, .03); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; transition: all .12s; }
+    .tfilter button:hover { color: var(--ink); border-color: var(--line2); }
+    .tfilter button.on { color: #0A1119; background: var(--orange); border-color: var(--orange); font-weight: 600; }
+    .tfilter button .c { opacity: .55; margin-left: 6px; }
+    .tfilter button.on .c { opacity: .8; }
+    .hint { font-size: 10.5px; color: var(--mut2); margin-top: 8px; }
+    .sect { font-size: 13px; letter-spacing: .16em; color: var(--mut2); margin-top: 34px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 14px; }
+    .empty { color: var(--mut); margin-top: 28px; }
+  </style>
+
+  <script>
+    const chips = [...document.querySelectorAll('.tfilter button')];
+    const items = [...document.querySelectorAll('.tool-item')];
+    const sections = [['hw-h', 'hw-grid'], ['sw-h', 'sw-grid']];
+    const empty = document.getElementById('empty');
+    function apply(k) {
+      items.forEach((it) => {
+        const techs = it.dataset.tech.split(' ');
+        const show = k === 'all' || techs.includes(k) || techs.includes('universal');
+        it.style.display = show ? '' : 'none';
+      });
+      let anyTotal = false;
+      sections.forEach(([h, g]) => {
+        const grid = document.getElementById(g);
+        const any = [...grid.querySelectorAll('.tool-item')].some((it) => it.style.display !== 'none');
+        document.getElementById(h).style.display = any ? '' : 'none';
+        grid.style.display = any ? '' : 'none';
+        anyTotal = anyTotal || any;
+      });
+      empty.hidden = anyTotal;
+    }
+    chips.forEach((b) => b.addEventListener('click', () => {
+      chips.forEach((x) => x.classList.toggle('on', x === b));
+      apply(b.dataset.k);
+    }));
+  </script>
 </BaseLayout>

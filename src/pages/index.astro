@@ -2,26 +2,96 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LayerStrip from '../components/LayerStrip.astro';
-import ProtocolCard from '../components/ProtocolCard.astro';
 import IqTrace from '../components/IqTrace.astro';
 import { meta } from '../data/meta.js';
 import { protocols } from '../data/protocols.js';
+import { toolchains } from '../data/toolchains.js';
 
 const controls = await getCollection('controls');
 const countFor = (pid) => controls.filter((c) => c.data.protocol === pid).length;
-const withControls = protocols.filter((p) => countFor(p.id) > 0);
+const techCount = Object.values(toolchains).filter((t) => t.status === 'complete').length;
+
+const sections = [
+  {
+    href: '/wayfinder', tag: 'START HERE', name: 'Wayfinder', accent: true,
+    body: 'Have a device or an unknown signal and no idea where to begin? Pick a technology and walk the six-step descent — each step hands you the exact kit (hardware + software) for that move and the reason to pick it. An interactive map from “what is this?” to “take it over.”',
+  },
+  {
+    href: '/controls', tag: 'THE REFERENCE', name: 'Controls',
+    body: 'The verification procedures. For each protocol and layer: what to check, a step-by-step method, a real field case, known attacks with references, and remediation — the entries you cite in an assessment.',
+  },
+  {
+    href: '/methodology', tag: 'THE MODEL', name: 'Methodology',
+    body: 'The layer descent — spectrum → signal → link → crypto → attack → application — and the prior work RFSAM stands on (OSSTMM, BSAM, the SDR-pentest lineage). Read this to understand how it is organised.',
+  },
+  {
+    href: '/tools', tag: 'THE KIT', name: 'Tools',
+    body: 'Every piece of hardware and software behind the wayfinder kits — filterable by technology and linked to its source.',
+  },
+];
 ---
 <BaseLayout title="A north for RF research and auditing">
   <div class="container">
-    <div class="mono" style="font-size:11px;letter-spacing:.18em;color:var(--orange);text-transform:uppercase">Open methodology · {meta.org}</div>
-    <h1 style="font-size:46px;line-height:1.05;margin:16px 0 0;max-width:16ch">A <span style="color:var(--cyan)">north</span> for RF research and auditing.</h1>
-    <p style="font-size:17px;color:var(--mut);max-width:62ch;margin-top:18px">{meta.blurb}</p>
+    <div class="mono kicker">Open methodology · {meta.org}</div>
+    <h1 class="hero">A <span style="color:var(--cyan)">north</span> for RF research and auditing.</h1>
+    <p class="blurb">{meta.blurb}</p>
     <IqTrace />
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2)">THE DESCENT</h2>
+
+    <h2 class="mono section-h">WHERE TO START</h2>
+    <div class="sections">
+      {sections.map((s) => (
+        <a href={s.href} class={`scard${s.accent ? ' accent' : ''}`}>
+          <div class="mono tag">{s.tag}</div>
+          <div class="nm">{s.name}<span class="arr">→</span></div>
+          <p>{s.body}</p>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="mono section-h">THE DESCENT</h2>
+    <p class="lede">Every protocol is assessed by the same descent — six layers from the open air down to what the device trusts. The Wayfinder walks you down it; the Controls verify each floor.</p>
     <LayerStrip />
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;color:var(--mut2);margin-top:40px">PROTOCOLS</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:16px">
-      {withControls.map((p) => <ProtocolCard protocol={p} count={countFor(p.id)} href={`/controls/${p.id.toLowerCase()}`} />)}
+
+    <h2 class="mono section-h">TECHNOLOGIES <span class="count">· {techCount} mapped in the Wayfinder</span></h2>
+    <div class="techs">
+      {protocols.map((p) => {
+        const n = countFor(p.id);
+        return (
+          <a href={`/wayfinder/${p.id.toLowerCase()}`} class="tcard">
+            <div class="nm">{p.name}</div>
+            <div class="mono band">{p.band}</div>
+            <div class="mono meta"><span class="go">Wayfinder →</span>{n > 0 ? ` · ${n} control${n === 1 ? '' : 's'}` : ''}</div>
+          </a>
+        );
+      })}
     </div>
   </div>
+
+  <style>
+    .kicker { font-size: 11px; letter-spacing: .18em; color: var(--orange); text-transform: uppercase; }
+    .hero { font-size: 46px; line-height: 1.05; margin: 16px 0 0; max-width: 16ch; }
+    .blurb { font-size: 17px; color: var(--mut); max-width: 62ch; margin-top: 18px; line-height: 1.6; }
+    .section-h { font-size: 13px; letter-spacing: .16em; color: var(--mut2); margin-top: 50px; }
+    .section-h .count { color: var(--mut); font-weight: 400; letter-spacing: 0; }
+    .lede { font-size: 14px; color: var(--mut); max-width: 70ch; margin-top: 8px; line-height: 1.6; }
+    .sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
+    .scard { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, background .15s; }
+    .scard:hover { border-color: var(--line2); background: rgba(255, 255, 255, .02); }
+    .scard.accent { border-color: rgba(255, 122, 26, .45); }
+    .scard.accent:hover { border-color: rgba(255, 122, 26, .8); }
+    .scard .tag { font-size: 10px; letter-spacing: .16em; color: var(--mut2); }
+    .scard.accent .tag { color: var(--orange); }
+    .scard .nm { font-family: var(--disp); font-weight: 600; font-size: 20px; margin-top: 8px; display: flex; align-items: center; gap: 8px; color: var(--ink); }
+    .scard .arr { color: var(--orange); transition: transform .15s; }
+    .scard:hover .arr { transform: translateX(3px); }
+    .scard p { font-size: 13.5px; color: var(--mut); line-height: 1.6; margin-top: 8px; }
+    .techs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 16px; }
+    .tcard { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; transition: border-color .15s; }
+    .tcard:hover { border-color: var(--line2); }
+    .tcard .nm { font-family: var(--disp); font-weight: 600; font-size: 16px; color: var(--ink); }
+    .tcard .band { font-size: 10px; color: var(--mut2); margin-top: 3px; }
+    .tcard .meta { font-size: 11px; color: var(--mut2); margin-top: 10px; }
+    .tcard .go { color: var(--orange); }
+    @media (max-width: 600px) { .hero { font-size: 34px; } }
+  </style>
 </BaseLayout>
