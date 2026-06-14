@@ -142,7 +142,7 @@ const payload = JSON.stringify({
     const el = document.getElementById('wf-graph');
     const graph = new ForceGraph(el)
       .backgroundColor('#0A1119')
-      .cooldownTicks(0)
+      .cooldownTime(1200)
       .linkColor((l) => stepActive(targetStep(l)) ? (l.spine ? 'rgba(255,122,26,0.55)' : (l.dep || l.dec) ? 'rgba(47,184,224,0.30)' : 'rgba(136,154,171,0.30)') : 'rgba(136,154,171,0.05)')
       .linkWidth((l) => l.spine ? 1.5 : (l.dep || l.dec) ? 0.5 : 0.7)
       .linkDirectionalArrowLength((l) => l.spine ? 4 : 0)
@@ -182,7 +182,7 @@ const payload = JSON.stringify({
       const b = document.createElement('button');
       b.textContent = it.label; b.dataset.k = it.key;
       if (it.key === intent.key) b.classList.add('on');
-      b.onclick = () => { intent = it; chips.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.k === it.key)); renderKit(); };
+      b.onclick = () => { intent = it; chips.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.k === it.key)); renderKit(); graph.d3ReheatSimulation(); };
       chips.appendChild(b);
     });
 
