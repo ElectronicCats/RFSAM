@@ -124,14 +124,13 @@ const payload = JSON.stringify({
       // dep that points at another primary tool to that tool's first node.
       const idForSlug = new Map();
       s.tools.forEach((t, j) => { if (!idForSlug.has(t.slug)) idForSlug.set(t.slug, sid + ':t:' + j); });
-      const slugCount = {};
-      s.tools.forEach((t) => { slugCount[t.slug] = (slugCount[t.slug] || 0) + 1; });
       s.tools.forEach((t, j) => {
         const ty = cy + (j - (n1 - 1) / 2) * NODE_VG;
         const tid = sid + ':t:' + j;
-        // when the same tool appears more than once in a step, label by role so the
-        // two bubbles read as distinct capabilities rather than duplicates
-        const label = slugCount[t.slug] > 1 && t.role ? t.role : t.name;
+        // label the node by its ROLE (the capability at this step) so the graph itself
+        // explains what you do — e.g. "Channel activity & topology (cativity)" rather
+        // than just "catnip"; fall back to the tool name when a tool has no role.
+        const label = t.role || t.name;
         nodes.push({ id: tid, name: label, kind: t.type, stepKey: s.key, x: softwareX, y: ty, fx: softwareX, fy: ty, detail: { kind: 'tool', tool: t } });
         links.push({ source: hasDec ? decId : sid, target: tid, dec: hasDec }); // decoder → software (or step → software)
       });
