@@ -74,6 +74,7 @@ export const toolchains = {
           { tool: 'nrf-sniffer', role: 'Vendor sniffer', why: 'Easiest first capture, with a turnkey Wireshark plugin.', caveat: 'Follows a single connection; less suited to adversarial work.', deps: ['nrf52840-dongle'] },
           { tool: 'ubertooth-tools', role: 'Budget sniffer', why: 'Drives an Ubertooth One to follow connections on a ~$120 radio with no SDR.', caveat: 'Pre-BT5; weaker on long-lived links than CC1352 sniffers.', deps: ['ubertooth-one'] },
           { tool: 'whad', role: 'Multi-protocol sniffer', why: 'WHAD turns an nRF52840 dongle (its Butterfly firmware), an Ubertooth, or a host HCI adapter into a BLE sniffer driven from one Python framework with PCAP/Scapy output — the same toolchain you reuse for Zigbee, 802.15.4 and ESB. One workflow across protocols.', deps: ['nrf52840-dongle', 'ubertooth-one', 'usb-bt-dongle'] },
+          { tool: 'catnip', role: 'CatSniffer BLE capture (EC host)', why: 'Electronic Cats’ CatSniffer host tool runs the Sniffle firmware on the CatSniffer with native Wireshark extcap, scans for Apple Find My / AirTag devices, and on Linux presents the CatSniffer as a virtual HCI (hciX) adapter for host BLE tools — the integrated EC workflow on one board.', deps: ['catsniffer'] },
         ],
       },
       CR: {
