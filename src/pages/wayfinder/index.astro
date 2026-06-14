@@ -56,7 +56,7 @@ const graphJson = JSON.stringify({ nodes, links });
       .nodePointerAreaPaint((node, color, ctx) => {
         ctx.beginPath(); ctx.arc(node.x, node.y, radiusFor(node) + 3, 0, 2 * Math.PI); ctx.fillStyle = color; ctx.fill();
       })
-      .onNodeClick((node) => { if (node.href) window.location.href = node.href; });
+      .onNodeClick((node) => { if (node.href) window.location.href = import.meta.env.BASE_URL.replace(/\/$/, '') + node.href; });
 
     graph.d3Force('charge').strength(-280);
     graph.d3Force('link').distance(150);
