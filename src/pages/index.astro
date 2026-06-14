@@ -17,7 +17,7 @@ const sections = [
     body: 'Have a device or an unknown signal and no idea where to begin? Pick a technology and walk the six-step descent — each step hands you the exact kit (hardware + software) for that move and the reason to pick it. An interactive map from “what is this?” to “take it over.”',
   },
   {
-    href: '/RFSAM/controls', tag: 'THE REFERENCE', name: 'Controls',
+    href: '/RFSAM/procedures', tag: 'THE REFERENCE', name: 'Procedures',
     body: 'The verification procedures. For each protocol and layer: what to check, a step-by-step method, a real field case, known attacks with references, and remediation — the entries you cite in an assessment.',
   },
   {
@@ -51,7 +51,7 @@ const sections = [
     </div>
 
     <h2 class="mono section-h">THE DESCENT</h2>
-    <p class="lede">Every protocol is assessed by the same descent — six layers from the open air down to what the device trusts. The Wayfinder walks you down it; the Controls verify each floor.</p>
+    <p class="lede">Every protocol is assessed by the same descent — six layers from the open air down to what the device trusts. The Wayfinder walks you down it; the Procedures verify each floor.</p>
     <LayerStrip />
 
     <h2 class="mono section-h">TECHNOLOGIES <span class="count">· {techCount} mapped in the Wayfinder</span></h2>
@@ -62,7 +62,7 @@ const sections = [
           <a href={`/RFSAM/wayfinder/${p.id.toLowerCase()}`} class="tcard">
             <div class="nm">{p.name}</div>
             <div class="mono band">{p.band}</div>
-            <div class="mono meta"><span class="go">Wayfinder →</span>{n > 0 ? ` · ${n} control${n === 1 ? '' : 's'}` : ''}</div>
+            <div class="mono meta"><span class="go">Wayfinder →</span>{n > 0 ? ` · ${n} procedure${n === 1 ? '' : 's'}` : ''}</div>
           </a>
         );
       })}

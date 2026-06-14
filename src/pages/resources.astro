@@ -7,7 +7,7 @@ const rendered = await Promise.all(resources.map(async (r) => ({ data: r.data, C
 <BaseLayout title="Resources">
   <div class="container">
     <h1 style="font-size:34px">Resources</h1>
-    <p style="color:var(--mut);margin-top:8px">Reusable procedures referenced by the controls.</p>
+    <p style="color:var(--mut);margin-top:8px">Reusable how-to references cited by the procedures.</p>
     <div style="margin-top:20px">
       {rendered.map(({ data, Content }) => (
         <div id={data.id.toLowerCase()} style="border-bottom:1px solid var(--line);padding:16px 0;scroll-margin-top:70px">

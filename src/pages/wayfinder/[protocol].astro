@@ -230,7 +230,7 @@ const payload = JSON.stringify({
       side.innerHTML = `
         ${factsBlock()}
         <div class="kicker">YOUR KIT · ${esc(intent.label)}</div>
-        ${planned ? `<p class="muted">${esc(P.protocol.name)}'s toolchain is still being filled in. The descent and controls are here; the kit lands when the tools are curated.</p>` : ''}
+        ${planned ? `<p class="muted">${esc(P.protocol.name)}'s toolchain is still being filled in. The descent and procedures are here; the kit lands when the tools are curated.</p>` : ''}
         ${P.protocol.reference ? `<div class="ref">${linkA(P.protocol.reference.url, 'Reference: ' + esc(P.protocol.reference.name) + ' ↗')}</div>` : ''}
         <div class="kit-h">Hardware tools<span>${hw.length}</span></div>
         <div class="kit-list">${hw.map(kitRow).join('') || '<span class="muted">—</span>'}</div>
@@ -254,7 +254,7 @@ const payload = JSON.stringify({
         h += `<div class="kicker">${s.layers.map(esc).join(' · ')}</div><h2>${esc(s.name)}</h2>
           ${s.note ? `<p>${esc(s.note)}</p>` : ''}
           ${s.lookFor?.length ? `<div class="kicker">WHAT TO LOOK FOR</div><ul class="lookfor">${s.lookFor.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
-          ${s.controls.length ? `<div class="kicker">CONTROLS</div><div class="chips">${s.controls.map((c) => `<a class="chip" href="/RFSAM/controls/${c.toLowerCase()}">${esc(c)}</a>`).join('')}</div>` : ''}`;
+          ${s.controls.length ? `<div class="kicker">PROCEDURES</div><div class="chips">${s.controls.map((c) => `<a class="chip" href="/RFSAM/procedures/${c.toLowerCase()}">${esc(c)}</a>`).join('')}</div>` : ''}`;
       } else if (d.kind === 'tool') {
         const t = d.tool, col = TYPE_COLOR[t.type] || '#8B9AAB';
         h += `<div class="badge" style="color:${col};border-color:${col}">${esc((t.type || '').toUpperCase())}</div>

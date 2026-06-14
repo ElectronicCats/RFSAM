@@ -3,13 +3,13 @@ const { prev, next } = Astro.props;
 ---
 <div style="display:flex;justify-content:space-between;gap:14px;margin-top:48px">
   {prev
-    ? <a href={`/RFSAM/controls/${prev.id.toLowerCase()}`} style="flex:1;border:1px solid var(--line);border-radius:8px;padding:14px 18px">
+    ? <a href={`/RFSAM/procedures/${prev.id.toLowerCase()}`} style="flex:1;border:1px solid var(--line);border-radius:8px;padding:14px 18px">
         <div class="mono" style="font-size:9.5px;color:var(--mut2)">← PREVIOUS</div>
         <div style="font-family:var(--disp);font-weight:600;font-size:14px;margin-top:4px">{prev.title}</div>
       </a>
     : <span style="flex:1"></span>}
   {next
-    ? <a href={`/RFSAM/controls/${next.id.toLowerCase()}`} style="flex:1;text-align:right;border:1px solid var(--line);border-radius:8px;padding:14px 18px">
+    ? <a href={`/RFSAM/procedures/${next.id.toLowerCase()}`} style="flex:1;text-align:right;border:1px solid var(--line);border-radius:8px;padding:14px 18px">
         <div class="mono" style="font-size:9.5px;color:var(--mut2)">NEXT →</div>
         <div style="font-family:var(--disp);font-weight:600;font-size:14px;margin-top:4px">{next.title}</div>
       </a>

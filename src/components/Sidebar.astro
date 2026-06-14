@@ -14,7 +14,7 @@ const groups = protocols
     <div style="margin-bottom:8px">
       <div style="font-family:var(--disp);font-weight:600;font-size:13px;padding:8px 20px">{g.p.name}</div>
       {g.items.map((c) => (
-        <a href={`/RFSAM/controls/${c.data.id.toLowerCase()}`}
+        <a href={`/RFSAM/procedures/${c.data.id.toLowerCase()}`}
            style={`display:flex;align-items:center;gap:9px;padding:5px 20px;font-size:12.5px;border-left:2px solid ${c.data.id === activeId ? 'var(--orange)' : 'transparent'};color:${c.data.id === activeId ? 'var(--ink)' : 'var(--mut)'};background:${c.data.id === activeId ? 'rgba(255,122,26,.07)' : 'transparent'}`}>
           <span style={`width:7px;height:7px;border-radius:50%;background:${color(c.data.layer)};flex-shrink:0`}></span>
           <span class="mono" style="font-size:10px;color:var(--mut2);width:54px;flex-shrink:0">{c.data.id.split('-').slice(2).join('-')}</span>

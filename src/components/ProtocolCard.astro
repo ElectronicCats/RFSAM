@@ -4,5 +4,5 @@ const { protocol, count, href } = Astro.props;
 <a href={href} style="display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px">
   <div style="font-family:var(--disp);font-weight:600;font-size:17px">{protocol.name}</div>
   <div class="mono" style="font-size:10.5px;color:var(--mut2);margin-top:3px">{protocol.band}</div>
-  <div class="mono" style="font-size:11px;color:var(--orange);margin-top:12px">{protocol.prefix}-·· · {count} control{count === 1 ? '' : 's'}</div>
+  <div class="mono" style="font-size:11px;color:var(--orange);margin-top:12px">{protocol.prefix}-·· · {count} procedure{count === 1 ? '' : 's'}</div>
 </a>

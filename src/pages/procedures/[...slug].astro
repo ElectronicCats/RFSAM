@@ -56,7 +56,7 @@ if (kind === 'control') {
 ---
 {kind === 'control' ? (
   <DocsLayout title={data.title} activeId={data.id}>
-    <div class="mono" style="font-size:11px;color:var(--mut2)">Controls / {protoName(data.protocol)} / {data.id}</div>
+    <div class="mono" style="font-size:11px;color:var(--mut2)">Procedures / {protoName(data.protocol)} / {data.id}</div>
     <div style={`border-left:4px solid ${layerColor(data.layer)};padding-left:18px;margin-top:14px`}>
       <div style="display:flex;align-items:center;gap:12px">
         <span class="mono" style={`font-size:13px;color:${layerColor(data.layer)}`}>{data.id}</span>
@@ -78,12 +78,12 @@ if (kind === 'control') {
     <Pager prev={prev} next={next} />
   </DocsLayout>
 ) : (
-  <DocsLayout title={kind === 'index' ? 'Controls' : protoName(protoId)}>
-    <h1 style="font-size:32px">{kind === 'index' ? 'Controls' : protoName(protoId)}</h1>
+  <DocsLayout title={kind === 'index' ? 'Procedures' : protoName(protoId)}>
+    <h1 style="font-size:32px">{kind === 'index' ? 'Procedures' : protoName(protoId)}</h1>
     {kind === 'index' ? (
-      <p class="lead">A <strong>control</strong> is one verification procedure for a single <strong>protocol × layer</strong> of the <a href="/RFSAM/methodology">descent</a> — a numbered, reproducible method with a real field case, the known attacks with citations, and layered remediation. These are the entries you run during, and cite in, an assessment. Browse by technology in the sidebar, or pick one from the full list below.</p>
+      <p class="lead">A <strong>procedure</strong> verifies one thing for a single <strong>protocol × layer</strong> of the <a href="/RFSAM/methodology">descent</a> — a numbered, reproducible method with a real field case, the known attacks with citations, and layered remediation. These are the entries you run during, and cite in, an assessment. Browse by technology in the sidebar, or pick one from the full list below.</p>
     ) : (
-      <p class="lead">The <strong>{protoName(protoId)}</strong> controls — the verification procedures down the descent for this technology, each with its method, field case, known attacks and remediation.</p>
+      <p class="lead">The <strong>{protoName(protoId)}</strong> procedures — the descent for this technology step by step, each with its method, field case, known attacks and remediation.</p>
     )}
     <div class="legend mono">
       <span><span class="ldot"></span> colour = layer of the descent (IG → AP)</span>
@@ -94,7 +94,7 @@ if (kind === 'control') {
     </div>
     <div style="margin-top:14px">
       {listForProto.map((c) => (
-        <a href={`/RFSAM/controls/${c.data.id.toLowerCase()}`} style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+        <a href={`/RFSAM/procedures/${c.data.id.toLowerCase()}`} style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
           <span style={`width:7px;height:7px;border-radius:50%;background:${layerColor(c.data.layer)};flex-shrink:0`}></span>
           <span class="mono" style="font-size:11px;color:var(--mut2);width:170px;flex-shrink:0">{c.data.id}</span>
           <span style="flex:1">{c.data.title}</span>

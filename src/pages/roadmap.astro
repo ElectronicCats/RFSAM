@@ -29,9 +29,9 @@ const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').lengt
     <h1 style="font-size:34px">Roadmap</h1>
     <p style="color:var(--mut);margin-top:8px;max-width:74ch;line-height:1.6">
       RFSAM is built in two tracks. The <strong style="color:var(--ink)">Wayfinder</strong> — the interactive
-      per-technology kits — is complete across the technologies below. The <strong style="color:var(--ink)">Controls</strong>
-      — the written verification procedures, with field cases and remediation — are being authored, and most existing
-      pages are still drafts or stubs being deepened.
+      per-technology kits — is complete across the technologies below. The <strong style="color:var(--ink)">Procedures</strong>
+      — the written verification steps, with field cases and remediation — are authored and citation-verified across
+      the protocols below; most field cases are still illustrative templates until real captures replace them.
     </p>
 
     <h2 class="track-h">Wayfinder toolchains <span class="badge done">{wfDone}/{wayfinder.length} complete</span></h2>
@@ -48,7 +48,7 @@ const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').lengt
       ))}
     </div>
 
-    <h2 class="track-h">Controls <span class="badge">{existingCount} pages · {draftCount} draft · {plannedCount} planned</span></h2>
+    <h2 class="track-h">Procedures <span class="badge">{existingCount} pages · {draftCount} draft · {plannedCount} planned</span></h2>
     <p style="color:var(--mut2);font-size:13px;margin-top:4px">
       <span class="mono" style="color:var(--cyan)">DRAFT</span> = written and being reviewed ·
       <span class="mono" style="color:var(--amber)">STUB</span> = page exists, prose still to be deepened ·
@@ -66,7 +66,7 @@ const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').lengt
                 <span class="mono" style="font-size:11px;color:var(--mut2);width:175px;flex-shrink:0">{c.id}</span>
                 <span style="flex:1">{c.title}</span>
                 {c.status === 'existing'
-                  ? <a class="review" style={`color:${live === 'draft' ? 'var(--cyan)' : 'var(--amber)'}`} href={`/RFSAM/controls/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
+                  ? <a class="review" style={`color:${live === 'draft' ? 'var(--cyan)' : 'var(--amber)'}`} href={`/RFSAM/procedures/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
                   : <span class="review stub" style="color:var(--mut)">PLANNED</span>}
               </div>
             );

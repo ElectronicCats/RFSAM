@@ -19,7 +19,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
   <div class="container">
     <h1>Methodology</h1>
     <p class="lead">
-      RFSAM organises RF security on two axes. Every check is a <strong>control</strong>, indexed by the
+      RFSAM organises RF security on two axes. Every check is a <strong>procedure</strong>, indexed by the
       <strong>protocol</strong> it applies to and by the <strong>layer</strong> of the assessment it belongs to — so,
       facing an unknown signal or device, you always have a place to start and a way to know what you've covered.
       It's a <span class="cyan">north</span>, not a new attack: it ties OSSTMM, BSAM and the SDR-pentest lineage
@@ -30,7 +30,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
     <p class="note">
       An assessment runs top-down through six layers — from the open air to what the device trusts — preceded by a
       pre-descent information-gathering pass. The <a href="/RFSAM/wayfinder">Wayfinder</a> walks you down it per technology;
-      the <a href="/RFSAM/controls">controls</a> verify each floor.
+      the <a href="/RFSAM/procedures">procedures</a> verify each floor.
     </p>
     <div class="layer pre">
       <div class="lid mono" style={`color:${ig.color}`}>{ig.id}</div>
@@ -49,14 +49,14 @@ const descent = layers.filter((l) => l.id !== 'IG');
       </div>
     ))}
 
-    <h2 class="sect">HOW A CONTROL IS BUILT</h2>
+    <h2 class="sect">HOW A PROCEDURE IS BUILT</h2>
     <p class="note">
-      Each control is identified as <span class="mono">RFSAM-&lt;PROTOCOL&gt;-&lt;LAYER&gt;-NN</span>
+      Each procedure is identified as <span class="mono">RFSAM-&lt;PROTOCOL&gt;-&lt;LAYER&gt;-NN</span>
       (e.g. <span class="mono">RFSAM-BLE-AT-01</span>) — its protocol × layer coordinates — and follows a fixed shape:
-      an <strong>objective</strong> (the one thing it verifies), a numbered <strong>procedure</strong> with real
+      an <strong>objective</strong> (the one thing it verifies), a numbered <strong>method</strong> with real
       commands, a <strong>field case</strong> with real data, the <strong>known attacks</strong> with citations, and
       layered <strong>remediation</strong>. Every nontrivial claim carries a resolvable source; anything unverified is
-      flagged, not asserted. Each control is rated:
+      flagged, not asserted. Each procedure is rated:
     </p>
     <div class="crit">
       {Object.entries(criticality).map(([k, v]) => (
@@ -75,8 +75,8 @@ const descent = layers.filter((l) => l.id !== 'IG');
         <p>Have a device and don't know where to start? Pick a technology and get the exact hardware + software kit
         for each step of the descent — an action-first interactive map.</p>
       </a>
-      <a href="/RFSAM/controls" class="way">
-        <div class="wt">Controls <span class="arr">→</span></div>
+      <a href="/RFSAM/procedures" class="way">
+        <div class="wt">Procedures <span class="arr">→</span></div>
         <p>The reference body: the numbered, cited verification procedures — objective, method, field case, known
         attacks, remediation — you run during, and cite in, an assessment.</p>
       </a>
@@ -97,7 +97,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
     </div>
     <p class="note">
       <a href={bsamRelation.url} target="_blank" rel="noopener">Tarlogic BSAM ↗</a> — where BSAM owns a layer
-      (Bluetooth, link-and-above), the BLE controls defer to it and add only the RF-capture prerequisite, citing the
+      (Bluetooth, link-and-above), the BLE procedures defer to it and add only the RF-capture prerequisite, citing the
       specific BSAM control they hand off to.
     </p>
   </div>
