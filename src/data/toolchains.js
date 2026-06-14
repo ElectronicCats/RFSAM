@@ -84,7 +84,79 @@ export const toolchains = {
     },
   },
 
-  WIFI:   { status: 'planned', reference: null, layers: {} },
+  WIFI: {
+    status: 'complete',
+    facts: [
+      { k: 'Band', v: '2.4 GHz (2.400–2.4835 GHz) · 5 GHz (UNII bands, ~5.15–5.85 GHz) · 6 GHz (5.925–7.125 GHz, Wi-Fi 6E/7)' },
+      { k: 'Channels', v: '2.4 GHz: 1–14 (1–11 in the US; only 1/6/11 non-overlapping) · 5 GHz: ~25, many gated by DFS · 6 GHz: up to 59 × 20 MHz · widths 20/40/80/160 (320 in Wi-Fi 7)' },
+      { k: 'Standards', v: '802.11 b/g/n (2.4) · a/n/ac (5) · ax = Wi-Fi 6 (2.4/5) & 6E (adds 6 GHz) · be = Wi-Fi 7' },
+      { k: 'Security', v: 'Open · WEP (broken) · WPA/WPA2-PSK (handshake, PMKID) · WPA2/WPA3-Enterprise (802.1X/EAP) · WPA3-SAE · OWE. WPS PIN is a common weak point; WPA3 mandatory on 6 GHz.' },
+      { k: 'Range', v: '~10–50 m indoors; 100 m+ outdoors at 2.4 GHz; 5/6 GHz trade range for throughput. High-gain / amplified adapters extend reach.' },
+    ],
+    reference: null,
+    layers: {
+      IG: {
+        note: 'Fingerprint the access point or client before any RF work — no capture yet. The goal is to know what you are dealing with: which radio chipset and firmware it runs, which Wi-Fi generation and bands it speaks, how it secures itself, and whether legacy weak points (WEP, WPS) are switched on. Most of this is readable passively from the beacons the AP already shouts, plus the FCC ID on the label.',
+        lookFor: [
+          'Chipset / SoC and firmware (FCC ID, teardown, OUI of the BSSID) — cross-reference known Wi-Fi CVEs (KRACK on WPA2, FragAttacks, Dragonblood on WPA3-SAE, vendor WPS/firmware bugs).',
+          'Standard and bands it speaks (802.11 b/g/n/ac/ax/be; 2.4 vs 5 vs 6 GHz): sets which channels to survey and which radios you need.',
+          'SSID and BSSID: the network name and the AP’s MAC — plus whether the SSID is hidden and whether several BSSIDs share one physical AP.',
+          'Security mode from the beacon’s RSN/WPA information element: Open / WEP / WPA2-PSK / WPA3-SAE / OWE / WPA-Enterprise (802.1X), and the cipher (TKIP vs CCMP/GCMP).',
+          'WPS state: is WPS (especially the 8-digit PIN method) enabled? It is the single most common shortcut into an otherwise strong WPA2 network.',
+          'Clients already associated: their MACs, signal strength and probe requests (which reveal networks those devices have joined before).',
+        ],
+      },
+      SP: {
+        note: 'How much of the air can you see at once, and where is the target? Wi-Fi spans three bands and dozens of channels, and a radio only listens to one channel at a time — so a survey means hopping channels and logging every AP and client it hears. A standard monitor-mode adapter covers 2.4 and 5 GHz; 6 GHz (Wi-Fi 6E/7) needs a 6 GHz-capable radio. This step is the map: enumerate the networks, their channels, security and clients before you commit to a target.',
+        tools: [
+          { tool: 'kismet', role: 'Survey & wardriving', why: 'The reference passive survey tool: channel-hops across 2.4/5 (and 6 GHz with capable hardware), logs every AP/client/SSID with GPS, and never transmits — ideal for a quiet map of the environment.', caveat: 'Passive only; 6 GHz needs a Wi-Fi 6E-capable adapter.', deps: ['alfa-awus036ach'] },
+          { tool: 'aircrack-ng', role: 'Channel survey', why: 'airodump-ng gives a live table of APs and associated clients — BSSID, channel, encryption, signal — the fastest way to lock onto a target and read its security mode.', deps: ['alfa-awus036ach'] },
+          { tool: 'minino', role: 'Pocket scanner / wardriving', why: 'Electronic Cats ESP32-C6 multitool: standalone SSID/AP scanning and wardriving with onboard GPS/microSD and an analyzer view, no laptop needed.', caveat: '2.4 GHz only (ESP32-C6 has no 5/6 GHz radio).', deps: [] },
+        ],
+      },
+      PHY: {
+        note: 'No standalone Wi-Fi demodulator in this kit. The capture tools demodulate the OFDM/DSSS waveform (PHY) and frame the 802.11 packets (LL) together on the adapter’s own chipset, so they live at the Capture step. A wide-band SDR can stare at the spectrum, but decoding live 802.11ac/ax in software is impractical — use a real monitor-mode adapter.',
+      },
+      LL: {
+        note: 'Capture and decode raw 802.11 frames. Put the adapter into monitor mode, park it on the target’s channel, and it pulls beacons, probes, management/control frames and the EAPOL handshake off the air into a PCAP you open in Wireshark. Pick a capture tool — a quick targeted grab (airodump-ng), a logged survey capture (Kismet), or a handshake/PMKID grab (hcxdumptool).',
+        decoder: 'wireshark',
+        tools: [
+          { tool: 'aircrack-ng', role: 'Primary capture', why: 'airodump-ng is the default monitor-mode capture: lock a channel/BSSID and write a PCAP, optionally firing a deauth to force a client to re-handshake. Simplest path to a 4-way handshake.', deps: ['alfa-awus036ach'] },
+          { tool: 'hcxdumptool', role: 'Handshake / PMKID capture', why: 'Purpose-built to grab the WPA/WPA2 PMKID straight from the AP — often clientless, no waiting for a client to reconnect — and EAPOL handshakes, written as pcapng for offline cracking.', caveat: 'Aggressive by default; recent versions dropped some active-attack flags — check the docs for your version.', deps: ['alfa-awus036ach'] },
+          { tool: 'kismet', role: 'Logged capture', why: 'Captures while it surveys: every frame it hears is logged to pcapng with metadata, so the survey and the capture are one artefact you replay in Wireshark.', deps: ['alfa-awus036ach'] },
+          { tool: 'minino', role: 'Pocket sniffer', why: 'Standalone 2.4 GHz Wi-Fi sniffer that writes captures to microSD with Wireshark-compatible output — capture without a host PC.', caveat: '2.4 GHz only; management/handshake frames, not 5/6 GHz traffic.', deps: [] },
+        ],
+      },
+      CR: {
+        note: 'Assess the crypto and recover the key where it is weak. None of these have a radio of their own — they consume a capture from the Capture step. WPA/WPA2-PSK falls to an offline attack on the captured handshake or PMKID; WPS PIN falls to an online attack on the AP; WEP is trivially broken. WPA3-SAE and OWE resist offline cracking by design (though Dragonblood-class bugs exist on some implementations).',
+        tools: [
+          { tool: 'hashcat', role: 'WPA/WPA2 cracker (GPU)', why: 'The fastest offline cracker: mode 22000 handles both 4-way-handshake and PMKID hashes with GPU dictionary, rule and mask attacks.', deps: ['wireshark'], needs: 'A WPA/WPA2 handshake or PMKID captured at the Capture step (airodump-ng or hcxdumptool). Convert the pcapng to a .hc22000 hash with hcxpcapngtool (hcxtools), then feed it to hashcat.' },
+          { tool: 'hcxtools', role: 'Capture → hash converter', why: 'hcxpcapngtool turns a captured pcapng into the .hc22000 hash format hashcat (and John) crack — the glue between capture and cracking.', deps: ['wireshark'], needs: 'The pcapng written by hcxdumptool or airodump-ng at the Capture step.' },
+          { tool: 'aircrack-ng', role: 'Handshake / WEP cracker', why: 'Cracks WEP outright and runs a CPU dictionary attack against a captured WPA/WPA2 handshake — the all-in-one option when you don’t want a separate GPU step.', deps: ['wireshark'], needs: 'A .cap/.pcap containing the 4-way handshake from the Capture step (airodump-ng), plus a wordlist.' },
+          { tool: 'reaver', role: 'WPS PIN attack', why: 'Attacks the WPS registration PIN — including the offline Pixie-Dust attack — to recover the WPA passphrase directly from a vulnerable AP, bypassing the handshake entirely.', deps: ['alfa-awus036ach'], needs: 'Runs live against the AP over an injection-capable adapter (not from a PCAP); only works where WPS is enabled and unpatched.' },
+        ],
+      },
+      AT: {
+        note: 'Actively disrupt, take over or impersonate. Pick the technique; each names the injection-capable radio it runs on. Deauthentication frames knock clients off (to force a handshake or as denial-of-service); a rogue AP / evil twin clones the target SSID so clients associate to you. Note WPA3’s Protected Management Frames (PMF / 802.11w) blunt classic deauth — check the target’s PMF setting first.',
+        tools: [
+          { tool: 'aircrack-ng', role: 'Deauth / disconnect', why: 'aireplay-ng sends targeted or broadcast deauthentication frames to drop clients — to capture a fresh handshake or as a quick DoS.', caveat: 'Blocked by 802.11w/PMF (common on WPA3 and newer WPA2).', deps: ['alfa-awus036ach'] },
+          { tool: 'mdk4', role: 'Stress / flood attacks', why: 'Broad 802.11 fuzzing/DoS toolkit: deauth floods, beacon floods (fake SSIDs), authentication floods and more — for resilience testing of an AP.', caveat: 'Noisy and disruptive; PMF mitigates the deauth modes.', deps: ['alfa-awus036ach'] },
+          { tool: 'bettercap', role: 'Recon & deauth', why: 'Scriptable framework with a wifi module: enumerate APs/clients, fire deauths and capture handshakes from one console.', deps: ['alfa-awus036ach'] },
+          { tool: 'minino', role: 'Pocket deauther / DoS', why: 'Standalone 2.4 GHz deauther and DoS from its console, plus a deauth-detection mode to spot the same attack against you — a field tool with no laptop.', caveat: '2.4 GHz only; deauth blocked by 802.11w/PMF targets.', deps: [] },
+          { tool: 'wifi-pineapple', role: 'Rogue AP / evil twin', why: 'Turnkey platform that automates evil-twin, client-capture and recon — clone an SSID and harvest associations without scripting.', deps: [] },
+        ],
+      },
+      AP: {
+        note: 'Once a client is on your network (or coerced onto a clone of theirs), test what it trusts above the link: the captive portal, the credentials it submits, and the traffic you can now man-in-the-middle. This is where an evil-twin pays off — present a convincing portal, or sit between the client and the upstream and inspect/alter its flows.',
+        tools: [
+          { tool: 'wifiphisher', role: 'Rogue-AP / captive portal', why: 'Automates the evil-twin plus a phishing captive portal (fake firmware-upgrade, router-login, OAuth pages) to harvest the Wi-Fi passphrase or web credentials post-association.', caveat: 'Social-engineering attack; needs a believable pretext and a deauth to move the client over.', deps: ['alfa-awus036ach'] },
+          { tool: 'eaphammer', role: 'Enterprise evil twin', why: 'Targets WPA2/WPA3-Enterprise (802.1X): stands up a hostile RADIUS/AP to capture EAP (MSCHAPv2) credentials and run hostile-portal pivots.', deps: ['alfa-awus036ach'], needs: 'A target running WPA-Enterprise (802.1X/EAP), not PSK.' },
+          { tool: 'hostapd-mana', role: 'Credential-harvesting AP', why: 'SensePost’s patched hostapd (the engine under eaphammer): a “MANA” rogue AP that lures clients via their probe history and captures EAP/Enterprise credentials.', deps: ['alfa-awus036ach'] },
+          { tool: 'bettercap', role: 'Post-association MITM', why: 'Once the client is on the network, run ARP/DNS spoofing, an HTTP(S) proxy and traffic capture to inspect and tamper with its app-layer flows.', deps: ['alfa-awus036ach'] },
+        ],
+      },
+    },
+  },
   LORA:   { status: 'planned', reference: null, layers: {} },
   LTE:    { status: 'planned', reference: null, layers: {} },
   RFID:   { status: 'planned', reference: null, layers: {} },

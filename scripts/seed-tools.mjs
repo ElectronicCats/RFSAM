@@ -86,7 +86,7 @@ const tools = [
   {
     slug: 'minino', name: 'Minino', vendor: 'Electronic Cats', type: 'hardware', ec: true,
     protocols: ['Wi-Fi', 'BLE', 'Zigbee', 'Thread'], repo: 'https://github.com/ElectronicCats/Minino',
-    note: 'ESP32-C6 pocket multitool with monitor-mode Wi-Fi, BLE and 802.15.4 (Zigbee/Thread) features for field recon.',
+    note: 'ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi deauthentication detection. Also BLE and 802.15.4 (Zigbee/Thread) field recon.',
   },
   {
     slug: 'nrf52840-dongle', name: 'nRF52840 Dongle', vendor: 'Nordic Semiconductor', type: 'hardware',
@@ -179,6 +179,53 @@ const tools = [
     slug: 'ubertooth-tools', name: 'Ubertooth host tools', vendor: 'Great Scott Gadgets', type: 'software',
     protocols: ['BLE'], repo: 'https://github.com/greatscottgadgets/ubertooth',
     note: 'The host-side tools (ubertooth-btle and friends) that drive an Ubertooth One to sniff and follow BLE connections, exporting to PCAP.',
+  },
+
+  // ---- Wi-Fi (802.11) ----
+  {
+    slug: 'hcxdumptool', name: 'hcxdumptool', vendor: 'ZerBea', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/ZerBea/hcxdumptool',
+    note: 'Capture tool focused on WPA/WPA2 key material: requests the PMKID directly from an AP (often with no connected client) and grabs EAPOL 4-way handshakes, writing pcapng for offline cracking. The clientless PMKID grab is its signature.',
+  },
+  {
+    slug: 'hcxtools', name: 'hcxtools', vendor: 'ZerBea', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/ZerBea/hcxtools',
+    note: 'Companion converters for hcxdumptool captures. hcxpcapngtool turns a captured pcapng into the hashcat/John .hc22000 hash format — the bridge from a raw capture to an offline crack.',
+  },
+  {
+    slug: 'hashcat', name: 'hashcat', vendor: 'hashcat', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/hashcat/hashcat',
+    note: 'GPU-accelerated password recovery. For Wi-Fi, mode 22000 cracks both WPA/WPA2 4-way handshakes and PMKIDs from a .hc22000 hash using dictionary, rule and mask attacks — the fastest offline WPA cracker.',
+  },
+  {
+    slug: 'kismet', name: 'Kismet', vendor: 'Kismet Wireless', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/kismetwireless/kismet',
+    note: 'Passive wireless detector, sniffer and wardriving tool. Channel-hops to log every AP, client and SSID (with GPS) and captures to pcapng without ever transmitting — the reference quiet survey/capture tool.',
+  },
+  {
+    slug: 'reaver', name: 'Reaver (t6x fork)', vendor: 't6x', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/t6x/reaver-wps-fork-t6x',
+    note: 'Attacks the WPS registration PIN to recover a WPA/WPA2 passphrase, including the offline Pixie-Dust attack against weak WPS implementations. The actively maintained community fork; works only where WPS is enabled.',
+  },
+  {
+    slug: 'mdk4', name: 'MDK4', vendor: 'aircrack-ng', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/aircrack-ng/mdk4',
+    note: '802.11 stress-testing and DoS toolkit: deauthentication floods, beacon floods (fake SSIDs), authentication floods, probe and other attacks — for testing how an AP and clients hold up under adversarial traffic.',
+  },
+  {
+    slug: 'wifiphisher', name: 'Wifiphisher', vendor: 'Wifiphisher project', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/wifiphisher/wifiphisher',
+    note: 'Rogue access point framework: automates the evil-twin plus a templated phishing captive portal (router-login, fake firmware-upgrade, OAuth) to harvest Wi-Fi passphrases or web credentials after a client associates.',
+  },
+  {
+    slug: 'eaphammer', name: 'EAPHammer', vendor: 's0lst1c3', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/s0lst1c3/eaphammer',
+    note: 'Targeted evil-twin attacks against WPA2/WPA3-Enterprise (802.1X): stands up a hostile AP/RADIUS to capture EAP (e.g. MSCHAPv2) credentials and run hostile-portal pivots. Built on hostapd-mana.',
+  },
+  {
+    slug: 'hostapd-mana', name: 'hostapd-mana', vendor: 'SensePost', type: 'software',
+    protocols: ['Wi-Fi'], repo: 'https://github.com/sensepost/hostapd-mana',
+    note: "SensePost's modified hostapd for Wi-Fi attacks — the 'MANA' rogue AP that lures clients using their probe history and captures Enterprise/EAP credentials. The engine underneath EAPHammer.",
   },
 ];
 
