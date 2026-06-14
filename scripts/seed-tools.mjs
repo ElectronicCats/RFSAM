@@ -166,9 +166,9 @@ const tools = [
     note: 'Any standard USB Bluetooth LE adapter (e.g. a CSR8510-class dongle) provides the host HCI controller that GATT tools like Bleak and bettercap drive.',
   },
   {
-    slug: 'catnip', name: 'catnip', vendor: 'Electronic Cats', type: 'software',
-    protocols: ['BLE'], repo: 'https://github.com/ElectronicCats/CatSniffer-Tools',
-    note: 'Presents a CatSniffer as a virtual HCI (vHCI) Bluetooth adapter on Linux, so host BLE tools like Bleak and bettercap can drive it.',
+    slug: 'catnip', name: 'catnip', vendor: 'Electronic Cats', type: 'software', ec: true,
+    protocols: ['BLE', 'Zigbee', '802.15.4'], repo: 'https://github.com/ElectronicCats/CatSniffer-Tools',
+    note: 'The CatSniffer host toolset (CatSniffer-Tools). Its pycatsniffer drives a CatSniffer to sniff IEEE 802.15.4 / Zigbee and BLE with native Wireshark extcap integration; it also presents the CatSniffer as a virtual HCI (vHCI) Bluetooth adapter on Linux so host BLE tools like Bleak and bettercap can drive it.',
   },
   {
     slug: 'gqrx', name: 'Gqrx SDR', vendor: 'open source', type: 'software',

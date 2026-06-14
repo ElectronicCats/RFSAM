@@ -17,5 +17,35 @@
     "protocols": ["GNSS"],
     "repo": "https://github.com/osqzss/gps-sdr-sim",
     "note": "Generates a GPS L1 C/A baseband I/Q file from a RINEX broadcast ephemeris and a chosen static or moving position, for transmission by an SDR (HackRF / bladeRF / USRP). Because civilian C/A is unauthenticated, a replayed/synthesised signal at higher power can pull a receiver's position and clock to attacker-chosen values — the canonical GPS spoofing tool. AUTHORIZED, RF-CONTAINED testing only: transmitting GPS over the air is illegal in most jurisdictions — use a shielded enclosure or a cabled (conducted) setup. Repo is archived but remains the de-facto reference."
+  },
+  {
+    "slug": "ublox-neo-gps",
+    "name": "u-blox NEO GPS/GNSS receiver",
+    "vendor": "u-blox",
+    "type": "hardware",
+    "protocols": ["GNSS"],
+    "homepage": "https://www.u-blox.com/en/product/neo-m9n-module",
+    "spec": "L1 GNSS receiver module (GPS/GLONASS/Galileo/BeiDou); USB or UART/serial; NMEA 0183 + UBX output",
+    "software": ["gpsd", "u-center"],
+    "note": "The everyday GPS-receiver path: a cheap, common u-blox NEO-class module (NEO-6M / 7 / 8 / 9, often on a USB-serial breakout) that tracks the satellites itself and reports the solved position/time as plain NMEA 0183 sentences (plus binary UBX). This is how most projects 'get GPS' — no SDR, no signal processing on your side; the chip does the acquisition and you just read the serial stream. Use it with an active GPS antenna for a usable fix indoors-adjacent."
+  },
+  {
+    "slug": "gpsd",
+    "name": "gpsd",
+    "vendor": "gpsd project (Eric S. Raymond et al.)",
+    "type": "software",
+    "protocols": ["GNSS"],
+    "repo": "https://gitlab.com/gpsd/gpsd",
+    "homepage": "https://gpsd.io/",
+    "note": "The GPS service daemon: it reads the NMEA 0183 / UBX stream from a GNSS receiver on a serial or USB port, parses it, and re-serves the solved position/velocity/time to clients over a simple TCP/JSON protocol — with gpsmon and cgps for live terminal display of the fix, satellites and raw sentences. The standard way to consume a real GPS receiver on Linux/BSD and the normal 'see what the receiver reports' tool. Hosted on GitLab/Savannah, not GitHub."
+  },
+  {
+    "slug": "u-center",
+    "name": "u-center",
+    "vendor": "u-blox",
+    "type": "software",
+    "protocols": ["GNSS"],
+    "homepage": "https://www.u-blox.com/en/product/u-center",
+    "note": "u-blox's free (proprietary) evaluation and configuration software for u-blox receivers. Connects over the serial/USB port and shows the raw NMEA and binary UBX messages, satellite view, signal levels and the live fix, and lets you reconfigure the receiver. The go-to GUI for inspecting exactly what a u-blox module is reporting; Windows-native (u-center 2 for newer modules)."
   }
 ]

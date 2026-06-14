@@ -42,6 +42,34 @@
     "type": "software",
     "protocols": ["Thread", "Wi-Fi", "BLE"],
     "repo": "https://github.com/project-chip/connectedhomeip",
-    "note": "The Matter controller/commissioner CLI from the connectedhomeip SDK. Commissions a Matter device over Bluetooth LE — establishing a PASE (SPAKE2+) session from the setup passcode, handing over Thread/Wi-Fi credentials — then drives it with CASE-secured operational commands. The tool for assessing Matter onboarding and the application-layer cluster interface."
+    "note": "The Matter controller/commissioner CLI from the connectedhomeip SDK (examples/chip-tool). Commissions a Matter device over Bluetooth LE — establishing a PASE (SPAKE2+) session from the setup passcode, handing over Thread/Wi-Fi credentials with `pairing ble-thread` / `pairing ble-wifi` (or `pairing onnetwork` / `pairing code` once on-network) — then drives it with CASE-secured operational commands. Also opens a second commissioning window (`pairing open-commissioning-window`) to test multi-admin. The tool for assessing Matter onboarding and the application-layer cluster interface."
+  },
+  {
+    "slug": "chip-repl",
+    "name": "chip-repl (Matter Python controller)",
+    "vendor": "Connectivity Standards Alliance / Project CHIP",
+    "type": "software",
+    "protocols": ["Thread", "Wi-Fi", "BLE"],
+    "repo": "https://github.com/project-chip/connectedhomeip",
+    "note": "The Python Matter controller and interactive REPL from the connectedhomeip SDK (src/controller/python, matter-repl.py). Same native CHIP device-controller stack as chip-tool but scriptable: stand up a fabric, commission over BLE, then read/subscribe/write attributes and invoke cluster commands from Python — convenient for automating commissioning-attack and cluster-enumeration workflows and for multi-fabric tests."
+  },
+  {
+    "slug": "python-matter-server",
+    "name": "Python Matter Server",
+    "vendor": "Open Home Foundation / Nabu Casa",
+    "type": "software",
+    "protocols": ["Thread", "Wi-Fi", "BLE"],
+    "repo": "https://github.com/matter-js/python-matter-server",
+    "note": "A CSA-certified Matter Controller Server (the one behind Home Assistant's Matter integration) that wraps the CHIP SDK and exposes commissioning and the operational cluster model over a WebSocket API. Acts as a standing controller/commissioner you can drive programmatically — commission a node over BLE, then enumerate and exercise its clusters. Maintenance mode (being rebuilt on matter.js), but a real, working Matter controller."
+  },
+  {
+    "slug": "matter-dcl",
+    "name": "Matter Distributed Compliance Ledger (DCL)",
+    "vendor": "Connectivity Standards Alliance",
+    "type": "project",
+    "protocols": ["Thread", "Wi-Fi", "BLE"],
+    "repo": "https://github.com/zigbee-alliance/distributed-compliance-ledger",
+    "homepage": "https://webui.dcl.csa-iot.org/",
+    "note": "The CSA-run public ledger (Cosmos SDK / CometBFT) of Matter device data: vendor and product info keyed by Vendor ID (VID) and Product ID (PID), certification status, and the Product Attestation Authority (PAA) root certificates that commissioners trust for device attestation. At Identify, the DCL turns the VID/PID read off a device's onboarding payload into a known vendor/product and certification record — and a Test-Vendor VID (0xFFF1–0xFFF4) on a 'production' device is an immediate red flag."
   }
 ]
