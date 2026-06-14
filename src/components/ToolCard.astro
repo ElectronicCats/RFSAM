@@ -10,7 +10,7 @@ const slugify = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-
 ---
 <div style="border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--panel);height:100%;box-sizing:border-box">
   <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-    <a href={`/tools/${tool.slug ?? slugify(tool.name)}`} style="font-family:var(--disp);font-weight:600;font-size:15px">{tool.name}</a>
+    <a href={`/RFSAM/tools/${tool.slug ?? slugify(tool.name)}`} style="font-family:var(--disp);font-weight:600;font-size:15px">{tool.name}</a>
     <span class="mono" style={`font-size:9px;letter-spacing:.08em;color:${typeColor};border:1px solid ${typeColor};border-radius:3px;padding:1px 5px`}>{tool.type.toUpperCase()}</span>
     <span class="mono" style="font-size:10px;color:var(--mut2)">{tool.vendor}</span>
     {link && <a href={link} target="_blank" rel="noopener" class="mono" style="font-size:10.5px;color:var(--amber);margin-left:auto">{linkLabel}</a>}
@@ -26,7 +26,7 @@ const slugify = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-
       <span class="mono" style="font-size:10px;color:var(--mut2);letter-spacing:.06em">RUNS:</span>
       {software.map((s) => (
         <span style="display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);border-radius:4px;padding:2px 7px">
-          <a href={`/tools/${s.slug ?? slugify(s.name)}`} class="mono" style="font-size:11px;color:var(--green)">{s.name}</a>
+          <a href={`/RFSAM/tools/${s.slug ?? slugify(s.name)}`} class="mono" style="font-size:11px;color:var(--green)">{s.name}</a>
           {(s.repo || s.homepage) && <a href={s.repo ?? s.homepage} target="_blank" rel="noopener" style="font-size:10px;color:var(--amber)">↗</a>}
         </span>
       ))}

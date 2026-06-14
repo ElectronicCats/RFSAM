@@ -4,12 +4,12 @@ import { meta } from '../data/meta.js';
 const { title } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  { href: '/wayfinder', label: 'Wayfinder' },
-  { href: '/methodology', label: 'Methodology' },
-  { href: '/controls', label: 'Controls' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/resources', label: 'Resources' },
-  { href: '/roadmap', label: 'Roadmap' },
+  { href: '/RFSAM/wayfinder', label: 'Wayfinder' },
+  { href: '/RFSAM/methodology', label: 'Methodology' },
+  { href: '/RFSAM/controls', label: 'Controls' },
+  { href: '/RFSAM/tools', label: 'Tools' },
+  { href: '/RFSAM/resources', label: 'Resources' },
+  { href: '/RFSAM/roadmap', label: 'Roadmap' },
 ];
 ---
 <!doctype html>
@@ -24,7 +24,7 @@ const nav = [
   </head>
   <body>
     <nav class="topnav">
-      <a class="brand" href="/">RFSAM</a>
+      <a class="brand" href="/RFSAM/">RFSAM</a>
       {nav.map((n) => (
         <a class="nav" href={n.href} aria-current={path === n.href || path.startsWith(n.href + '/') ? 'page' : undefined}>{n.label}</a>
       ))}

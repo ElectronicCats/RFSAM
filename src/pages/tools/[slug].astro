@@ -40,7 +40,7 @@ const protoName = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
 ---
 <BaseLayout title={tool.name}>
   <div class="container" style="max-width:760px">
-    <div class="mono" style="font-size:11px;color:var(--mut2)"><a href="/tools">Tools</a> / {tool.name}</div>
+    <div class="mono" style="font-size:11px;color:var(--mut2)"><a href="/RFSAM/tools">Tools</a> / {tool.name}</div>
     <div style="display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap">
       <h1 style="font-size:32px">{tool.name}</h1>
       <span class="mono" style={`font-size:10px;letter-spacing:.08em;color:${typeColor};border:1px solid ${typeColor};border-radius:3px;padding:2px 7px`}>{tool.type.toUpperCase()}</span>
@@ -64,7 +64,7 @@ const protoName = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
         <h2 class="mono" style="font-size:12px;letter-spacing:.14em;color:var(--mut2);margin-top:32px">USED IN THE WAYFINDER</h2>
         <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
           {usedIn.map(({ proto, layer }) => (
-            <a href={`/wayfinder/${proto.toLowerCase()}`} class="mono" style="font-size:11px;color:var(--cyan);border:1px solid var(--line);border-radius:4px;padding:3px 9px">{protoName(proto)} · {layer}</a>
+            <a href={`/RFSAM/wayfinder/${proto.toLowerCase()}`} class="mono" style="font-size:11px;color:var(--cyan);border:1px solid var(--line);border-radius:4px;padding:3px 9px">{protoName(proto)} · {layer}</a>
           ))}
         </div>
       </>

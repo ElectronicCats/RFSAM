@@ -83,7 +83,7 @@ if (kind === 'control') {
     <p style="color:var(--mut);margin-top:8px">Select a control from the sidebar, or pick one below.</p>
     <div style="margin-top:18px">
       {listForProto.map((c) => (
-        <a href={`/controls/${c.data.id.toLowerCase()}`} style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+        <a href={`/RFSAM/controls/${c.data.id.toLowerCase()}`} style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
           <span style={`width:7px;height:7px;border-radius:50%;background:${layerColor(c.data.layer)};flex-shrink:0`}></span>
           <span class="mono" style="font-size:11px;color:var(--mut2);width:170px;flex-shrink:0">{c.data.id}</span>
           <span style="flex:1">{c.data.title}</span>

@@ -13,19 +13,19 @@ const techCount = Object.values(toolchains).filter((t) => t.status === 'complete
 
 const sections = [
   {
-    href: '/wayfinder', tag: 'START HERE', name: 'Wayfinder', accent: true,
+    href: '/RFSAM/wayfinder', tag: 'START HERE', name: 'Wayfinder', accent: true,
     body: 'Have a device or an unknown signal and no idea where to begin? Pick a technology and walk the six-step descent — each step hands you the exact kit (hardware + software) for that move and the reason to pick it. An interactive map from “what is this?” to “take it over.”',
   },
   {
-    href: '/controls', tag: 'THE REFERENCE', name: 'Controls',
+    href: '/RFSAM/controls', tag: 'THE REFERENCE', name: 'Controls',
     body: 'The verification procedures. For each protocol and layer: what to check, a step-by-step method, a real field case, known attacks with references, and remediation — the entries you cite in an assessment.',
   },
   {
-    href: '/methodology', tag: 'THE MODEL', name: 'Methodology',
+    href: '/RFSAM/methodology', tag: 'THE MODEL', name: 'Methodology',
     body: 'The layer descent — spectrum → signal → link → crypto → attack → application — and the prior work RFSAM stands on (OSSTMM, BSAM, the SDR-pentest lineage). Read this to understand how it is organised.',
   },
   {
-    href: '/tools', tag: 'THE KIT', name: 'Tools',
+    href: '/RFSAM/tools', tag: 'THE KIT', name: 'Tools',
     body: 'Every piece of hardware and software behind the wayfinder kits — filterable by technology and linked to its source.',
   },
 ];
@@ -57,7 +57,7 @@ const sections = [
       {protocols.map((p) => {
         const n = countFor(p.id);
         return (
-          <a href={`/wayfinder/${p.id.toLowerCase()}`} class="tcard">
+          <a href={`/RFSAM/wayfinder/${p.id.toLowerCase()}`} class="tcard">
             <div class="nm">{p.name}</div>
             <div class="mono band">{p.band}</div>
             <div class="mono meta"><span class="go">Wayfinder →</span>{n > 0 ? ` · ${n} control${n === 1 ? '' : 's'}` : ''}</div>

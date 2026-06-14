@@ -38,7 +38,7 @@ const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').lengt
     <p style="color:var(--mut2);font-size:13px;margin-top:4px">Each technology mapped down the full six-step descent, with a verified hardware + software kit at every step.</p>
     <div class="wf-grid">
       {wayfinder.map((w) => (
-        <a href={`/wayfinder/${w.id.toLowerCase()}`} class="wf-card">
+        <a href={`/RFSAM/wayfinder/${w.id.toLowerCase()}`} class="wf-card">
           <div class="wf-top">
             <span class="nm">{w.name}</span>
             <span class={`pill ${w.status === 'complete' ? 'ok' : 'plan'}`}>{w.status === 'complete' ? 'COMPLETE' : 'PLANNED'}</span>
@@ -66,7 +66,7 @@ const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').lengt
                 <span class="mono" style="font-size:11px;color:var(--mut2);width:175px;flex-shrink:0">{c.id}</span>
                 <span style="flex:1">{c.title}</span>
                 {c.status === 'existing'
-                  ? <a class="review" style={`color:${live === 'draft' ? 'var(--cyan)' : 'var(--amber)'}`} href={`/controls/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
+                  ? <a class="review" style={`color:${live === 'draft' ? 'var(--cyan)' : 'var(--amber)'}`} href={`/RFSAM/controls/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
                   : <span class="review stub" style="color:var(--mut)">PLANNED</span>}
               </div>
             );

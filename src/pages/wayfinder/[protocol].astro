@@ -69,7 +69,7 @@ const payload = JSON.stringify({
 <BaseLayout title={`Wayfinder · ${proto.name}`}>
   <div id="wf">
     <header id="wf-top">
-      <a href="/wayfinder" class="mono back">← all technologies</a>
+      <a href="/RFSAM/wayfinder" class="mono back">← all technologies</a>
       <div class="mono title">{proto.name} <span class="band">{proto.band}</span></div>
       <div id="wf-intents"><span class="lbl mono">SHOW</span></div>
     </header>
@@ -218,7 +218,7 @@ const payload = JSON.stringify({
     }
     function kitRow(t) {
       const link = t.repo || t.homepage;
-      return `<a class="kit-row" href="/tools/${esc(t.slug)}"><span class="dot" style="background:${TYPE_COLOR[t.type] || '#8B9AAB'}"></span><span class="nm">${esc(t.name)}</span>${t.spec ? `<span class="sp">${esc(t.spec)}</span>` : ''}${link ? `<span class="rp">↗</span>` : ''}</a>`;
+      return `<a class="kit-row" href="/RFSAM/tools/${esc(t.slug)}"><span class="dot" style="background:${TYPE_COLOR[t.type] || '#8B9AAB'}"></span><span class="nm">${esc(t.name)}</span>${t.spec ? `<span class="sp">${esc(t.spec)}</span>` : ''}${link ? `<span class="rp">↗</span>` : ''}</a>`;
     }
     function factsBlock() {
       if (!P.protocol.facts?.length) return '';
@@ -243,7 +243,7 @@ const payload = JSON.stringify({
       if (!t.deps?.length) return '';
       const allHw = t.deps.every((d) => d.type === 'hardware');
       const label = allHw ? 'COMPATIBLE HARDWARE' : 'WORKS WITH';
-      return `<div class="kicker">${label}</div><div class="deps">${t.deps.map((d) => `<a class="dep" href="/tools/${esc(d.slug)}"><span class="dot" style="background:${TYPE_COLOR[d.type] || '#8B9AAB'}"></span>${esc(d.name)}${d.spec ? `<span class="sp">${esc(d.spec)}</span>` : ''}</a>`).join('')}</div>`;
+      return `<div class="kicker">${label}</div><div class="deps">${t.deps.map((d) => `<a class="dep" href="/RFSAM/tools/${esc(d.slug)}"><span class="dot" style="background:${TYPE_COLOR[d.type] || '#8B9AAB'}"></span>${esc(d.name)}${d.spec ? `<span class="sp">${esc(d.spec)}</span>` : ''}</a>`).join('')}</div>`;
     }
     function showDetail(node) {
       const d = node.detail;
@@ -254,7 +254,7 @@ const payload = JSON.stringify({
         h += `<div class="kicker">${s.layers.map(esc).join(' · ')}</div><h2>${esc(s.name)}</h2>
           ${s.note ? `<p>${esc(s.note)}</p>` : ''}
           ${s.lookFor?.length ? `<div class="kicker">WHAT TO LOOK FOR</div><ul class="lookfor">${s.lookFor.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
-          ${s.controls.length ? `<div class="kicker">CONTROLS</div><div class="chips">${s.controls.map((c) => `<a class="chip" href="/controls/${c.toLowerCase()}">${esc(c)}</a>`).join('')}</div>` : ''}`;
+          ${s.controls.length ? `<div class="kicker">CONTROLS</div><div class="chips">${s.controls.map((c) => `<a class="chip" href="/RFSAM/controls/${c.toLowerCase()}">${esc(c)}</a>`).join('')}</div>` : ''}`;
       } else if (d.kind === 'tool') {
         const t = d.tool, col = TYPE_COLOR[t.type] || '#8B9AAB';
         h += `<div class="badge" style="color:${col};border-color:${col}">${esc((t.type || '').toUpperCase())}</div>
@@ -265,7 +265,7 @@ const payload = JSON.stringify({
           ${t.caveat ? `<p class="caveat">⚠ ${esc(t.caveat)}</p>` : ''}
           ${t.needs ? `<p class="needs"><b>NEEDS</b> ${esc(t.needs)}</p>` : ''}
           ${depBlock(t)}
-          <a class="cta" href="/tools/${esc(t.slug)}">Full tool page →</a>`;
+          <a class="cta" href="/RFSAM/tools/${esc(t.slug)}">Full tool page →</a>`;
       }
       side.innerHTML = h;
       document.getElementById('wf-back').onclick = renderKit;
