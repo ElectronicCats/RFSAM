@@ -11,6 +11,17 @@
 // layer shape: { note?, tools?: [{ tool, deps?, role?, why?, caveat?, needs? }] }
 // status: 'complete' = curated; 'planned' = scaffold, toolchain to be filled.
 
+// Per-protocol toolchains live in ./toolchains/<proto>.js (built by sub-agents,
+// merged here). Their tool catalogues live in ./protocol-tools/<proto>.json,
+// folded into the tools collection by scripts/seed-tools.mjs.
+import rfid from './toolchains/rfid.js';
+import lte from './toolchains/lte.js';
+import lora from './toolchains/lora.js';
+import zigbee from './toolchains/zigbee.js';
+import gsm from './toolchains/gsm.js';
+import gnss from './toolchains/gnss.js';
+import thread from './toolchains/thread.js';
+
 export const toolchains = {
   BLE: {
     status: 'complete',
@@ -157,16 +168,16 @@ export const toolchains = {
       },
     },
   },
-  LORA:   { status: 'planned', reference: null, layers: {} },
-  LTE:    { status: 'planned', reference: null, layers: {} },
-  RFID:   { status: 'planned', reference: null, layers: {} },
+  LORA: lora,
+  LTE: lte,
+  RFID: rfid,
   SUBG:   { status: 'planned', reference: null, layers: {} },
-  ZIGBEE: { status: 'planned', reference: null, layers: {} },
+  ZIGBEE: zigbee,
   ZWAVE:  { status: 'planned', reference: null, layers: {} },
-  THREAD: { status: 'planned', reference: null, layers: {} },
-  GNSS:   { status: 'planned', reference: null, layers: {} },
+  THREAD: thread,
+  GNSS: gnss,
   ADSB:   { status: 'planned', reference: null, layers: {} },
   NR5G:   { status: 'planned', reference: null, layers: {} },
-  GSM:    { status: 'planned', reference: null, layers: {} },
+  GSM: gsm,
   UWB:    { status: 'planned', reference: null, layers: {} },
 };

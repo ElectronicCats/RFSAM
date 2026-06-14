@@ -1,7 +1,7 @@
 // Authored source for the tools collection. Run with: node scripts/seed-tools.mjs
 // Tools are no longer migration-generated; this file is their source of truth.
 // Every `repo` URL here was verified to exist before being added.
-import { writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import matter from 'gray-matter';
 
@@ -229,13 +229,27 @@ const tools = [
   },
 ];
 
+// Fold in the per-protocol tool catalogues written by the protocol sub-agents
+// (src/data/protocol-tools/<proto>.json). Existing base slugs win on collision.
+const ptDir = 'src/data/protocol-tools';
+const extra = existsSync(ptDir)
+  ? readdirSync(ptDir).filter((f) => f.endsWith('.json')).flatMap((f) => JSON.parse(readFileSync(join(ptDir, f), 'utf8')))
+  : [];
+const merged = [];
+const seen = new Set();
+for (const t of [...tools, ...extra]) {
+  if (seen.has(t.slug)) continue;
+  seen.add(t.slug);
+  merged.push(t);
+}
+
 const dir = 'src/content/tools';
 if (existsSync(dir)) rmSync(dir, { recursive: true, force: true });
 mkdirSync(dir, { recursive: true });
 
-for (const t of tools) {
+for (const t of merged) {
   const { slug, note, ...rest } = t;
   const data = { ...rest, ...(t.ec ? { ec: true } : {}), note };
   writeFileSync(join(dir, `${slug}.md`), matter.stringify(`${note}\n`, data));
 }
-console.log(`Seeded ${tools.length} tools.`);
+console.log(`Seeded ${merged.length} tools (${tools.length} base + ${extra.length} from protocol files).`);

@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "openthread",
+    "name": "OpenThread",
+    "vendor": "Google / Thread Group",
+    "type": "project",
+    "protocols": ["Thread"],
+    "repo": "https://github.com/openthread/openthread",
+    "note": "Google's open-source implementation of the Thread networking stack (IEEE 802.15.4, 6LoWPAN, MLE, commissioning). Flashed to a supported radio (e.g. nRF52840) it becomes an NCP/RCP you drive over Spinel, and with pyspinel that same device turns into an 802.15.4 packet sniffer or a node that can scan for and try to join a Thread mesh."
+  },
+  {
+    "slug": "pyspinel",
+    "name": "pyspinel",
+    "vendor": "Google / Thread Group",
+    "type": "software",
+    "protocols": ["Thread"],
+    "repo": "https://github.com/openthread/pyspinel",
+    "note": "Python CLI for the Spinel protocol that configures and manages an OpenThread NCP/RCP. Its sniffer.py converts an OpenThread co-processor into an 802.15.4 packet sniffer, streaming captured Thread frames to Wireshark (live extcap or pcap) for dissection and key-based decryption. Repository is archived but still the reference Spinel CLI."
+  },
+  {
+    "slug": "nrf-sniffer-802154",
+    "name": "nRF Sniffer for 802.15.4",
+    "vendor": "Nordic Semiconductor",
+    "type": "software",
+    "protocols": ["Thread", "Zigbee"],
+    "repo": "https://github.com/nordicsemi/nRF-Sniffer-for-802.15.4",
+    "note": "Nordic firmware plus a Wireshark extcap plugin and Python script for the nRF52840 (DK or Dongle) that sniffs raw IEEE 802.15.4 frames straight into Wireshark. The turnkey capture path for Thread/Zigbee on Nordic hardware; supply the Thread network key in Wireshark to decrypt."
+  },
+  {
+    "slug": "connectedhomeip",
+    "name": "Matter SDK (connectedhomeip)",
+    "vendor": "Connectivity Standards Alliance / Project CHIP",
+    "type": "project",
+    "protocols": ["Thread", "Wi-Fi", "BLE"],
+    "repo": "https://github.com/project-chip/connectedhomeip",
+    "note": "The official open-source Matter (formerly Project CHIP) SDK from the Connectivity Standards Alliance. Provides the device stack, example apps and the chip-tool controller — the reference codebase for building and exercising Matter-over-Thread and Matter-over-Wi-Fi nodes and their commissioning."
+  },
+  {
+    "slug": "chip-tool",
+    "name": "chip-tool",
+    "vendor": "Connectivity Standards Alliance / Project CHIP",
+    "type": "software",
+    "protocols": ["Thread", "Wi-Fi", "BLE"],
+    "repo": "https://github.com/project-chip/connectedhomeip",
+    "note": "The Matter controller/commissioner CLI from the connectedhomeip SDK. Commissions a Matter device over Bluetooth LE — establishing a PASE (SPAKE2+) session from the setup passcode, handing over Thread/Wi-Fi credentials — then drives it with CASE-secured operational commands. The tool for assessing Matter onboarding and the application-layer cluster interface."
+  }
+]

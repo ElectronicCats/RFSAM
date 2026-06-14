@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "kalibrate-rtl",
+    "name": "kalibrate-rtl",
+    "vendor": "steve-m (kalibrate fork)",
+    "type": "software",
+    "protocols": ["GSM"],
+    "note": "GSM frequency scanner: sweeps a band (GSM850/900/1800/1900) for active base-station carriers by locking onto their FCCH/SCH bursts, reporting each ARFCN, its power and the radio's clock-frequency offset (ppm). The kalibrate-rtl fork drives an RTL-SDR; sibling forks exist for HackRF and UHD. The first step before any capture: it tells you which ARFCNs have a live BTS.",
+    "repo": "https://github.com/steve-m/kalibrate-rtl"
+  },
+  {
+    "slug": "gr-gsm",
+    "name": "gr-gsm",
+    "vendor": "Piotr Krysik",
+    "type": "software",
+    "protocols": ["GSM"],
+    "note": "GNU Radio blocks and tools to receive and demodulate the GSM downlink from an SDR. grgsm_livemon tunes a found ARFCN, demodulates the GMSK bursts, decodes the control channels (BCCH/CCCH/SDCCH) and forwards the frames as GSMTAP over UDP to Wireshark. The de-facto open-source GSM receiver, successor to airprobe.",
+    "repo": "https://github.com/ptrkrysik/gr-gsm"
+  },
+  {
+    "slug": "imsi-catcher-detector",
+    "name": "IMSI-catcher",
+    "vendor": "Oros42",
+    "type": "software",
+    "protocols": ["GSM"],
+    "note": "Python tool that reads the GSMTAP stream produced by gr-gsm and pulls the IMSI / TMSI identities the network pages over the air, printing the cellphones it sees around you. Passive identity exposure demonstrator and a building block for IMSI-catcher (fake-BTS) detection.",
+    "repo": "https://github.com/Oros42/IMSI-catcher"
+  },
+  {
+    "slug": "kraken-a51",
+    "name": "Kraken (A5/1 cracker)",
+    "vendor": "SRLabs / Joshua Wright fork",
+    "type": "project",
+    "protocols": ["GSM"],
+    "note": "GPU/CPU cracker that recovers an A5/1 session key from a captured keystream segment using the ~1.6–2 TB A5/1 rainbow tables (the Berlin A5/1 Security Project). Recovers Kc, which decrypts the rest of a captured call/SMS session. Old but the reference open A5/1 attack; requires the bulky precomputed tables and a known-keystream slice from the capture.",
+    "repo": "https://github.com/joswr1ght/kraken"
+  }
+]

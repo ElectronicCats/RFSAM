@@ -4,11 +4,11 @@ How to add or extend a technology's wayfinder — the per-protocol page that wal
 researcher down the assessment descent and hands them the **kit** (hardware + software)
 for what they want to do. BLE is the reference implementation; copy its shape.
 
-Two files:
-- **`src/data/toolchains.js`** — the per-protocol descent and tooling (what you edit most).
-- **`scripts/seed-tools.mjs`** — the catalogue of every tool (run it after editing: `node scripts/seed-tools.mjs`).
+Each technology is two files:
+- **`src/data/toolchains/<proto>.js`** — its descent and tooling: `export default { "status":"complete", "facts":[…], "reference":…, "layers":{…} }` (a JSON object literal — valid JS, so double-quote keys/strings, no trailing commas, no comments).
+- **`src/data/protocol-tools/<proto>.json`** — the new tools that protocol introduces (a JSON array). `scripts/seed-tools.mjs` folds every `protocol-tools/*.json` into the catalogue automatically.
 
-Rendered by `src/pages/wayfinder/[protocol].astro`. Validated by `npm run validate`.
+Wire the toolchain in via one line in **`src/data/toolchains.js`** (`import <proto> from './toolchains/<proto>.js'` + `<KEY>: <proto>,`). BLE and Wi-Fi live inline in that file as the reference. Rendered by `src/pages/wayfinder/[protocol].astro`. Validated by `npm run validate`.
 
 ---
 
@@ -126,11 +126,14 @@ PROTOCOL: {
 1. **Research the toolchain** for the technology — the real hardware and software at each
    step, and the reasons to pick each. Verify every repo/homepage (rule 6) and every
    technical fact (rule 7).
-2. **Add any missing tools** to `seed-tools.mjs`, then `node scripts/seed-tools.mjs`.
-3. **Fill `toolchains.js[PROTOCOL]`** following the six steps and the ten rules. Set
-   `status: 'complete'`.
-4. **`npm run validate && npm run build`** — both must pass (the validator checks every
-   slug, dep and decoder resolves).
+2. **Write the new tools** into `src/data/protocol-tools/<proto>.json` (a JSON array; reuse
+   existing catalogue slugs instead of redefining them).
+3. **Write the descent** into `src/data/toolchains/<proto>.js` (`export default { … }`),
+   following the six steps and the ten rules. Set `status: "complete"`.
+4. **Wire it in**: add `import <proto> from './toolchains/<proto>.js';` and `<KEY>: <proto>,`
+   to `src/data/toolchains.js`.
+5. **`node scripts/seed-tools.mjs && npm run validate && npm run build`** — all must pass
+   (the validator checks every slug, dep and decoder resolves).
 5. Open the page at `/wayfinder/<protocol>` and confirm the pipeline reads correctly.
 
 A `planned` protocol with empty `layers` already renders the bare descent + controls; you

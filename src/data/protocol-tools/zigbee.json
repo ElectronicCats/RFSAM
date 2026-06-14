@@ -1,0 +1,52 @@
+[
+  {
+    "slug": "killerbee",
+    "name": "KillerBee",
+    "vendor": "River Loop Security",
+    "type": "software",
+    "protocols": ["Zigbee", "802.15.4"],
+    "repo": "https://github.com/riverloopsec/killerbee",
+    "note": "The reference IEEE 802.15.4 / Zigbee security toolkit. A Python framework plus command tools — zbstumbler (active network discovery), zbid (list capture interfaces), zbdump (capture to PCAP), zbwireshark (live feed to Wireshark), zbreplay (replay frames) and zbdsniff (extract a network key from a join capture). Drives a range of capture radios (ApiMote, CC2531, nRF52840, RZUSBstick).",
+    "software": []
+  },
+  {
+    "slug": "zbdsniff",
+    "name": "zbdsniff (KillerBee)",
+    "vendor": "River Loop Security",
+    "type": "software",
+    "protocols": ["Zigbee"],
+    "repo": "https://github.com/riverloopsec/killerbee",
+    "note": "KillerBee's key-extraction tool. Scans a capture for an over-the-air key transport (APS Transport-Key during a device join) and recovers the Zigbee network key — the classic break when the key is sent under the well-known default Trust Center link key 'ZigBeeAlliance09'. Feed it a PCAP of a join and it prints the network key.",
+    "software": []
+  },
+  {
+    "slug": "nrf-sniffer-802154",
+    "name": "nRF Sniffer for 802.15.4",
+    "vendor": "Nordic Semiconductor",
+    "type": "software",
+    "protocols": ["Zigbee", "802.15.4", "Thread"],
+    "repo": "https://github.com/nordicsemi/nRF-Sniffer-for-802.15.4",
+    "note": "Nordic's open 802.15.4 sniffer: firmware for the nRF52840 plus a Wireshark extcap plugin that captures raw 2.4 GHz 802.15.4 frames straight into Wireshark, where the Zigbee dissector decodes NWK/APS. A turnkey, well-documented capture path on cheap Nordic hardware.",
+    "software": []
+  },
+  {
+    "slug": "whsniff",
+    "name": "whsniff",
+    "vendor": "homewsn",
+    "type": "software",
+    "protocols": ["Zigbee", "802.15.4"],
+    "repo": "https://github.com/homewsn/whsniff",
+    "note": "Command-line utility that interfaces a TI CC2531 USB dongle with Wireshark to capture and display IEEE 802.15.4 traffic at 2.4 GHz — pipe its output into Wireshark (or save a PCAP) for Zigbee dissection. A cheap, simple capture path when you have a CC2531.",
+    "software": []
+  },
+  {
+    "slug": "apimote",
+    "name": "ApiMote",
+    "vendor": "River Loop Security",
+    "type": "hardware",
+    "protocols": ["Zigbee", "802.15.4"],
+    "repo": "https://github.com/riverloopsec/apimote",
+    "software": ["killerbee"],
+    "note": "IEEE 802.15.4 / Zigbee sniffing-and-injection hardware (CC2420-based) built as the reference KillerBee radio — it can both capture and transmit frames, which makes it the go-to board for KillerBee's active and attack tools (zbreplay, zbstumbler)."
+  }
+]

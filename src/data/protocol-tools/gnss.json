@@ -1,0 +1,21 @@
+[
+  {
+    "slug": "gnss-sdr",
+    "name": "GNSS-SDR",
+    "vendor": "CTTC (Carles Fernández-Prades et al.)",
+    "type": "software",
+    "protocols": ["GNSS"],
+    "repo": "https://github.com/gnss-sdr/gnss-sdr",
+    "homepage": "https://gnss-sdr.org",
+    "note": "Open-source software-defined GNSS receiver. Takes raw L-band I/Q from an SDR and runs the full receive chain — acquisition, tracking, telemetry decoding of the navigation message, and PVT (position/velocity/time) computation — for GPS L1/L2/L5, Galileo, GLONASS and BeiDou. The reference way to receive and decode a live civilian GNSS signal in software."
+  },
+  {
+    "slug": "gps-sdr-sim",
+    "name": "gps-sdr-sim",
+    "vendor": "osqzss (Takuji Ebinuma)",
+    "type": "software",
+    "protocols": ["GNSS"],
+    "repo": "https://github.com/osqzss/gps-sdr-sim",
+    "note": "Generates a GPS L1 C/A baseband I/Q file from a RINEX broadcast ephemeris and a chosen static or moving position, for transmission by an SDR (HackRF / bladeRF / USRP). Because civilian C/A is unauthenticated, a replayed/synthesised signal at higher power can pull a receiver's position and clock to attacker-chosen values — the canonical GPS spoofing tool. AUTHORIZED, RF-CONTAINED testing only: transmitting GPS over the air is illegal in most jurisdictions — use a shielded enclosure or a cabled (conducted) setup. Repo is archived but remains the de-facto reference."
+  }
+]
