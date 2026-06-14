@@ -26,6 +26,7 @@ import zwave from './toolchains/zwave.js';
 import adsb from './toolchains/adsb.js';
 import nr5g from './toolchains/nr5g.js';
 import uwb from './toolchains/uwb.js';
+import btclassic from './toolchains/btclassic.js';
 
 export const toolchains = {
   BLE: {
@@ -58,6 +59,9 @@ export const toolchains = {
         note: 'How much of the band can you see at once? BLE spreads 40 channels over 80 MHz (2.402–2.480 GHz) and hops fast, so the radio is a visibility trade-off: a HackRF shows ~20 MHz — a slice of the band; a bladeRF in its 122.88 MHz oversampling mode shows the full 80 MHz in one pass; or camp a single channel and pick up the packets that land on it as the hopping connection passes through — cheaper and simpler, but you miss whatever is on the other channels. RTL-SDR is out: it stops near 1.766 GHz, below the 2.4 GHz band.',
         tools: [
           { tool: 'gqrx', role: 'Spectrum / waterfall view', why: 'See the live spectrum and pick channels — ~20 MHz at a time on a HackRF, the full 80 MHz on a bladeRF (oversampling).', deps: ['hackrf-one', 'bladerf-2-micro'] },
+          { tool: 'esp32-marauder', role: 'Standalone BLE scan / wardrive', why: 'The ESP32 Marauder handheld scans and wardrives BLE devices and detects AirTags from a battery board — a no-laptop survey of advertising-channel devices in range.', caveat: 'Sees advertising/connectable devices on the advertising channels only — not an all-channel SDR view.', deps: ['esp32-s3-devkit', 'cyd', 'm5-cardputer'] },
+          { tool: 'minino', role: 'BLE ADV scanner + AirTag detection', why: 'The Electronic Cats Minino (ESP32-C6) has a native BLE suite: an advertising scanner and tracker / AirTag detection from the pocket device — the EC standalone BLE survey.', caveat: '2.4 GHz advertising-channel scan; field recon, not a PCAP-grade sniffer.', deps: [] },
+          { tool: 'esp32-airtag-scanner', role: 'AirTag / Find My survey', why: 'Dedicated ESP32 firmware that scans for Apple AirTag / Find My addresses and payloads with no phone — to detect trackers in the environment.', caveat: 'Passive scan only — no spoofing; payload formats may have drifted since 2024.', deps: ['esp32-devkit', 'esp32-s3-devkit'] },
         ],
       },
       PHY: {
@@ -75,6 +79,7 @@ export const toolchains = {
           { tool: 'ubertooth-tools', role: 'Budget sniffer', why: 'Drives an Ubertooth One to follow connections on a ~$120 radio with no SDR.', caveat: 'Pre-BT5; weaker on long-lived links than CC1352 sniffers.', deps: ['ubertooth-one'] },
           { tool: 'whad', role: 'Multi-protocol sniffer', why: 'WHAD turns an nRF52840 dongle (its Butterfly firmware), an Ubertooth, or a host HCI adapter into a BLE sniffer driven from one Python framework with PCAP/Scapy output — the same toolchain you reuse for Zigbee, 802.15.4 and ESB. One workflow across protocols.', deps: ['nrf52840-dongle', 'ubertooth-one', 'usb-bt-dongle'] },
           { tool: 'catnip', role: 'CatSniffer BLE capture (EC host)', why: 'Electronic Cats’ CatSniffer host tool runs the Sniffle firmware on the CatSniffer with native Wireshark extcap, scans for Apple Find My / AirTag devices, and on Linux presents the CatSniffer as a virtual HCI (hciX) adapter for host BLE tools — the integrated EC workflow on one board.', deps: ['catsniffer'] },
+          { tool: 'ghost-esp', role: 'BLE → Wireshark advertising capture', why: 'Ghost ESP logs BLE advertising-channel frames from an ESP32 straight to a Wireshark-readable capture — the cheap pocket option when a dedicated CC1352/SDR sniffer is overkill.', caveat: 'Advertising-channel capture only; for connection-following / all-channel PCAP use the dedicated sniffers above.', deps: ['esp32-devkit', 'cyd', 'm5-cardputer'] },
         ],
       },
       CR: {
@@ -90,6 +95,10 @@ export const toolchains = {
           { tool: 'btlejack', role: 'Jam & hijack', why: 'Follow, jam and hijack a live connection. Runs on ~$15 hardware.', deps: ['bbc-microbit'] },
           { tool: 'injectable-firmware', role: 'Inject / MITM', why: 'Inject link-layer frames into an established connection (the InjectaBLE strategy).', deps: ['nrf52840-dongle'] },
           { tool: 'bettercap', role: 'Recon & enumeration', why: 'Discover devices and enumerate GATT before/after takeover.', deps: ['usb-bt-dongle', 'catsniffer'], needs: 'A host Bluetooth LE adapter over HCI (Linux/BlueZ for the BLE module).' },
+          { tool: 'esp32-marauder', role: 'BLE advertising spam / AirTag spoof', why: 'The Marauder BLE suite floods advertising spam (Apple/Sour Apple, Samsung, Swift Pair pairing popups) and spoofs AirTags from the handheld — the umbrella ESP32 BLE attack firmware.', caveat: 'Active transmit (pairing-popup spam / tracker spoofing) — authorised testing only; disruptive to all nearby devices.', deps: ['esp32-s3-devkit', 'cyd', 'm5-cardputer'] },
+          { tool: 'bruce', role: 'Pairing-popup spam + Bad BLE (HID)', why: 'Bruce spams pairing popups across Apple/Android/Samsung/Windows and runs Bad BLE — HID keystroke injection over a link the target bonds to it.', caveat: 'Active transmit / HID injection — authorised testing only; Bad BLE needs the target to pair with the ESP32.', deps: ['m5-cardputer', 'cyd', 'lilygo-t-embed-cc1101', 'esp32-devkit'] },
+          { tool: 'minino', role: 'BLE notification spam', why: 'The Minino (ESP32-C6) has a native BLE SPAM mode that emulates BLE devices to flood a nearby central with notification and pairing prompts — the EC pocket BLE-spam tool.', caveat: 'Active transmit — authorised testing only; disruptive to nearby devices.', deps: [] },
+          { tool: 'esp32-sour-apple', role: 'iOS pairing-spam crash/DoS', why: 'A focused PoC that floods BLE pairing-request adverts to freeze or crash nearby iOS devices — more aggressive than generic popup spam.', caveat: 'Genuinely disruptive (freezes/crashes iPhones) — authorised testing only, on hardware you own. ESP32-S3 / ESP-WROOM-32; not ESP8266.', deps: ['esp32-devkit', 'esp32-s3-devkit'] },
         ],
       },
       AP: {
@@ -97,6 +106,8 @@ export const toolchains = {
         tools: [
           { tool: 'bleak', role: 'GATT interaction', why: 'Script reads/writes/subscriptions and replay learned commands, cross-platform.', deps: ['usb-bt-dongle', 'catsniffer'], needs: 'A host BLE controller over HCI — a standard USB Bluetooth adapter, or a CatSniffer presented as a virtual HCI on Linux via the catnip tool.' },
           { tool: 'bettercap', role: 'GATT enumeration', why: 'Enumerate services and characteristics interactively.', deps: ['usb-bt-dongle', 'catsniffer'], needs: 'A host Bluetooth LE adapter over HCI (Linux/BlueZ for the BLE module).' },
+          { tool: 'bruce', role: 'GATT / HID interaction (Bad BLE)', why: 'Beyond spam, Bruce acts above the link — Bad BLE drives HID and media commands to a host that has bonded with the ESP32, exercising what the device trusts.', caveat: 'Requires the target to pair/bond with the ESP32 first; authorised testing only.', deps: ['m5-cardputer', 'cyd', 'esp32-devkit'] },
+          { tool: 'minino', role: 'BLE HID', why: 'The Minino native BLE HID component presents the EC board as a Bluetooth input device to a host — the EC path for testing what a host trusts from a paired peripheral.', caveat: 'Authorised testing only; the host must pair with the device.', deps: [] },
         ],
       },
     },
@@ -130,6 +141,8 @@ export const toolchains = {
           { tool: 'kismet', role: 'Survey & wardriving', why: 'The reference passive survey tool: channel-hops across 2.4/5 (and 6 GHz with capable hardware), logs every AP/client/SSID with GPS, and never transmits — ideal for a quiet map of the environment.', caveat: 'Passive only; 6 GHz needs a Wi-Fi 6E-capable adapter.', deps: ['alfa-awus036ach'] },
           { tool: 'aircrack-ng', role: 'Channel survey', why: 'airodump-ng gives a live table of APs and associated clients — BSSID, channel, encryption, signal — the fastest way to lock onto a target and read its security mode.', deps: ['alfa-awus036ach'] },
           { tool: 'minino', role: 'Pocket scanner / wardriving', why: 'Electronic Cats ESP32-C6 multitool: standalone SSID/AP scanning and wardriving with onboard GPS/microSD and an analyzer view, no laptop needed.', caveat: '2.4 GHz only (ESP32-C6 has no 5/6 GHz radio).', deps: [] },
+          { tool: 'esp32-marauder', role: 'Pocket survey / GPS wardrive', why: 'The ESP32 Marauder handheld scans APs and stations and wardrives with GPS, logging to SD — a no-laptop 2.4 GHz survey on a $5–15 board (CYD, Cardputer, bare ESP32).', caveat: '2.4 GHz only (ESP32 has no 5/6 GHz radio); a quick survey, not full Kismet coverage.', deps: ['esp32-devkit', 'cyd', 'm5-cardputer', 'flipper-wifi-devboard'] },
+          { tool: 'ghost-esp', role: 'AP / station scan', why: 'Ghost ESP scans nearby APs and associated clients from the ESP32 console — an alternative pocket survey firmware (Bruce does the same).', caveat: '2.4 GHz only.', deps: ['esp32-devkit', 'cyd', 'm5-cardputer'] },
         ],
       },
       PHY: {
@@ -143,6 +156,8 @@ export const toolchains = {
           { tool: 'hcxdumptool', role: 'Handshake / PMKID capture', why: 'Purpose-built to grab the WPA/WPA2 PMKID straight from the AP — often clientless, no waiting for a client to reconnect — and EAPOL handshakes, written as pcapng for offline cracking.', caveat: 'Aggressive by default; recent versions dropped some active-attack flags — check the docs for your version.', deps: ['alfa-awus036ach'] },
           { tool: 'kismet', role: 'Logged capture', why: 'Captures while it surveys: every frame it hears is logged to pcapng with metadata, so the survey and the capture are one artefact you replay in Wireshark.', deps: ['alfa-awus036ach'] },
           { tool: 'minino', role: 'Pocket sniffer', why: 'Standalone 2.4 GHz Wi-Fi sniffer that writes captures to microSD with Wireshark-compatible output — capture without a host PC.', caveat: '2.4 GHz only; management/handshake frames, not 5/6 GHz traffic.', deps: [] },
+          { tool: 'esp32-marauder', role: 'Handshake / PMKID capture', why: 'The Marauder EAPOL/PMKID scan grabs WPA/WPA2 key material straight to an SD-card PCAP from the handheld — capture in the field, crack offline in hashcat.', caveat: '2.4 GHz, WPA/WPA2 only; captures material only. SD card required (v0.11.0+).', deps: ['esp32-devkit', 'cyd', 'm5-cardputer'] },
+          { tool: 'esp32-wifi-penetration-tool', role: 'PMKID → HCCAPX (web-driven)', why: 'A bare-ESP32 framework that captures PMKID/handshakes (passive, rogue-AP or forced re-auth), exports PCAP and converts to a hashcat-ready HCCAPX — all from an on-device web UI, no screen needed.', caveat: '2.4 GHz, WPA/WPA2; captures key material only — crack off-device in hashcat.', deps: ['esp32-devkit'] },
         ],
       },
       CR: {
@@ -162,6 +177,9 @@ export const toolchains = {
           { tool: 'bettercap', role: 'Recon & deauth', why: 'Scriptable framework with a wifi module: enumerate APs/clients, fire deauths and capture handshakes from one console.', deps: ['alfa-awus036ach'] },
           { tool: 'minino', role: 'Pocket deauther / DoS', why: 'Standalone 2.4 GHz deauther and DoS from its console, plus a deauth-detection mode to spot the same attack against you — a field tool with no laptop.', caveat: '2.4 GHz only; deauth blocked by 802.11w/PMF targets.', deps: [] },
           { tool: 'wifi-pineapple', role: 'Rogue AP / evil twin', why: 'Turnkey platform that automates evil-twin, client-capture and recon — clone an SSID and harvest associations without scripting.', deps: [] },
+          { tool: 'esp32-marauder', role: 'Deauth / beacon & probe spam', why: 'Fires targeted or broadcast deauth, beacon spam (fake-SSID floods) and probe floods from the handheld — to force a re-handshake or stress an AP, no laptop needed.', caveat: 'Authorised testing only. 2.4 GHz; deauth blocked by 802.11w/PMF (WPA3 and newer WPA2).', deps: ['esp32-devkit', 'cyd', 'm5-cardputer', 'flipper-wifi-devboard'] },
+          { tool: 'bruce', role: 'Deauth from handheld', why: 'The Bruce Wi-Fi menu sends deauthentication frames, plus wardriving and EAPOL capture, on M5Stack/LilyGo/CYD hardware — the broad red-team multitool alternative.', caveat: 'Authorised testing only. 2.4 GHz; blocked by PMF.', deps: ['m5-cardputer', 'cyd', 'lilygo-t-embed-cc1101', 'esp32-devkit'] },
+          { tool: 'esp32-deauther-ganesh', role: 'Bare-ESP32 deauth', why: 'The minimal ESP32 deauther — the canonical esp_wifi_80211_tx injection path on a plain board with no display, when all you need is the deauth primitive.', caveat: 'Authorised testing only; blocked by PMF. Unmaintained since 2021, no license — confirm it builds on current ESP-IDF.', deps: ['esp32-devkit'] },
         ],
       },
       AP: {
@@ -171,10 +189,13 @@ export const toolchains = {
           { tool: 'eaphammer', role: 'Enterprise evil twin', why: 'Targets WPA2/WPA3-Enterprise (802.1X): stands up a hostile RADIUS/AP to capture EAP (MSCHAPv2) credentials and run hostile-portal pivots.', deps: ['alfa-awus036ach'], needs: 'A target running WPA-Enterprise (802.1X/EAP), not PSK.' },
           { tool: 'hostapd-mana', role: 'Credential-harvesting AP', why: 'SensePost’s patched hostapd (the engine under eaphammer): a “MANA” rogue AP that lures clients via their probe history and captures EAP/Enterprise credentials.', deps: ['alfa-awus036ach'] },
           { tool: 'bettercap', role: 'Post-association MITM', why: 'Once the client is on the network, run ARP/DNS spoofing, an HTTP(S) proxy and traffic capture to inspect and tamper with its app-layer flows.', deps: ['alfa-awus036ach'] },
+          { tool: 'esp32-marauder', role: 'Evil Portal credential harvest', why: 'Spawns a rogue AP with a captive-portal login page and logs submitted credentials to SD/serial — the above-the-link phishing test from a handheld (Bruce and Ghost ESP do the same).', caveat: 'Authorised / social-engineering engagement only; harvesting third-party credentials without consent is illegal. Needs an SD card and a believable pretext.', deps: ['esp32-devkit', 'cyd', 'm5-cardputer'] },
+          { tool: 'esp32-projectzero', role: 'Verifying captive portal + WPA3-SAE overflow', why: 'A two-board evil-twin whose captive portal verifies the entered Wi-Fi password against the real AP, plus a WPA3-SAE overflow mode — a more specialised rogue-portal variant.', caveat: 'Authorised testing only; low-maturity project — verify behaviour first. Needs two ESP32/C5 boards.', deps: ['esp32-devkit'] },
         ],
       },
     },
   },
+  BTC: btclassic,
   LORA: lora,
   LTE: lte,
   RFID: rfid,

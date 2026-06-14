@@ -1,0 +1,152 @@
+[
+  {
+    "slug": "esp32-devkit", "name": "ESP32 DevKit (WROOM-32 / WROVER)", "vendor": "Espressif", "type": "hardware",
+    "protocols": ["Wi-Fi", "BLE", "Bluetooth Classic"],
+    "spec": "Xtensa LX6 dual-core · 2.4 GHz Wi-Fi b/g/n · Bluetooth Classic (BR/EDR) + BLE 4.2",
+    "software": ["esp32-marauder", "bruce", "ghost-esp", "esp32-wifi-penetration-tool", "esp32-deauther-ganesh", "esp32-bt-classic-sniffer", "braktooth", "esp32-bluejammer"],
+    "note": "The generic original ESP32 dev board (WROOM-32 / WROVER module) — the cheapest substrate for the umbrella firmwares (Marauder, Bruce, Ghost ESP) and the bare-metal Wi-Fi/BLE tools. Crucially, the ORIGINAL ESP32 is the only variant with a Bluetooth Classic (BR/EDR) radio, so it is also the board the BR/EDR sniffer and BrakTooth PoC run on. A bare board with no screen or SD — add a microSD for capture-to-card firmwares. 2.4 GHz only (no 5/6 GHz)."
+  },
+  {
+    "slug": "esp32-s3-devkit", "name": "ESP32-S3 DevKitC", "vendor": "Espressif", "type": "hardware",
+    "protocols": ["Wi-Fi", "BLE"],
+    "spec": "Xtensa LX7 dual-core · 2.4 GHz Wi-Fi · Bluetooth 5 (LE) · native USB-OTG",
+    "homepage": "https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html",
+    "software": ["esp32-marauder", "bruce", "ghost-esp", "esp32-sour-apple", "esp32-airtag-scanner"],
+    "note": "Espressif's ESP32-S3: LX7 dual-core with Bluetooth 5 (LE), native USB-OTG and more RAM than the original ESP32 — which is why most modern handheld pentest boards (Cardputer, LilyGo T-series) are S3-based. Supported by Marauder, Bruce and Ghost ESP, and the BLE-capable target for the focused BLE tools. Note: the S3 has BLE but NO Bluetooth Classic radio — for BR/EDR work use the original ESP32."
+  },
+  {
+    "slug": "cyd", "name": "CYD — Cheap Yellow Display (ESP32-2432S028R)", "vendor": "community (Witnessmenow guide)", "type": "hardware",
+    "protocols": ["Wi-Fi", "BLE", "Bluetooth Classic"],
+    "spec": "ESP32-WROOM-32 · 2.8\" 240×320 resistive-touch TFT · microSD · ~$15",
+    "repo": "https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display",
+    "software": ["esp32-marauder", "bruce", "ghost-esp"],
+    "note": "The ~$15 'Cheap Yellow Display': an ESP32-WROOM-32 board with a built-in 2.8\" touch TFT, microSD and USB-UART. Hugely popular as a cheap touchscreen pentest handheld — runs ESP32 Marauder (and CYD-specific forks), Bruce and Ghost ESP with a usable on-screen UI and no soldering. The linked repo is the community hardware/pinout reference."
+  },
+  {
+    "slug": "m5-cardputer", "name": "M5Stack Cardputer", "vendor": "M5Stack", "type": "hardware",
+    "protocols": ["Wi-Fi", "BLE"],
+    "spec": "M5StampS3 (ESP32-S3) · 56-key keyboard · 1.14\" LCD · microSD · IR · battery",
+    "homepage": "https://docs.m5stack.com/en/core/Cardputer",
+    "software": ["esp32-marauder", "bruce", "ghost-esp"],
+    "note": "Pocket keyboard-computer on the M5StampS3 (ESP32-S3): full keyboard, LCD, microSD, IR and battery in a card-sized case. A pentest-community favourite chassis — runs ESP32 Marauder, Bruce and Ghost ESP out of the box (Marauder added Cardputer ADV support in v1.12.0). Bruce's flagship target."
+  },
+  {
+    "slug": "flipper-wifi-devboard", "name": "Flipper Zero Wi-Fi Dev Board", "vendor": "Flipper Devices", "type": "hardware",
+    "protocols": ["Wi-Fi"],
+    "spec": "ESP32-S2-WROVER · 2.4 GHz Wi-Fi only — S2 has NO Bluetooth radio",
+    "homepage": "https://flipper.net/products/wifi-devboard",
+    "software": ["esp32-marauder"],
+    "note": "Official Flipper Zero add-on built on an ESP32-S2-WROVER. Sold for wireless firmware flashing / debugging, but the community flashes ESP32 Marauder onto it to give the Flipper a Wi-Fi attack add-on (deauth, beacon spam, Evil Portal). Because the S2 has no Bluetooth radio, the BLE features are NOT available on this board — it is Wi-Fi only."
+  },
+  {
+    "slug": "lilygo-t-embed-cc1101", "name": "LilyGo T-Embed CC1101", "vendor": "LilyGo", "type": "hardware",
+    "protocols": ["Wi-Fi", "BLE", "Sub-GHz"],
+    "spec": "ESP32-S3 (16 MB flash / 8 MB PSRAM) · rotary encoder · LCD · IR TX/RX · onboard CC1101 sub-GHz",
+    "homepage": "https://lilygo.cc/products/t-embed-cc1101",
+    "software": ["bruce"],
+    "note": "LilyGo handheld on an ESP32-S3 with a rotary encoder, LCD, IR and an onboard CC1101 sub-GHz transceiver. The CC1101 makes it a favourite Bruce target because one device covers Wi-Fi/BLE AND sub-GHz/IR. (The CC1101 sub-GHz capability is separate from the 2.4 GHz ESP32 radio used by the Wi-Fi/BLE attacks here.)"
+  },
+
+  {
+    "slug": "esp32-marauder", "name": "ESP32 Marauder", "vendor": "justcallmekoko", "type": "project",
+    "protocols": ["Wi-Fi", "BLE"],
+    "repo": "https://github.com/justcallmekoko/ESP32Marauder",
+    "note": "The reference ESP32 Wi-Fi + BLE offensive/defensive firmware (~11k stars, actively maintained). Wi-Fi: scan APs/stations, packet sniff, GPS wardrive, deauth, beacon spam (list/random), probe-request flood, EAPOL/PMKID capture to SD, and an Evil Portal captive-portal credential harvester. BLE: scan/sniff, wardrive, AirTag sniff and spoof, and advertising spam (Apple/Sour Apple, Samsung, Swift Pair). Runs on ESP32/S2/S3/C5 and 20+ boards (Cardputer, CYD, Flipper Wi-Fi dev board) — but NOT the ESP32-C6. 2.4 GHz only. Representative of the ESP32 attack surface — authorised testing only on active features."
+  },
+  {
+    "slug": "bruce", "name": "Bruce", "vendor": "BruceDevices (pr3y)", "type": "project",
+    "protocols": ["Wi-Fi", "BLE", "Sub-GHz", "RFID", "IR"],
+    "repo": "https://github.com/pr3y/Bruce",
+    "note": "Predatory ESP32 red-team multitool firmware (~5.9k stars, AGPL-3.0; the repo moved from pr3y/Bruce to the BruceDevices org, the old path redirects). Wi-Fi: Evil Portal, wardriving, EAPOL handshake capture and deauth. BLE: scan, pairing-popup spam (AppleJuice / Sour Apple / Swift Pair / Android / Samsung) and Bad BLE (HID injection over a bonded link). Also drives sub-GHz, IR and RFID where the board supports it. Targets M5Stack and LilyGo boards plus the CYD. Authorised testing only."
+  },
+  {
+    "slug": "ghost-esp", "name": "Ghost ESP", "vendor": "GhostESP-Revival", "type": "project",
+    "protocols": ["Wi-Fi", "BLE"],
+    "repo": "https://github.com/GhostESP-Revival/GhostESP",
+    "note": "Maintained ESP-IDF revival of Ghost ESP (~740 stars, GPL-3.0). The original Spooks4576/Ghost_ESP is archived (read-only since 2025-04); this Revival fork is the live successor and supports 40+ boards. Wi-Fi: AP/station scan, beacon spam, deauthentication, capture (probe/beacon/deauth/raw to SD) and Evil Portal. BLE: raw scan/wardrive, BLE-to-Wireshark advertising capture, BLE spam and AirTag spoof. Authorised testing only on active features."
+  },
+  {
+    "slug": "esp32-wifi-penetration-tool", "name": "ESP32 Wi-Fi Penetration Tool", "vendor": "risinek", "type": "project",
+    "protocols": ["Wi-Fi"],
+    "repo": "https://github.com/risinek/esp32-wifi-penetration-tool",
+    "note": "Focused ESP-IDF framework for ESP32 Wi-Fi attacks (~2.9k stars, MIT, last push 2024-02). Captures WPA/WPA2 PMKIDs and 4-way handshakes (passively, via a rogue duplicate AP, or by forcing re-auth), formats captures to PCAP and converts them to a hashcat-ready HCCAPX; also runs deauthentication and DoS attacks. Driven entirely from an on-device management-AP web UI — no screen needed. Includes a WSL bypasser to emit arbitrary 802.11 frames on a plain ESP32."
+  },
+  {
+    "slug": "esp32-deauther-ganesh", "name": "ESP32 Deauther (GANESH-ICMC)", "vendor": "GANESH-ICMC", "type": "project",
+    "protocols": ["Wi-Fi"],
+    "repo": "https://github.com/GANESH-ICMC/esp32-deauther",
+    "note": "An ESP-IDF port of the Spacehuhn deauther to the ESP32, built on the esp_wifi_80211_tx frame-injection function — the canonical bare-ESP32 deauth path referenced by risinek's penetration tool. NOTE: unmaintained since 2021 and ships no license file; confirm it builds against a current ESP-IDF before relying on it. (The famous Spacehuhn esp8266_deauther is ESP8266-only and does not run on the ESP32.)"
+  },
+  {
+    "slug": "esp32-projectzero", "name": "projectZero", "vendor": "LOCOSP", "type": "project",
+    "protocols": ["Wi-Fi"],
+    "repo": "https://github.com/LOCOSP/projectZero",
+    "note": "A two-board ESP32 evil-twin / deauther whose captive portal VERIFIES the entered password against the real AP, plus a WPA3-SAE overflow mode (MIT, active but small/early). Runs on ESP32 and ESP32-C5, driven from a CLI or a Flipper Zero. Low-maturity project — verify its behaviour on the bench before field use; the password-verifying portal and SAE-overflow angle are what make it worth noting."
+  },
+  {
+    "slug": "esp32-sour-apple", "name": "ESP32 Sour Apple", "vendor": "RapierXbox", "type": "project",
+    "protocols": ["BLE"],
+    "repo": "https://github.com/RapierXbox/ESP32-Sour-Apple",
+    "note": "A focused PoC that crashes/freezes iOS devices by flooding them with BLE pairing-request advertisements (~595 stars, GPL-3.0). Tested on ESP32-S3 and ESP-WROOM-32 (an ESP8266 cannot run it — no BLE radio). Genuinely disruptive — it can freeze nearby iPhones — so authorised testing only, on hardware you own. Target/payload effectiveness dates as Apple patches."
+  },
+  {
+    "slug": "evilapplejuice-esp32", "name": "EvilAppleJuice-ESP32", "vendor": "ckcr4lyf", "type": "project",
+    "protocols": ["BLE"],
+    "repo": "https://github.com/ckcr4lyf/EvilAppleJuice-ESP32",
+    "note": "A self-contained ESP32 sketch that spams Apple BLE proximity-pairing messages — the 'connect AirPods / setup' style popups — on nearby iOS devices (~2.1k stars). Single-purpose Apple advertising spam, derived from the AppleJuice proximity-spoof research. Authorised testing only; disruptive to all nearby Apple devices."
+  },
+  {
+    "slug": "applejuice", "name": "AppleJuice", "vendor": "ECTO-1A", "type": "project",
+    "protocols": ["BLE"],
+    "repo": "https://github.com/ECTO-1A/AppleJuice",
+    "note": "The original Apple BLE proximity-pairing message-spoofing research/PoC (~1.9k stars, Apache-2.0, last push 2024-06) — the upstream source of the 'Apple BLE spam' payloads reused by Marauder, Bruce, Ghost ESP and EvilAppleJuice. A reference corpus rather than a polished tool; payloads date as Apple patches, so treat as representative, not current."
+  },
+  {
+    "slug": "esp32-airtag-scanner", "name": "ESP32 AirTag Scanner", "vendor": "MatthewKuKanich", "type": "project",
+    "protocols": ["BLE"],
+    "repo": "https://github.com/MatthewKuKanich/ESP32-AirTag-Scanner",
+    "note": "ESP32 firmware that scans for Apple AirTag / Find My MAC addresses and BLE payloads without an Android phone or nRF Connect (~110 stars, last push 2024-04). Passive scan only — no spoofing or emulation; output over UART. Supports ESP32-WROOM and ESP32-S3. Useful at the survey step to detect trackers in the environment."
+  },
+  {
+    "slug": "openhaystack", "name": "OpenHaystack", "vendor": "SEEMOO Lab (TU Darmstadt)", "type": "project",
+    "protocols": ["BLE"],
+    "repo": "https://github.com/seemoo-lab/openhaystack",
+    "note": "Academic framework for tracking personal BLE devices via Apple's Find My network (~13k stars, AGPL-3.0). It ships ESP32 (and nRF51822) firmware that advertises as a Find My beacon, so an ESP32 can act as a DIY 'AirTag' — the AirTag/Find-My beacon spoof/emulation path on cheap hardware. Authorised research only; covertly placing a Find My beacon to track a person is unlawful."
+  },
+  {
+    "slug": "esp32-bt-classic-sniffer", "name": "ESP32 Bluetooth Classic Sniffer", "vendor": "Matheus Garbelini", "type": "software",
+    "protocols": ["Bluetooth Classic"],
+    "repo": "https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer",
+    "note": "The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4–10; ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband packets — BT header, channel, device role, FHS, ACL and LMP — over USB serial to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output. This is Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the target, so authorised testing only."
+  },
+  {
+    "slug": "braktooth", "name": "BrakTooth (ESP32 PoC)", "vendor": "Matheus Garbelini", "type": "project",
+    "protocols": ["Bluetooth Classic"],
+    "repo": "https://github.com/Matheus-Garbelini/braktooth_esp32_bluetooth_classic_attacks",
+    "note": "The public PoC release for the BrakTooth family of Bluetooth Classic baseband/LMP vulnerabilities — roughly 16 CVEs and 20+ attack variants against the BR/EDR controllers of dozens of SoCs (Espressif ESP32, Intel AX200, Qualcomm, Cypress/Infineon, TI CC2564 and more). Built on the patched-ESP32 sniffer; the attacks range from crash/DoS to, on some targets, RCE. Representative — check vendor advisories for current patch status. Authorised testing only, against devices you own or are contracted to assess."
+  },
+  {
+    "slug": "esp32-classic-bt-scan", "name": "ClassicBTScan", "vendor": "AntorFr", "type": "software",
+    "protocols": ["Bluetooth Classic"],
+    "repo": "https://github.com/AntorFr/ClassicBTScan",
+    "note": "A small Arduino-ESP32 library that performs a true Bluetooth Classic (BR/EDR) inquiry scan via the Bluedroid GAP API — returning each discovered device's MAC address, name, RSSI and Class-of-Device (CoD). The BR/EDR analogue of a BLE advertising scan (MIT, last push 2020). Only finds devices in discoverable / inquiry-scan mode; pin it to a known ESP-IDF as it is unmaintained."
+  },
+  {
+    "slug": "esp32-bt-exp", "name": "ESP32-BT-exp", "vendor": "esp32beans", "type": "software",
+    "protocols": ["Bluetooth Classic", "BLE"],
+    "repo": "https://github.com/esp32beans/ESP32-BT-exp",
+    "note": "An Arduino-ESP32 sketch that brings up the Bluedroid stack in dual-mode (Classic + BLE) and dumps discovered devices in pairing/inquiry mode (MIT). Discovery only — no pairing or connection. Classic (BR/EDR) discovery needs the original ESP32, not the C-series, which has no Bluetooth Classic radio."
+  },
+  {
+    "slug": "esp32-bluejammer", "name": "ESP32 BlueJammer", "vendor": "EmenstaNougat", "type": "project",
+    "protocols": ["Bluetooth Classic", "BLE", "Wi-Fi"],
+    "repo": "https://github.com/EmenstaNougat/ESP32-BlueJammer",
+    "note": "An ESP32 driving two nRF24L01+PA+LNA modules to flood the 2.4 GHz ISM band with noise, hopping channels to disrupt Bluetooth Classic (79 ch), BLE (40 ch), Wi-Fi (14 ch) and 2.4 GHz RC/drone links. WARNING: RF jamming is illegal in most jurisdictions (e.g. unlawful in the US under FCC rules) — use only in an RF-shielded / controlled environment for authorised resilience testing. Requires two nRF24L01+PA+LNA modules in addition to the ESP32."
+  },
+  {
+    "slug": "marauder-ui-android-app", "name": "Marauder UI (Android)", "vendor": "Electronic Cats", "type": "software", "ec": true,
+    "protocols": ["Wi-Fi", "BLE"],
+    "repo": "https://github.com/ElectronicCats/marauder-ui-android-app",
+    "note": "Electronic Cats' Android companion app that drives an ESP32 Marauder board over a phone UI instead of the on-device screen. A host front-end for the Marauder firmware (not a firmware or a board itself) — the EC tie-in to the ESP32 Marauder ecosystem."
+  }
+]

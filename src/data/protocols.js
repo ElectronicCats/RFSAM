@@ -2,6 +2,7 @@
 // `status: 'deepen'` = exists in the legacy corpus; `status: 'new'` = added for the full map.
 export const protocols = [
   { id: 'BLE',    name: 'Bluetooth Low Energy', band: '2.400–2.480 GHz',                 prefix: 'RFSAM-BLE',    status: 'deepen' },
+  { id: 'BTC',    name: 'Bluetooth Classic',    band: '2.402–2.480 GHz (BR/EDR)',        prefix: 'RFSAM-BTC',    status: 'new' },
   { id: 'WIFI',   name: 'Wi-Fi (802.11)',       band: '2.4 / 5 / 6 GHz',                 prefix: 'RFSAM-WIFI',   status: 'deepen' },
   { id: 'LORA',   name: 'LoRa / LoRaWAN',        band: 'ISM sub-GHz (US915 / EU868)',     prefix: 'RFSAM-LORA',   status: 'deepen' },
   { id: 'LTE',    name: 'LTE / 4G',              band: 'Licensed cellular',               prefix: 'RFSAM-LTE',    status: 'deepen' },

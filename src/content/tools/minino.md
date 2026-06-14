@@ -14,6 +14,8 @@ note: >-
   ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it
   does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a
   deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi
-  deauthentication detection. Also BLE and 802.15.4 (Zigbee/Thread) field recon.
+  deauthentication detection. It also has a native BLE suite — an advertising
+  scanner, tracker/AirTag detection, BLE notification spam and BLE HID — plus
+  802.15.4 (Zigbee/Thread) field recon.
 ---
-ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi deauthentication detection. Also BLE and 802.15.4 (Zigbee/Thread) field recon.
+ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi deauthentication detection. It also has a native BLE suite — an advertising scanner, tracker/AirTag detection, BLE notification spam and BLE HID — plus 802.15.4 (Zigbee/Thread) field recon.

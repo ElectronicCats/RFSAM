@@ -9,7 +9,7 @@ const hardware = tools.filter((t) => t.data.type === 'hardware').sort((a, b) => 
 const software = tools.filter((t) => t.data.type !== 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
 
 const CHIP = {
-  BLE: 'BLE', WIFI: 'Wi-Fi', LORA: 'LoRa', LTE: 'LTE', RFID: 'RFID/NFC', SUBG: 'Sub-GHz',
+  BLE: 'BLE', BTC: 'BT Classic', WIFI: 'Wi-Fi', LORA: 'LoRa', LTE: 'LTE', RFID: 'RFID/NFC', SUBG: 'Sub-GHz',
   ZIGBEE: 'Zigbee', ZWAVE: 'Z-Wave', THREAD: 'Thread', GNSS: 'GNSS', ADSB: 'ADS-B',
   NR5G: '5G NR', GSM: 'GSM', UWB: 'UWB',
 };
