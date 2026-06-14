@@ -269,6 +269,11 @@ const payload = JSON.stringify({
       }
       side.innerHTML = h;
       document.getElementById('wf-back').onclick = renderKit;
+      // On phones the panel sits BELOW the graph — bring it into view on a tap so
+      // the detail you just asked for is actually on screen.
+      if (window.matchMedia('(max-width: 760px)').matches) {
+        document.getElementById('wf-side').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
     renderKit();
   </script>
@@ -319,6 +324,21 @@ const payload = JSON.stringify({
     #wf-side .cta, #wf-side .back2 { display: inline-block; margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--orange); background: none; border: 0; cursor: pointer; padding: 0; }
     #wf-side .hint { font-size: 10px; color: var(--mut2); margin-top: 22px; }
     body:has(#wf) footer { display: none; }
-    @media (max-width: 760px) { #wf-side { display: none; } }
+    /* Phones: stack the graph over the panel instead of hiding the panel
+       (hiding it made every node tap a dead end). Page scrolls; graph is a
+       fixed-height map on top, the kit/detail flows full-width below it. */
+    @media (max-width: 760px) {
+      #wf { height: auto; }
+      #wf-stage { flex-direction: column; }
+      #wf-graph { flex: 0 0 auto; height: 50vh; min-height: 280px; }
+      #wf-side {
+        display: block; width: auto; flex: 0 0 auto;
+        border-left: 0; border-top: 1px solid var(--line);
+        overflow: visible; padding: 18px 16px 40px;
+      }
+      #wf-top { gap: 10px 14px; }
+      #wf-top .title { font-size: 13px; }
+      #wf-intents { margin-left: 0; }
+    }
   </style>
 </BaseLayout>
