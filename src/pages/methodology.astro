@@ -2,28 +2,137 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { layers } from '../data/layers.js';
 import { bsamRelation } from '../data/bsamRelation.js';
+import { criticality } from '../data/criticality.js';
+import { protocols } from '../data/protocols.js';
+
+const rubric = {
+  info: 'Observational; no direct security impact (e.g. capture feasibility).',
+  low: 'A minor exposure or a hardening gap.',
+  medium: 'A meaningful weakness that needs specific conditions to exploit.',
+  high: 'A readily exploitable weakness with significant impact.',
+  critical: 'Full compromise — takeover, key recovery, impersonation — with practical preconditions.',
+};
+const ig = layers.find((l) => l.id === 'IG');
+const descent = layers.filter((l) => l.id !== 'IG');
 ---
 <BaseLayout title="Methodology">
   <div class="container">
-    <h1 style="font-size:34px">Methodology</h1>
+    <h1>Methodology</h1>
+    <p class="lead">
+      RFSAM organises RF security on two axes. Every check is a <strong>control</strong>, indexed by the
+      <strong>protocol</strong> it applies to and by the <strong>layer</strong> of the assessment it belongs to — so,
+      facing an unknown signal or device, you always have a place to start and a way to know what you've covered.
+      It's a <span class="cyan">north</span>, not a new attack: it ties OSSTMM, BSAM and the SDR-pentest lineage
+      into one navigable reference across {protocols.length} technologies.
+    </p>
 
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;margin-top:32px;color:var(--mut2)">THE LAYER MODEL</h2>
-    {layers.map((l) => (
-      <div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)">
-        <div class="mono" style={`width:46px;color:${l.color}`}>{l.id}</div>
+    <h2 class="sect">THE DESCENT</h2>
+    <p class="note">
+      An assessment runs top-down through six layers — from the open air to what the device trusts — preceded by a
+      pre-descent information-gathering pass. The <a href="/wayfinder">Wayfinder</a> walks you down it per technology;
+      the <a href="/controls">controls</a> verify each floor.
+    </p>
+    <div class="layer pre">
+      <div class="lid mono" style={`color:${ig.color}`}>{ig.id}</div>
+      <div>
+        <div class="lname">{ig.name} <span class="chip">pre-descent</span></div>
+        <div class="lnote">{ig.note}</div>
+      </div>
+    </div>
+    {descent.map((l, i) => (
+      <div class="layer">
+        <div class="lid mono" style={`color:${l.color}`}>{l.id}</div>
         <div>
-          <div style="font-family:var(--disp);font-weight:600">{l.name}</div>
-          <div style="color:var(--mut);font-size:13px">{l.note}</div>
+          <div class="lname"><span class="num">{i + 1}</span>{l.name}</div>
+          <div class="lnote">{l.note}</div>
         </div>
       </div>
     ))}
 
-    <h2 class="mono" style="font-size:13px;letter-spacing:.16em;margin-top:40px;color:var(--mut2)">WHY RFSAM &amp; WHAT IT BUILDS ON</h2>
-    <p style="color:#CFD9E4;line-height:1.7;margin-top:10px">{bsamRelation.priorArt}</p>
-    <p style="color:var(--mut);font-size:13.5px;line-height:1.7;margin-top:14px">
-      Where an established methodology already owns a layer, RFSAM defers to it rather than duplicating —
-      most notably <a style="color:var(--cyan)" href="/wayfinder/ble">Bluetooth, where it builds on Tarlogic's BSAM</a>.
-      Each technology's reference methodology and the reasons to use it live on that technology's wayfinder.
+    <h2 class="sect">HOW A CONTROL IS BUILT</h2>
+    <p class="note">
+      Each control is identified as <span class="mono">RFSAM-&lt;PROTOCOL&gt;-&lt;LAYER&gt;-NN</span>
+      (e.g. <span class="mono">RFSAM-BLE-AT-01</span>) — its protocol × layer coordinates — and follows a fixed shape:
+      an <strong>objective</strong> (the one thing it verifies), a numbered <strong>procedure</strong> with real
+      commands, a <strong>field case</strong> with real data, the <strong>known attacks</strong> with citations, and
+      layered <strong>remediation</strong>. Every nontrivial claim carries a resolvable source; anything unverified is
+      flagged, not asserted. Each control is rated:
+    </p>
+    <div class="crit">
+      {Object.entries(criticality).map(([k, v]) => (
+        <div class="crow">
+          <span class="cdot" style={`background:${v.color}`}></span>
+          <span class="clabel" style={`color:${v.color}`}>{v.label}</span>
+          <span class="cdesc">{rubric[k]}</span>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="sect">TWO WAYS IN</h2>
+    <div class="ways">
+      <a href="/wayfinder" class="way">
+        <div class="wt">Wayfinder <span class="arr">→</span></div>
+        <p>Have a device and don't know where to start? Pick a technology and get the exact hardware + software kit
+        for each step of the descent — an action-first interactive map.</p>
+      </a>
+      <a href="/controls" class="way">
+        <div class="wt">Controls <span class="arr">→</span></div>
+        <p>The reference body: the numbered, cited verification procedures — objective, method, field case, known
+        attacks, remediation — you run during, and cite in, an assessment.</p>
+      </a>
+    </div>
+
+    <h2 class="sect">WHY RFSAM &amp; WHAT IT BUILDS ON</h2>
+    <p class="prose">{bsamRelation.priorArt}</p>
+
+    <h2 class="sect">RELATIONSHIP TO BSAM</h2>
+    <p class="prose">{bsamRelation.summary}</p>
+    <div class="own">
+      {bsamRelation.ownership.map((o) => (
+        <div class="orow">
+          <div class="ortitle mono">{o.rfsam}</div>
+          <div class="ornote">{o.note}</div>
+        </div>
+      ))}
+    </div>
+    <p class="note">
+      <a href={bsamRelation.url} target="_blank" rel="noopener">Tarlogic BSAM ↗</a> — where BSAM owns a layer
+      (Bluetooth, link-and-above), the BLE controls defer to it and add only the RF-capture prerequisite, citing the
+      specific BSAM control they hand off to.
     </p>
   </div>
+
+  <style>
+    h1 { font-size: 34px; }
+    .lead { font-size: 16px; color: #CFD9E4; line-height: 1.7; max-width: 74ch; margin-top: 14px; }
+    .lead .cyan { color: var(--cyan); }
+    .sect { font-family: var(--mono); font-size: 13px; letter-spacing: .16em; color: var(--mut2); margin-top: 46px; }
+    .note { color: var(--mut); font-size: 13.5px; line-height: 1.7; max-width: 76ch; margin-top: 8px; }
+    .prose { color: #CFD9E4; font-size: 14px; line-height: 1.75; max-width: 76ch; margin-top: 10px; }
+    .note a, .prose a, .lead a { color: var(--cyan); }
+    .layer { display: flex; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .layer.pre { opacity: .82; }
+    .layer:first-of-type { margin-top: 14px; }
+    .lid { width: 46px; flex-shrink: 0; font-size: 13px; font-weight: 600; }
+    .lname { font-family: var(--disp); font-weight: 600; font-size: 15px; color: var(--ink); display: flex; align-items: center; gap: 9px; }
+    .lname .num { font-family: var(--mono); font-size: 11px; color: var(--mut2); border: 1px solid var(--line2); border-radius: 4px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
+    .lname .chip { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: var(--mut2); border: 1px solid var(--line2); border-radius: 3px; padding: 1px 6px; }
+    .lnote { color: var(--mut); font-size: 13px; line-height: 1.55; margin-top: 3px; }
+    .crit { margin-top: 14px; display: flex; flex-direction: column; gap: 2px; }
+    .crow { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(34,52,74,.4); }
+    .cdot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; align-self: center; }
+    .clabel { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; width: 64px; flex-shrink: 0; }
+    .cdesc { color: var(--mut); font-size: 13px; line-height: 1.5; }
+    .ways { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+    .way { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; transition: border-color .15s; }
+    .way:hover { border-color: var(--line2); }
+    .way .wt { font-family: var(--disp); font-weight: 600; font-size: 18px; color: var(--ink); }
+    .way .arr { color: var(--orange); }
+    .way p { color: var(--mut); font-size: 13px; line-height: 1.6; margin-top: 8px; }
+    .own { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .orow { display: flex; gap: 16px; padding: 11px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+    .ortitle { font-size: 12px; color: var(--cyan); flex: 0 0 200px; line-height: 1.4; }
+    .ornote { color: #CFD9E4; font-size: 13px; line-height: 1.55; }
+    @media (max-width: 640px) { .ways { grid-template-columns: 1fr; } .orow { flex-direction: column; gap: 4px; } .ortitle { flex-basis: auto; } }
+  </style>
 </BaseLayout>
