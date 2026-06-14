@@ -6,7 +6,5 @@ dist/
 .env
 .env.*
 
-# Local working/tooling docs — never published
-CLAUDE.md
-CLAUDE-CODE-PROMPT.md
+# Internal working docs — never published
 docs/
