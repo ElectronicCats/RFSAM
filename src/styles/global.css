@@ -1,0 +1,40 @@
+:root {
+  --bg:#0A1119; --bg2:#0E1722; --panel:#131F2E; --panel2:#18283A;
+  --line:#22344A; --line2:#2C4258;
+  --ink:#E6EDF3; --mut:#8B9AAB; --mut2:#5E7088;
+  --orange:#FF7A1A; --cyan:#2FB8E0; --green:#3FD17C; --purple:#9B8CFF;
+  --amber:#FFC24B; --red:#FF5A5F;
+  /* layer colors */
+  --ly-IG:#C9D4E0; --ly-SP:#2FB8E0; --ly-PHY:#3FD17C; --ly-LL:#9B8CFF;
+  --ly-CR:#FFC24B; --ly-AT:#FF7A1A; --ly-AP:#FF5A5F;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+a { color:inherit; text-decoration:none; }
+a:hover { color:var(--cyan); }
+::selection { background:rgba(255,122,26,.3); }
+code { font-family:var(--mono); font-size:.92em; background:rgba(63,209,124,.10); color:var(--green); padding:1px 5px; border-radius:3px; }
+pre { background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:14px 16px; overflow:auto; }
+pre code { background:none; color:var(--ink); padding:0; }
+h1,h2,h3 { font-family:var(--disp); letter-spacing:-.01em; }
+.container { max-width:920px; margin:0 auto; padding:40px 24px 120px; }
+.mono { font-family:var(--mono); }
+/* nav */
+.topnav { position:sticky; top:0; z-index:30; display:flex; gap:22px; align-items:center;
+  background:rgba(10,17,25,.86); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); padding:14px 24px; }
+.topnav .brand { font-family:var(--disp); font-weight:700; font-size:18px; }
+.topnav a.nav { font-family:var(--mono); font-size:12px; color:var(--mut); letter-spacing:.04em; }
+.topnav a.nav:hover { color:var(--ink); }
+.topnav a.nav[aria-current="page"] { color:var(--orange); }
+/* review badge */
+.review { font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:3px; border:1px solid var(--line2); letter-spacing:.06em; }
+.review.stub { color:var(--mut2); }
+.review.draft { color:var(--amber); border-color:var(--amber); }
+.review.verified { color:var(--green); border-color:var(--green); }
+/* flag admonition (rendered from `> [!FLAG]` blockquotes) */
+blockquote.flag { border-left:3px solid var(--amber); background:rgba(255,194,75,.07);
+  padding:10px 14px; margin:14px 0; border-radius:6px; color:#E7DCC2; font-size:14px; }
