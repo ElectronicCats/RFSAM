@@ -9,3 +9,4 @@ dist/
 # Local working/tooling docs — never published
 CLAUDE.md
 CLAUDE-CODE-PROMPT.md
+docs/

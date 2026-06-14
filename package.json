@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "migrate": "node scripts/migrate.mjs",
     "validate": "node scripts/validate.mjs",
-    "test": "node --test scripts/"
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "astro": "^5.0.0"
