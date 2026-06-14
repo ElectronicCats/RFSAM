@@ -24,14 +24,14 @@ const nav = [
   </head>
   <body>
     <nav class="topnav">
-      <a class="brand" href="/RFSAM/">RFSAM</a>
+      <a class="brand" href="/RFSAM/" title={meta.subtitle}>RFSAM</a>
       {nav.map((n) => (
         <a class="nav" href={n.href} aria-current={path === n.href || path.startsWith(n.href + '/') ? 'page' : undefined}>{n.label}</a>
       ))}
     </nav>
     <slot />
     <footer style="border-top:1px solid var(--line);padding:24px;color:var(--mut2);font-size:12px;text-align:center">
-      {meta.org} · {meta.title} {meta.version} · CC BY-SA 4.0
+      {meta.title} — {meta.subtitle} · {meta.org} · {meta.version} · CC BY-SA 4.0
     </footer>
   </body>
 </html>
