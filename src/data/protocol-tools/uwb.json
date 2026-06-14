@@ -67,5 +67,16 @@
     "protocols": ["UWB"],
     "repo": "https://github.com/forthink-xyz/forthink_uwb_sniffer_tool",
     "note": "Open-source host software and a Wireshark plugin (forthink-xyz/uwb-sniffer-wireshark) that monitor and decode CCC, FiRa and IEEE 802.15.4a/z UWB — including parameters for Apple Car-Key and AirTag/Nearby-Interaction (FiRa) traffic. Caveat: the software is open but it REQUIRES Forthink's COMMERCIAL UWB-Dongle-Sniffer hardware (an FT4222H-interfaced dongle) — the radio itself is a closed, purchased product, not open hardware. Listed for completeness as the most capable off-the-shelf UWB capture path; it observes frames, it does not defeat STS-protected ranging integrity."
+  },
+  {
+    "slug": "forthink-uwb-dongle",
+    "name": "Forthink UWB-Dongle-Sniffer",
+    "vendor": "Forthink / Everhigh",
+    "type": "hardware",
+    "protocols": ["UWB"],
+    "spec": "Commercial UWB sniffer dongle · FT4222H USB interface · closed hardware",
+    "homepage": "https://github.com/forthink-xyz/forthink_uwb_sniffer_tool",
+    "software": ["forthink-uwb-sniffer"],
+    "note": "Forthink's commercial UWB-Dongle-Sniffer — a closed, purchased FT4222H-interfaced UWB capture dongle (not open hardware). It is the radio the open Forthink sniffer software and Wireshark plugin run against; the dongle must be bought from Forthink."
   }
 ]

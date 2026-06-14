@@ -2,28 +2,34 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ToolCard.astro';
+import { toolchains } from '../data/toolchains.js';
 
 const tools = await getCollection('tools');
 const hardware = tools.filter((t) => t.data.type === 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
 const software = tools.filter((t) => t.data.type !== 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
 
-// Map the free-form protocol tags in the catalogue onto the 14 technology pages.
-const ALIAS = {
-  BLE: ['BLE', 'Bluetooth'], WIFI: ['Wi-Fi'], LORA: ['LoRa', 'LoRaWAN'], LTE: ['LTE'],
-  RFID: ['RFID', 'NFC', 'MagStripe'], SUBG: ['Sub-GHz'], ZIGBEE: ['Zigbee', '802.15.4'],
-  ZWAVE: ['Z-Wave'], THREAD: ['Thread', 'Matter', '802.15.4'], GNSS: ['GNSS', 'GPS'],
-  ADSB: ['ADS-B'], NR5G: ['5G NR'], GSM: ['GSM', '2G'], UWB: ['UWB'],
-};
 const CHIP = {
   BLE: 'BLE', WIFI: 'Wi-Fi', LORA: 'LoRa', LTE: 'LTE', RFID: 'RFID/NFC', SUBG: 'Sub-GHz',
   ZIGBEE: 'Zigbee', ZWAVE: 'Z-Wave', THREAD: 'Thread', GNSS: 'GNSS', ADSB: 'ADS-B',
   NR5G: '5G NR', GSM: 'GSM', UWB: 'UWB',
 };
-const UNIVERSAL = ['Wide-band SDR', 'RX-only SDR', 'any SDR', 'any'];
-const techsFor = (p = []) => Object.entries(ALIAS).filter(([, tags]) => p.some((x) => tags.includes(x))).map(([id]) => id);
-const isUniversal = (p = []) => p.some((x) => UNIVERSAL.includes(x));
-const dataTech = (d) => [...techsFor(d.protocols || []), ...(isUniversal(d.protocols || []) ? ['universal'] : [])].join(' ');
-const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.filter((t) => techsFor(t.data.protocols || []).includes(id)).length }));
+// Which technologies actually USE each tool — derived from the wayfinder toolchains
+// (a tool's step + dep + decoder membership), NOT from blanket tags. So SDRs show
+// under BLE/LTE/Sub-GHz where they're used, but not under near-field RFID/NFC.
+const techByTool = {};
+const add = (slug, pid) => { if (slug) (techByTool[slug] ??= new Set()).add(pid); };
+for (const [pid, tc] of Object.entries(toolchains)) {
+  if (!CHIP[pid]) continue;
+  for (const layer of Object.values(tc.layers || {})) {
+    add(layer.decoder, pid);
+    for (const t of layer.tools || []) {
+      add(t.tool, pid);
+      for (const d of t.deps || []) add(d, pid);
+    }
+  }
+}
+const dataTech = (slug) => [...(techByTool[slug] || [])].join(' ');
+const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.filter((t) => techByTool[t.id]?.has(id)).length }));
 ---
 <BaseLayout title="Tools">
   <div class="container">
@@ -37,19 +43,19 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
       <button data-k="all" class="on">All</button>
       {chips.map((c) => <button data-k={c.id}>{c.label}<span class="c">{c.n}</span></button>)}
     </div>
-    <p class="hint mono">SDRs and Wireshark are cross-protocol — they stay visible under every filter.</p>
+    <p class="hint mono">Each filter shows the tools that technology's wayfinder kit actually uses.</p>
 
     <h2 id="hw-h" class="mono sect">HARDWARE</h2>
     <div id="hw-grid" class="grid">
-      {hardware.map((t) => <div class="tool-item" data-tech={dataTech(t.data)}><ToolCard tool={t.data} /></div>)}
+      {hardware.map((t) => <div class="tool-item" data-tech={dataTech(t.id)}><ToolCard tool={t.data} /></div>)}
     </div>
 
     <h2 id="sw-h" class="mono sect">SOFTWARE &amp; PROJECTS</h2>
     <div id="sw-grid" class="grid">
-      {software.map((t) => <div class="tool-item" data-tech={dataTech(t.data)}><ToolCard tool={t.data} /></div>)}
+      {software.map((t) => <div class="tool-item" data-tech={dataTech(t.id)}><ToolCard tool={t.data} /></div>)}
     </div>
 
-    <p id="empty" class="empty" hidden>No tools tagged for this technology yet.</p>
+    <p id="empty" class="empty" hidden>No tools in this technology's kit yet.</p>
   </div>
 
   <style>
@@ -72,9 +78,8 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
     const empty = document.getElementById('empty');
     function apply(k) {
       items.forEach((it) => {
-        const techs = it.dataset.tech.split(' ');
-        const show = k === 'all' || techs.includes(k) || techs.includes('universal');
-        it.style.display = show ? '' : 'none';
+        const techs = it.dataset.tech ? it.dataset.tech.split(' ') : [];
+        it.style.display = (k === 'all' || techs.includes(k)) ? '' : 'none';
       });
       let anyTotal = false;
       sections.forEach(([h, g]) => {
