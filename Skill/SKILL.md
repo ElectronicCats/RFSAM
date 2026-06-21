@@ -154,7 +154,7 @@ Tools legítimas en auditoría, ilegales fuera de ella. Se **reiteran junto al c
 
 `loot/` (capturas, claves, PII, hallazgos) **debe estar en `.gitignore`**. La skill escribe evidencia ahí; nunca
 debe commitearse. Verifica que el proyecto lo ignora antes de iniciar la captura (`.gitignore` del proyecto anfitrión
-debe incluir `loot/`; el `.gitignore` de la skill propia incluye `.loop*`).
+debe incluir `loot/`; el `.gitignore` de la skill propia incluye `loot/`).
 
 ---
 
@@ -363,7 +363,7 @@ captura; el modelo RF sí).
 desempata Exposición (mayor superficie primero) y luego Explotabilidad (más friccionable primero). **Excepción — modo
 Defensivo:** una amenaza activa detectada (Alcance D) encabeza el reporte aunque su severidad técnica sea media — la
 urgencia operacional (amenaza en curso) supera la severidad técnica. Regla de remediación: `critical`/`high` exigen
-las 3 capas (Developer/Integrator/Operator); `low`/`info` pueden cerrar con Operator solo (ver `docs/phase4-mitigations.md`).
+las 3 capas (Developer/Integrator/Operator); `low`/`info` pueden cerrar con Operator solo (ver `references/03-registro-hallazgos.md §7`).
 
 **Antes de registrar**, pasa el checklist Q1–Q8 (`references/26-calidad.md §pre-registro`); si cualquier ítem es
 NO → no registrar todavía.
@@ -404,11 +404,12 @@ loot/
 ## CHECKPOINT — GUARDAR ESTADO CADA 5 HALLAZGOS
 
 ```bash
-python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/session_state.json'; s=json.load(open(p)) if os.path.exists(p) else {}; s.update({'fase':'FASE_ACTUAL','protocolo':'PROTO','completado':s.get('completado',[])+['FASE_COMPLETADA'],'proxima_prueba':'PRUEBA_EXACTA — herramienta, capa, parámetros','last_updated':datetime.datetime.now().isoformat()}); json.dump(s,open(p,'w'),indent=2,ensure_ascii=False)"
+python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/session_state.json'; s=json.load(open(p)) if os.path.exists(p) else {}; s.update({'fase':'{{FASE_ACTUAL}}','protocolo':'{{PROTO}}','completado':s.get('completado',[])+['{{FASE_COMPLETADA}}'],'proxima_prueba':'{{PRUEBA_EXACTA — herramienta, capa, parámetros}}','last_updated':datetime.datetime.now().isoformat()}); json.dump(s,open(p,'w'),indent=2,ensure_ascii=False)"
 ```
 
-**NUNCA te detengas a mitad de fase.** Si el contexto se agota: guarda estado y reporta `Fase / Completado /
-Próximo / Cómo retomar`.
+> Reemplaza los marcadores `{{...}}` con los valores reales de la sesión antes de ejecutar.
+> **NUNCA te detengas a mitad de fase.** Si el contexto se agota: guarda estado y reporta `Fase / Completado /
+> Próximo / Cómo retomar`.
 
 ---
 

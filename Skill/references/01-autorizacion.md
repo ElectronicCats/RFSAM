@@ -69,7 +69,7 @@ AT se documentan como hipótesis a verificar en entorno autorizado, **nunca se e
 
 - **EE.UU.**: FCC regula el espectro. Jamming es ilegal (Communications Act §333). Spoofing GNSS
   ilegal. Interceptación de comunicaciones electrónicas (Wiretap Act) restringe captura de contenido.
-  Excepciones: equipment ownerr, con consentimiento, o autoridad legal.
+  Excepciones: equipment owner, con consentimiento, o autoridad legal.
 - **UE/UK**: reguladores nacionales + regulatorio harmonizado. Interceptación sin consentimiento
   ilegal (Ley de Comunicaciones). GDPR aplica a datos personales en capturas.
 - **Latam**: varía. Generalmente: interceptar comunicaciones ajenas es delito; jamming suele estar
@@ -84,14 +84,14 @@ de seguridad (GNSS, ADS-B) sin autorización es delito. No lo hagas fuera de un 
 
 Para modo (3), las formas de contener la señal:
 
-- **Jaula de Faraday**: caja/bosechada conductiva que bloquea la RF saliente/entrante. Verifica
+- **Jaula de Faraday**: caja/estructura conductiva que bloquea la RF saliente/entrante. Verifica
   atenuación con un teléfono dentro (debe perder señal).
 - **Conducción cableada**: conecta el TX SDR al receptor/dispositivo bajo prueba por cable coaxial
   con atenuadores, nunca por antena. Elimina la radiación al aire.
 - **Atenuadores**: limitan la potencia para que la señal no escape del setup cableado.
 - **GPSDO blindado**: para spoofing GNSS, el TX va por cable al receptor bajo prueba, nunca al aire.
 
-**Validación**: antes de transmitir en lab, confirma con un SDR/rteléfono externo que **no** hay
+**Validación**: antes de transmitir en lab, confirma con un SDR o teléfono externo que **no** hay
 fuga de señal fuera de la contención.
 
 ## 6. Documentación de scope

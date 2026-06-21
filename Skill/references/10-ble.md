@@ -26,7 +26,7 @@
 - **Criticalidad**: `info` (auditor-capability baseline, no device finding).
 
 ### PHY — `RFSAM-BLE-PHY-01` Demodulation and bit recovery
-- **Objetivo**: demodular GFSK, correlar access address, de-whiten, validar CRC — bits limpios por canal.
+- **Objetivo**: demodular GFSK, correlacionar access address, de-whiten, validar CRC — bits limpios por canal.
 - **Kit**: Sniffle/ice9 (on-chip o channelised SDR); Wireshark para verificar `CRC correct`.
 - **Comando**: `python3 -m sniffle.sniff_receiver -s /dev/ttyACM0 -a -o adv.pcap`.
 - **Ataques citados**: passive access-address/CRCInit recovery (Ryan WOOT 2013); SweynTooth fuzzing (CVE-2019-16336, 17519).
@@ -39,7 +39,7 @@
 - **Ataques citados**: connection-following sniffing (Ryan WOOT 2013); CSA#2 recovery (Cauquil DEF CON 27); established-conn recovery (Ballabriga 2020); address-carryover tracking (Becker PoPETs 2019); PHY-layer fingerprint (Givehchian S&P 2022).
 - **Deferencia**: BSAM-DI-03/DI-04/DI-06 (LL-01), BSAM-DI-04/EN-02 (LL-02). `deferred: true`.
 
-### CR — `RFSAM-BLE-CR-01` Pairing and decrypt weak pairings
+### CR — `RFSAM-BLE-CR-01` Pairing and encryption assessment
 - **Objetivo**: ¿LE Legacy o LESC? Si Legacy → recuperar TK y descifrar sesión.
 - **Kit**: crackle (brute TK), Wireshark (exportar PCAP), Sniffle/CatSniffer (capturar pairing).
 - **Comando**: `crackle -i ble_pairing.pcap -o ble_decrypted.pcap`.

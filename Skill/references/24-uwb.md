@@ -31,12 +31,26 @@
 - STS = secuencia pseudo-random keyed AES que los dos ranging peers comparten → receiver correlaciona incoming impulse contra STS esperada → solo arrival time STS-authenticated es trusted como distance. Atacante sin STS key no puede forjar/replayar pulse ranging legítimo → no offline key recovery tipo BLE/Wi-Fi. STS key se intercambia sobre canal bootstrap separado (BLE Apple/CCC, NFC algunos CCC) — cualquier weakness crypto vive en **ese** handshake (ver wayfinder BLE/RFID), no en pulsos UWB. Superficie research genuina UWB = **física**: ¿se puede manipular time-of-flight al physical layer (early detection, preamble/pulse injection) sin key? Eso es AT. **No hay tool open de key-crack porque no hay ataque de key-crack.**
 
 ### AT — `RFSAM-UWB-AT-01` Distance-manipulation resilience
-- **⚠ AUTORIZADO + especialista académico.** Ataque real UWB = manipulación física de distancia, NO takeover. Distancia de time-of-flight → research attacks intentan que receiver registre arrival **más temprano** que el real (acorta distancia medida) **sin STS key**: 'early-detect/late-commit' y preamble-injection en HRP 802.15.4z; relay que shufflea ranging entre coche distante y key. **Landmark público: Ghost Peak** (Leu, Camurati, Heinrich et al., USENIX Security 2022) — distance-reduction práctica en HRP UWB vs Apple U1 interop NXP/Qorvo, reduce 12 m a 0 m con ~4% éxito por intentp, device off-the-shelf ~$65 (DWM3000EVB + nRF52DK), **SIN material crypto**. **Honestidad tooling**: NO hay tool open push-button. Trabajo publicado usa custom DW3000 firmware + setups bespoke no empaquetados como producto; reproducir = engineering contra board DW3000, no download exploit. Citar research, proveer peer hardware controlable — **no entregar arma que no existe abiertamente**.
+- **⚠ AUTORIZADO + especialista académico.** Ataque real UWB = manipulación física de distancia, NO takeover. Distancia de time-of-flight → research attacks intentan que receiver registre arrival **más temprano** que el real (acorta distancia medida) **sin STS key**: 'early-detect/late-commit' y preamble-injection en HRP 802.15.4z; relay que shufflea ranging entre coche distante y key. **Landmark público: Ghost Peak** (Leu, Camurati, Heinrich et al., USENIX Security 2022) — distance-reduction práctica en HRP UWB vs Apple U1 interop NXP/Qorvo, reduce 12 m a 0 m con ~4% de éxito por intento, device off-the-shelf ~$65 (DWM3000EVB + nRF52DK), **SIN material crypto**. **Honestidad tooling**: NO hay tool open push-button. Trabajo publicado usa custom DW3000 firmware + setups bespoke no empaquetados como producto; reproducir = engineering contra board DW3000, no download exploit. Citar research, proveer peer hardware controlable — **no entregar arma que no existe abiertamente**.
 - **Kit**: dwm3000-dwt-driver (peer UWB controlable research). Sin tool turnkey.
 - **Caveat**: development peer, NO exploit empaquetado distance-reduction. Ref: Ghost Peak securepositioning.ch/ghost-peak (arXiv 2111.05313, USENIX Security 2022).
 
 ### AP
 - "App" UWB = decisión ranging/positioning y qué confía en ella — ahí aterriza impacto aunque link sea difícil romper. Measurement UWB alimenta security gate: coche CCC Digital Key unlock/start solo si phone/key ranged dentro pocas decenas de cm; Apple Nearby Interaction precise direction/distance; RTLS decisiones access/safety. Pregunta assessment: ¿consumers enforce asunciones SECURE-RANGING? ¿Requieren measurement STS-authenticated (no legacy/non-secure)? ¿Bound distance tight? ¿Reject jumps implausibles? ¿Fail safe si ranging lost/manipulado? Evaluado en lógica victim system (y BLE/NFC bootstrap que keya session) — UWB ranging no expone protocol surface interactiva propia.
+
+## Subflujo (especialización del flujo maestro)
+
+Transiciones específicas de UWB; los comandos verbatim viven en `Descenso por capa` arriba. Ranging seguro por diseño — **no hay clave que romper**, el ataque es físico.
+
+| Avance | Criterio de avance | Marcadores |
+|--------|--------------------|------------|
+| IG → SP | Silicon (DW1000 legacy sin STS vs DW3000 moderna 802.15.4z), canal (ch5 6.5 / ch9 8.0 GHz), esquema app (Apple/CCC/FiRa). CVEs Ghost Peak | — |
+| SP → PHY+LL | **Ningún SDR commodity ve UWB** (ch5/ch9 encima del tope 6 GHz; >500 MHz channel). Captura exige transceiver DW3000-class que conozca el canal | — |
+| PHY+LL → CR | Frames 802.15.4z con transceiver real (SEEMOO uwb-sniffer). STS keyed AES → no offline key-recovery | — |
+| CR → AT | Sin ataque de key-crack (no hay). Superficie research = manipulación física de distancia (early-detect, preamble-injection) **sin STS key** | — |
+| AT | ⚠TX re-check; ataque **físico**, especialista académico, sin tool push-button. Ghost Peak: 12 m→0 m ~4% por intento. Solo authorized testing en setup propio | ⚠TX |
+
+**Anomalía defensiva** (modo Defensivo, RX-only): UWB es specialty near-field/posición — pocas señales "anómalas" que escuchar pasivamente con kit común (sin DW3000 controlable no capturas). Si defiendes un activo ranging-dependent, monitorea el sistema victim (¿rechaza jumps implausibles? ¿requiere STS-authenticated?). Registra; **no** desciendas a AT.
 
 ## Advertencias legales
 - RX/sniff UWB con tu propio transceiver OK.

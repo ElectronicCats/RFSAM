@@ -16,7 +16,10 @@ import json
 import os
 import sys
 
-# ── Coverage-map canónico de RFSAM (extraído de src/data/coverage-map.js) ──
+# ── Coverage-map canónico de RFSAM ──
+# ⚠ FUENTE ÚNICA: `src/data/coverage-map.js`. Esta tabla y `references/00-taxonomia.md §6`
+# deben mantenerse sincronizadas con ese archivo. Si añades/cambias un control, actualiza
+# los tres sitios (o mejor, deriva esta tabla del JS en el futuro).
 # Cada control: id, title, layer, status (existing/planned).
 COVERAGE = {
     "BLE": [
@@ -85,6 +88,7 @@ COVERAGE = {
     "ADSB": [
         ("RFSAM-ADSB-PHY-01", "Message capture and decode", "PHY"),
         ("RFSAM-ADSB-LL-01", "Message authenticity assessment", "LL"),
+        ("RFSAM-ADSB-AT-01", "Forge and inject (contained lab)", "AT"),
     ],
     "NR5G": [
         ("RFSAM-NR5G-SP-01", "Cell identification and capture", "SP"),

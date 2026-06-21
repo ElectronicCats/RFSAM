@@ -42,6 +42,20 @@
 - Matter clusters/atributos sobre CASE (read/write/invoke/subscribe). ACL que refrena admin recién añadido. Comisionado = admin total → app layer suele wide open.
 - **Kit**: chip-tool (cluster interaction), chip-repl (enum cluster tree), python-matter-server (controller persistente).
 
+## Subflujo (especialización del flujo maestro)
+
+Transiciones específicas de Thread/Matter; los comandos verbatim viven en `Descenso por capa` arriba.
+
+| Avance | Criterio de avance | Marcadores |
+|--------|--------------------|------------|
+| IG → SP | ¿Thread o Zigbee? (distinguir por upper layers 6LoWPAN+MLE). Matter device: QR/code + BLE onboarding. VID/PID contra DCL | — |
+| SP → PHY+LL | Canal 802.15.4 fijado (2.4 GHz, 16 canales 11–26, **no hoppa**); radio aparcada. SDR no decodifica O-QPSK/DSSS live | — |
+| PHY+LL → CR | MAC payload AES-128-CCM* bajo network key — Wireshark descifra con esa key. Thread crypto fuerte | — |
+| CR → AT | Sin offline key-recovery. Premios: comisioning débil/default (PSKc/PSKd), Matter PASE limitado por setup passcode | — |
+| AT | ⚠TX re-check; comisioning/fabric onboarding = superficie real. Join/probe mesh (pyspinel), commission Matter (chip-tool) | ⚠TX |
+
+**Anomalía defensiva** (modo Defensivo, RX-only): device desconocido intentando commissioning sobre tu fabric, o ventana BLE de comisioning abierta sin actividad propia = posible fabric hijack. Registra; **no** desciendas a AT.
+
 ## Advertencias legales
 - RX pasivo 802.15.4 OK.
 - **Join/commission/inject = activo**: solo mesh/fabric propio/autorizado. Comisionar device ajeno = acceso no autorizado.

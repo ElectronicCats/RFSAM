@@ -2,8 +2,7 @@
 
 > Diagnóstico cuando una fase del descenso no progresa. Úsalo **antes** de declarar gap (Ruta A) o escalar
 > (CONSULTA): la mayoría de los "no funciona" son entorno (permisos/drivers/antena), no falta de señal ni
-> fortaleza de cripto. Fuente: `docs/phase4-env-checks.md` §2, `docs/phase4-safe-capture.md` §4,
-> `docs/phase4-offline-analysis.md` §5, `docs/phase4-finding-patterns.md` (falsos positivos).
+> fortaleza de cripto. Fuente: §1 (setup), §2 (diagnóstico), §3 (orden de diagnosis), §4 (falsos positivos).
 
 ## Índice
 1. §setup — 5 checks de entorno (Fase 0, cachea resultado en `loot/notes/hardware.txt`)
@@ -41,7 +40,7 @@ ls /dev/ttyACM* /dev/ttyUSB* 2>/dev/null
 ls /sys/class/net
 ```
 
-Mapea vendor:product al slug usando `docs/rfsam-tools-registry.md` (campo `spec`). Marcadores clave:
+Mapea vendor:product al slug usando `references/02-kit-sdr.md` (campo `spec`). Marcadores clave:
 
 | Hardware | vendor:product | Notas |
 |----------|----------------|-------|
@@ -169,8 +168,8 @@ Ante "no veo / no funciona", NO declare gap inmediatamente. Sigue este orden:
 
 ## 4. §falsos-positivos — hallazgo que parece confirmado pero no lo es
 
-Antes de registrar, descarta el falso positivo típico del patrón (ver `docs/phase4-finding-patterns.md`
-columna "Falso positivo típico" por familia). Casos transversales:
+Antes de registrar, descarta el falso positivo típico del patrón (ver §4 abajo columna
+"Falso positivo típico" por familia). Casos transversales:
 
 | Síntoma (parece hallazgo) | Falso positivo típico | Verificación |
 |----------------------------|----------------------|--------------|

@@ -75,7 +75,7 @@ RESULTADO:   {{salida observable esperada que confirma}}
 
 > ⚠ **Marcadores de seguridad**: si el comando implica transmisión (`⚠TX`), re-confirma
 > autorización en `loot/scope.txt` antes de ejecutar (ver gate de `SKILL.md`). Si es RX
-> pasivo, verifica el marcador RX de la herramienta (`docs/phase4-safe-capture.md §2`).
+> pasivo, verifica el marcador RX de la herramienta (`references/25-troubleshooting.md §1`).
 > Infraestructura crítica (GNSS / ADS-B / rogue cell) exige contención (jaula/conducción)
 > incluso en modo activo.
 
@@ -84,7 +84,7 @@ RESULTADO:   {{salida observable esperada que confirma}}
 ## Mitigación (3 capas)
 
 > Modelo de remediación RFSAM — heredado de los 49 controles. `critical`/`high` exigen las 3
-> capas; `low`/`info` pueden cerrar con Operator solo. Ver `docs/phase4-mitigations.md`.
+> capas; `low`/`info` pueden cerrar con Operator solo. Ver `references/03-registro-hallazgos.md §7`.
 
 - **Desarrollador** (fabricante / firmware): {{cambios en código o configuración del producto —
   ej. forzar ECDH, rotar NWK key, cifrar GATT, implementar rolling code robusto}}

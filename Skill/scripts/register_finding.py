@@ -32,6 +32,10 @@ SEVERITIES = {"info", "low", "medium", "high", "critical"}
 
 ID_RE = re.compile(r"^RFSAM-[A-Z0-9]+-[A-Z]+-\d{2}$")
 CVSS4_RE = re.compile(r"^CVSS:4\.0/.+$")
+# Regex estricto de control derivado de los enums canónicos (DRY: una sola fuente de verdad).
+# Debe coincidir con `references/00-taxonomia.md §3` y `src/data/coverage-map.js`.
+_CONTROL_INNER = f"(?:{'|'.join(sorted(PROTOCOLS))})-(?:{'|'.join(LAYERS)})"
+ID_RE_STRICT = re.compile(rf"^RFSAM-{_CONTROL_INNER}-\d{{2}}$")
 # Modelo RFSAM de 4 ejes (references/03-registro-hallazgos.md §7)
 AXIS_RANGE = range(1, 5)          # impacto/explotabilidad/exposición: 1–4
 SCOPE_REACH = {"A", "B", "C", "D"}  # alcanzado / jaula / hipótesis / defensivo
@@ -53,8 +57,8 @@ def validate(args) -> list[str]:
         errs.append(f"--layer inválido: {args.layer!r}. Válidos: {sorted(LAYERS)}")
     if args.severity.lower() not in SEVERITIES:
         errs.append(f"--severity inválido: {args.severity!r}. Válidos: {sorted(SEVERITIES)}")
-    if args.control and not ID_RE.match(args.control):
-        errs.append(f"--control debe ser RFSAM-<PROTO>-<LAYER>-NN, recibido: {args.control!r}")
+    if args.control and not ID_RE_STRICT.match(args.control):
+        errs.append(f"--control debe ser RFSAM-<PROTO>-<LAYER>-NN (PROTO y LAYER canónicos), recibido: {args.control!r}")
     if args.cvss4 and not CVSS4_RE.match(args.cvss4):
         errs.append(f"--cvss4 debe empezar con 'CVSS:4.0/...', recibido: {args.cvss4!r}")
     if not (args.title and args.title.strip()):

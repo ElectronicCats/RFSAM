@@ -117,7 +117,7 @@ LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR
 
 **GNSS**: SP-01 (signal presence/interference survey) · AT-01 (spoofing/jamming resilience)
 
-**ADSB**: PHY-01 (message capture/decode) · LL-01 (message authenticity)
+**ADSB**: PHY-01 (message capture/decode) · LL-01 (message authenticity) · AT-01 (forge/inject, lab contenido)
 
 **NR5G**: SP-01 (cell ID/capture) · LL-01 (broadcast/identity exposure)
 

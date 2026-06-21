@@ -176,7 +176,7 @@ Si no puedes verificar una fuente → flagea inline:
 §4 da la rúbrica **reactiva** (qué evidencia exige cada nivel). Esta sección da el modelo **predictivo**: antes de
 fijar la severidad, el agente evalúa cuatro ejes propios de RF que no aparecen en CVSS y que deciden el nivel.
 
-> Origen: `docs/phase3-design.md §3.10`. SKILL.md §SEVERIDAD Y CLASIFICACIÓN comprime esta sección a la tabla de
+> Origen: modelo definido en `§7` de este archivo. SKILL.md §SEVERIDAD Y CLASIFICACIÓN comprime esta sección a la tabla de
 > 4 niveles + la referencia aquí; el modelo completo vive en esta sección.
 
 ### 7.1 — Los cuatro ejes
@@ -322,6 +322,6 @@ su severidad técnica sea `medium` — la urgencia operacional (amenaza en curso
 severidad técnica cuando hay intrusión activa. Los hallazgos ofensivos confirmados (`critical`/`high`) siguen
 encabezando si coexisten con detecciones en el mismo reporte.
 
-**Regla de remediación (ver `docs/phase4-mitigations.md`):** `critical`/`high` exigen las 3 capas
+**Regla de remediación (ver `references/03-registro-hallazgos.md §7.7`):** `critical`/`high` exigen las 3 capas
 (Developer/Integrator/Operator); `medium` requiere al menos Integrator + Operator; `low`/`info` pueden cerrar con
 Operator solo.

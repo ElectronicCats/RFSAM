@@ -2,8 +2,7 @@
 
 > Gate de calidad transversal. Aplica en cualquier capa del descenso, **antes de registrar** un hallazgo Y
 > **antes de cerrar** el reporte. Una afirmación que no pasa estas reglas es **hipótesis**, no hallazgo
-> confirmado. Fuente: `docs/rfsam-quality-rules.md` (reglas de autoría RFSAM adaptadas al agente que audita),
-> `docs/phase3-design.md` §3.5.11, modelo de `RFSAM-git/scripts/validate.mjs`.
+> confirmado. Fuente: §1 (reglas Q1–Q8), §2 (criticality), §5 (consistencia interna / `scripts/register_finding.py`).
 
 ## Índice
 
@@ -40,7 +39,7 @@ versión rápida; esta tabla es la fuente autoritativa.
 
 ## 2. §criticality — rúbrica de severidad honesta
 
-Fuente: `docs/rfsam-quality-rules.md` §5. La severidad la fija el modelo de 4 ejes de SKILL.md §SEVERIDAD Y
+Fuente: `§2` de este archivo. La severidad la fija el modelo de 4 ejes de SKILL.md §SEVERIDAD Y
 CLASIFICACIÓN; esta rúbrica es el sanity check de que la severidad asignada es honesta con la evidencia:
 
 | Nivel | Definición honesta | Abuso común a evitar |
@@ -65,7 +64,7 @@ CLASIFICACIÓN; esta rúbrica es el sanity check de que la severidad asignada es
 
 ## 3. §lifecycle — draft vs verified
 
-Principio de `docs/rfsam-quality-rules.md` §4, adaptado al agente que audita:
+Principio de `§3` de este archivo, adaptado al agente que audita:
 
 - **Durante el descenso**, el agente produce hallazgos en estado **draft**: investigados, con evidencia, pueden
   llevar `[!FLAG]`s donde queda incertidumbre. Eso es legítimo y se registra en el JSONL.
@@ -101,8 +100,8 @@ gap. El checklist de **pre-cierre** (por sesión) vive en SKILL.md §CIERRE DE A
 
 ## 5. §cross-refs — consistencia interna (modelo validate.mjs)
 
-Modelo de `RFSAM-git/scripts/validate.mjs` (§7 de `docs/rfsam-quality-rules.md`), aplicado al reporte que la
-skill genera. Antes de entregar, verifica:
+Modelo aplicado al reporte que la skill genera (ver `scripts/register_finding.py` para los enums
+validados y la regex de control). Antes de entregar, verifica:
 
 - **ID ↔ protocolo ↔ capa**: cada `RFSAM-<PROTO>-<LAYER>-NN` citado tiene segmentos consistentes
   (PROTOCOL ∈ los 15 canónicos: BLE/WIFI/LORA/LTE/RFID/SUBG/ZIGBEE/ZWAVE/THREAD/GNSS/ADSB/NR5G/GSM/UWB/BTC;
@@ -116,8 +115,7 @@ skill genera. Antes de entregar, verifica:
   confirmado.
 
 > Si una cross-ref no resuelve, **no la inventes**: marca el hallazgo como `confidence: low` con
-> `[!FLAG] ref sin resolver`, o quítala. Una URL inventada viola Q1 (citar o flaggear) y la regla #6 de wayfinders
-> ("NUNCA inventar una URL" — `docs/rfsam-quality-rules.md` §2.6).
+> `[!FLAG] ref sin resolver`, o quítala. Una URL inventada viola Q1 (citar o flaggear).
 
 ---
 

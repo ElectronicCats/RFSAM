@@ -32,7 +32,7 @@
 - **Nota near-field**: en RFID la CR es interrogación **live del tag** a cm (el Proxmark energiza y desafía la tarjeta), no análisis de PCAP offline como en far-field (BLE/Wi-Fi/LoRa). No es TX de ataque al espectro y no dispara re-check TX, pero difiere del patrón "CR offline" del flujo maestro.
 
 ### AT — `RFSAM-RFID-AT-01` Clone, emulate and relay
-- **⚠ AUTORIZACIÓN OBLIGATORIA** para clonar/relayed credenciales reales.
+- **⚠ AUTORIZACIÓN OBLIGATORIA** para clonar/relay credenciales reales.
 - **Objetivo**: clonar a blank/mágica, emular, o relay (vence asunción de proximidad, sin claves).
 - **Kit**: pm3-client (write T5577/mágica, `hf mf sim`, relay `hf_reblay`), Chameleon Ultra GUI (emular slots), BomberCat (RelayNFC + MagSpoof).
 - **LF EM/HID**: clona directo a T5577.

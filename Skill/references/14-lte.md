@@ -41,6 +41,21 @@
 - NAS/EPC signalling (attach, auth, identity, tracking-area) — solo ejerces siendo la red. Con eNodeB+core (AT) + UE autorizado: inspeccionar NAS, forzar re-auth/identity, test comportamiento bajo core hostil.
 - **Kit**: Open5GS (EPC/NAS test harness).
 
+## Subflujo (especialización del flujo maestro)
+
+Transiciones específicas de LTE; los comandos verbatim viven en `Descenso por capa` arriba.
+
+| Avance | Criterio de avance | Marcadores |
+|--------|--------------------|------------|
+| IG → SP | Cell/operador identificados (EARFCN, PCI, PLMN, TAC de SIB1). CVEs baseband/modem cruzados | — |
+| SP → PHY | Carrier DL confirmado en waterfall (muro OFDM 20 MHz). RTL-SDR solo bands bajas (tope 1.766 GHz); bladeRF/USRP para 1.8–2.6 GHz | — |
+| PHY → LL | Grid coherente recuperado (GPSDO USRP ideal) → MIB/SIB decoded | — |
+| LL → CR | Broadcast/control decoded (SIBs, paging, PDCCH). User-plane SNOW 3G/AES/ZUC keyed por USIM — **sin shortcut offline** | — |
+| CR → AT | Nada que romper pasivamente; AT = ser la red (rogue eNB) en lab autorizado | — |
+| AT | ⚠TX re-check; **espectro licenciado** — solo lab + SIMs prueba + jaula/conducción + licencia experimental. Rogue eNB vivo = RA5/RA8 | ⚠TX |
+
+**Anomalía defensiva** (modo Defensivo, RX-only): cell emitiendo MCC/MNC/TAC que **no** corresponden a operador conocido, o paging por S-TMSI con picos anómalos = posible rogue eNB / IMSI catcher. Crocodile Hunter/Rayhunter detectan. Registra; **no** desciendas a AT.
+
 ## Advertencias legales
-- RX pasivo de broadcast/control OK (espectro público下行). Capturar user-plane/tráfico de terceros regulado.
+- RX pasivo de broadcast/control OK (espectro público DL). Capturar user-plane/tráfico de terceros regulado.
 - **Rogue eNB / IMSI catcher / downgrade / jamming = transmisión en espectro licenciado**: ilegal sin licencia experimental + lab contenido. Jamás en operator vivo.

@@ -42,6 +42,21 @@
 - Por encima del link, "app layer" GSM = signalling + bearer services (no IP). Con SDCCH/TCH decodificados (y descifrados si A5/1 roto): payloads = L3 mobility/call-control + SMS (incl. silent/Class-0 pings para localizar handset). Sin tool dedicado — leer GSM L3/SMS en Wireshark del GSMTAP.
 - **Kit**: Wireshark (L3/SMS del GSMTAP capture).
 
+## Subflujo (especialización del flujo maestro)
+
+Transiciones específicas de GSM; los comandos verbatim viven en `Descenso por capa` arriba. Relevante en 2026 como destino de downgrade desde 4G/5G.
+
+| Avance | Criterio de avance | Marcadores |
+|--------|--------------------|------------|
+| IG → SP | Band región (850/900/1800/1900). Cell identity del BCCH (MCC/MNC/LAC/Cell-ID). Cipher en vigor (A5/0/1/2/3) del Cipher Mode Command | — |
+| SP → PHY | Carrier 200 kHz DL BCCH (picket steady). FCCH/SCH sync bursts vía kalibrate-rtl. RTL-SDR vale 900/850 y DCS-1800; PCS-1900 mejor HackRF/bladeRF | — |
+| PHY → LL | GMSK demod (PHY) y burst-to-frame decode (LL) juntos en gr-gsm → GSMTAP over UDP a Wireshark | — |
+| LL → CR | BCCH/control decoded (System Info, paging, SDCCH signalling). A5/1 **roto por rainbow tables** (~2 TB); A5/3 (KASUMI) no | — |
+| CR → AT | Keys A5/1 recuperadas (si keystream known + tablas) o gap (A5/3 fuerte). Auth GSM one-way → rogue BTS factible | — |
+| AT | ⚠TX re-check; **espectro licenciado** — jamás TX GSM vivo salvo lab + jaula + licencia. Alternativa sin TX: passive IMSI catch en LL (Oros42) | ⚠TX |
+
+**Anomalía defensiva** (modo Defensivo, RX-only): BTS emitiendo MCC/MNC/LAC que **no** corresponden a operador conocido, o handsets cayendo a A5/0/A5/1 de repente = posible rogue BTS / downgrade forzado. Registra; **no** desciendas a AT.
+
 ## Advertencias legales
 - RX pasivo DL BCCH/control OK (público). Capturar user-plane/SMS/voz de terceros = interceptación ilegal.
 - **Rogue BTS / IMSI catcher / downgrade A5/0 = TX en espectro licenciado**: ilegal sin licencia experimental + jaula. Roaming en operator vivo = delito. Relevante en 2026 como destino de downgrade desde 4G/5G — ahí es donde los IMSI catchers modernos operan.

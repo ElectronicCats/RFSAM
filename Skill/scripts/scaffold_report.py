@@ -184,7 +184,9 @@ def render(scope: str, findings: list[dict], target: str) -> str:
                                      ("integrator", "Integrator"),
                                      ("operator", "Operator")) if mit.get(k)]
         resp = ", ".join(layers) if layers else "_por asignar_"
-        lines.append(f"| {prio} | {f.get('id','?')} | {action} | {resp} | _{{{'{'}bajo/med/alto{'}'}}}_ | _{{{'{'}inmediato/30d/90d{'}'}}}_ |")
+        effort = "_{bajo/med/alto}_"
+        deadline = "_{inmediato/30d/90d}_"
+        lines.append(f"| {prio} | {f.get('id','?')} | {action} | {resp} | {effort} | {deadline} |")
     if prio == 0:
         lines.append("| _—_ | _sin hallazgos confirmados_ | _—_ | _—_ | _—_ | _—_ |")
     lines.append("")

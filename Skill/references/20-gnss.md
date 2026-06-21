@@ -36,6 +36,21 @@
 ### AP
 - Sin app layer interactiva al aire: GNSS es one-way broadcast, no uplink/session. Impacto app = false position/time confiado por sistemas downstream (nav, geofencing, timestamps, PPS timing reference). Se evalúa en sistema victim (¿posición/tiempo falso causa comportamiento inseguro?).
 
+## Subflujo (especialización del flujo maestro)
+
+Transiciones específicas de GNSS; los comandos verbatim viven en `Descenso por capa` arriba. Broadcast unidireccional — sin handshake ni clave.
+
+| Avance | Criterio de avance | Marcadores |
+|--------|--------------------|------------|
+| IG → SP | Constelaciones/bandas que trackea el receptor identificadas. Anti-spoof/anti-jam del módulo documentados | — |
+| SP → PHY | L-band presente; ambiente RF juzgado (carrier fuerte / hump = jammer; banda limpia = sano). RTL-SDR con bias-tee para antena activa | — |
+| PHY → LL | Despreading (chip GPS en hardware o GNSS-SDR en software) → NMEA/UBX o PVT+RINEX | — |
+| LL → CR | Sin crypto que romper (civiles sin auth). Pregunta real = trust: ¿distingue receptor sat genuino de spoof? | — |
+| CR → AT | Legacy C/A sin auth → AT funciona. OSNMA/RAIM-aware pueden detectar/rechazar spoof single-constellation | — |
+| AT | ⚠TX re-check; **jamás TX GNSS al aire** (delito). Solo conducción cableada + jaula. GPSDO blindado; receptor por cable | ⚠TX |
+
+**Anomalía defensiva** (modo Defensivo, RX-only): C/N0 anómalo (saltos, desvanecimientos selectivos), portadora fuerte sobre L1, o fix que salta a posición imposible = posible jamming/spoofing en tu entorno. Correlaciona con horario/ubicación; **no** desciendas a AT (Defensivo nunca TX).
+
 ## Advertencias legales
 - RX pasivo L1 OK; GPS receiver normal OK.
 - **Spoofing/jamming GNSS al aire = delito** (aviación, marítimo, infraestructura crítica). Solo conducción cableada + jaula de Faraday + autorización explícita.
