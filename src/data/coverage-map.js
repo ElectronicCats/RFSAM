@@ -68,6 +68,7 @@ export const coverageMap = [
   { protocol: 'ADSB',   controls: [
     { id: 'RFSAM-ADSB-PHY-01', title: 'Message capture and decode',     layer: 'PHY', status: 'existing', objective: 'Assess capture and decoding of ADS-B messages.' },
     { id: 'RFSAM-ADSB-LL-01',  title: 'Message authenticity assessment', layer: 'LL', status: 'existing', objective: 'Assess what authenticity guarantees, if any, the link provides.' },
+    { id: 'RFSAM-ADSB-AT-01',  title: 'Forge and inject (contained lab)', layer: 'AT', status: 'existing', objective: 'Assess resilience to forged/injected ADS-B frames (authorised, contained-lab testing only).' },
   ]},
   { protocol: 'NR5G',   controls: [
     { id: 'RFSAM-NR5G-SP-01', title: 'Cell identification and capture', layer: 'SP', status: 'existing', objective: 'Assess identification and capture of the target 5G NR cell.' },
