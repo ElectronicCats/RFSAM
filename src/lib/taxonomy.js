@@ -1,5 +1,5 @@
 export const LAYER_IDS = ['IG', 'SP', 'PHY', 'LL', 'CR', 'AT', 'AP'];
-// Rank a layer by its position in the descent (IG=0 … AP=6) — for ordering procedures
+// Rank a layer by its position in the descent (IG=0 … AP=6) — for ordering controls
 // the way the methodology teaches them, rather than alphabetically by id.
 export const layerRank = (id) => LAYER_IDS.indexOf(id);
 

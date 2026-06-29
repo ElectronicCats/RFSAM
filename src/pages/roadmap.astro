@@ -26,9 +26,9 @@ const plannedCount = coverageMap.reduce((n, p) => n + p.controls.filter((c) => c
 const draftCount = controls.filter((c) => c.data.reviewStatus === 'draft').length;
 
 // --- Coverage heatmap: each protocol × layer's state, computed at build time ---
-//   real  = a procedure exists with a real field case (no [FILL:] placeholders)
-//   illus = a procedure exists but its field case is an illustrative template
-//   gap   = the Wayfinder names tools here but no procedure is written  ← help wanted
+//   real  = a control exists with a real field case (no [FILL:] placeholders)
+//   illus = a control exists but its field case is an illustrative template
+//   gap   = the Wayfinder names tools here but no control is written  ← help wanted
 //   none  = not yet scoped
 const LAYER_ORDER = layers.map((l) => l.id);
 const REPO = 'https://github.com/ElectronicCats/RFSAM';
@@ -51,8 +51,8 @@ const realCount = heat.reduce((n, r) => n + r.cells.filter((c) => c.state === 'r
     <h1 style="font-size:34px">Roadmap</h1>
     <p style="color:var(--mut);margin-top:8px;max-width:74ch;line-height:1.6">
       RFSAM is built in two tracks. The <strong style="color:var(--ink)">Wayfinder</strong> — the interactive
-      per-technology kits — is complete across the technologies below. The <strong style="color:var(--ink)">Procedures</strong>
-      — the written verification steps, with field cases and remediation — are authored and citation-verified across
+      per-technology kits — is complete across the technologies below. The <strong style="color:var(--ink)">Controls</strong>
+      — the written verification procedures, with field cases and remediation — are authored and citation-verified across
       the protocols below; most field cases are still illustrative templates until real captures replace them.
     </p>
 
@@ -70,11 +70,11 @@ const realCount = heat.reduce((n, r) => n + r.cells.filter((c) => c.state === 'r
       ))}
     </div>
 
-    <h2 class="track-h">Procedures <span class="badge">{existingCount} written · {realCount} verified · {gapCount} open gaps · {plannedCount} planned</span></h2>
+    <h2 class="track-h">Controls <span class="badge">{existingCount} written · {realCount} verified · {gapCount} open gaps · {plannedCount} planned</span></h2>
     <p class="contrib-intro">
       RFSAM grows by pull request. This heatmap is the honest state of coverage — every cell is a
       <strong>protocol × layer</strong> of the descent, so you can see exactly what exists and what doesn't. The
-      <span class="amber">amber</span> cells are where the Wayfinder already names the kit but no procedure is written
+      <span class="amber">amber</span> cells are where the Wayfinder already names the kit but no control is written
       yet: the best place to start. Read
       <a href={`${REPO}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noopener">CONTRIBUTING</a>, copy a template, and open a PR.
     </p>
@@ -87,11 +87,11 @@ const realCount = heat.reduce((n, r) => n + r.cells.filter((c) => c.state === 'r
         ))}
         {heat.map((row) => (
           <Fragment>
-            <a class="hname" href={`/RFSAM/procedures/${row.p.id.toLowerCase()}`}>{row.p.name}</a>
+            <a class="hname" href={`/RFSAM/controls/${row.p.id.toLowerCase()}`}>{row.p.name}</a>
             {row.cells.map((c) => {
-              const desc = { real: 'procedure with a real field case', illus: 'procedure — illustrative field case (needs a real capture)', gap: 'Wayfinder kit exists, procedure not written yet — help wanted', none: 'not yet scoped' }[c.state];
+              const desc = { real: 'control with a real field case', illus: 'control — illustrative field case (needs a real capture)', gap: 'Wayfinder kit exists, control not written yet — help wanted', none: 'not yet scoped' }[c.state];
               const href = (c.state === 'real' || c.state === 'illus')
-                ? (c.ids.length === 1 ? `/RFSAM/procedures/${c.ids[0].toLowerCase()}` : `/RFSAM/procedures/${row.p.id.toLowerCase()}`)
+                ? (c.ids.length === 1 ? `/RFSAM/controls/${c.ids[0].toLowerCase()}` : `/RFSAM/controls/${row.p.id.toLowerCase()}`)
                 : c.state === 'gap' ? `/RFSAM/wayfinder/${row.p.id.toLowerCase()}` : null;
               const sym = { real: '●', illus: '◐', gap: '+', none: '' }[c.state];
               const title = `${row.p.name} · ${c.lid} — ${desc}`;
@@ -106,7 +106,7 @@ const realCount = heat.reduce((n, r) => n + r.cells.filter((c) => c.state === 'r
     <div class="heat-legend mono">
       <span><i class="c-real"></i> verified — real field case</span>
       <span><i class="c-illus"></i> reviewed — illustrative field case (needs a real capture)</span>
-      <span><i class="c-gap"></i> kit ready — procedure unwritten (help wanted)</span>
+      <span><i class="c-gap"></i> kit ready — control unwritten (help wanted)</span>
       <span><i class="c-none"></i> not yet scoped</span>
     </div>
 
@@ -124,7 +124,7 @@ const realCount = heat.reduce((n, r) => n + r.cells.filter((c) => c.state === 'r
                 <span class="mono" style="font-size:11px;color:var(--mut2);width:175px;flex-shrink:0">{c.id}</span>
                 <span style="flex:1">{c.title}</span>
                 {c.status === 'existing'
-                  ? <a class="review" style={`color:${stColor}`} href={`/RFSAM/procedures/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
+                  ? <a class="review" style={`color:${stColor}`} href={`/RFSAM/controls/${c.id.toLowerCase()}`}>{(live ?? 'stub').toUpperCase()}</a>
                   : <span class="review stub" style="color:var(--mut)">PLANNED</span>}
               </div>
             );
