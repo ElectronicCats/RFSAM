@@ -120,6 +120,7 @@ references:
 tools:
   - sniffle
   - catsniffer
+  - catnip
   - nrf-sniffer
   - ubertooth-tools
   - ice9-bluetooth-sniffer
@@ -158,6 +159,12 @@ All steps are passive reception. Capture only devices you own or are explicitly 
    ./sniff_receiver.py -c 37 -m AA:BB:CC:DD:EE:FF -o conn.pcap
    ```
    Sniffle hops the advertising channels to catch the `CONNECT_IND`, reads the access address and hop parameters from it, and switches to following the data channels. Expected output: the `CONNECT_IND` line, then a stream of `Data / LL Data` PDUs with a stable access address — confirmation you are following the connection. The PCAP `conn.pcap` accumulates every captured PDU. (Add `-e -H` if the device connects via BT5 extended advertising; add `-l` for the Coded long-range PHY.)
+
+   CatSniffer-native path (Electronic Cats): the catnip CLI runs the same Sniffle `conn_follow` mode on the CatSniffer and streams the followed connection into Wireshark over the Sniffle extcap:
+   ```bash
+   python catnip.py sniff ble --channel 37 --mode conn_follow --wireshark
+   ```
+   Expected: catnip runs Sniffle in connection-following mode ("CatSniffer BLE" extcap interface); on catching the `CONNECT_IND` the access address latches and the data-channel PDUs stream in live. Save from Wireshark to a `.pcap`. The raw `sniff_receiver.py` invocation above remains the way to apply a MAC filter (`-m`), write a file directly (`-o`), or add the `-e -H` / `-l` extended-advertising and Coded-PHY flags, which the catnip wrapper does not expose.
 
 3. **Confirm the capture in Wireshark.** Open the PCAP and verify you have data-channel traffic, not just advertisements:
    ```bash
