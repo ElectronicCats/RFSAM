@@ -9,6 +9,7 @@ export const coverageMap = [
     { id: 'RFSAM-BLE-LL-02',  title: 'Connection-data capture',                         layer: 'LL',  status: 'existing' },
     { id: 'RFSAM-BLE-CR-01',  title: 'Pairing and encryption assessment',               layer: 'CR',  status: 'existing' },
     { id: 'RFSAM-BLE-AT-01',  title: 'Hijack a live BLE connection',                    layer: 'AT',  status: 'existing' },
+    { id: 'RFSAM-BLE-AP-01',  title: 'GATT enumeration over the CatSniffer host controller', layer: 'AP', status: 'existing' },
   ]},
   { protocol: 'BTC', controls: [
     { id: 'RFSAM-BTC-IG-01', title: 'Identify the device, BR/EDR mode and vulnerability corpus', layer: 'IG', status: 'existing' },
