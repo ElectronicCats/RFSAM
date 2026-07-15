@@ -101,6 +101,7 @@ references:
 tools:
   - sniffle
   - catsniffer
+  - catnip
   - nrf-sniffer
   - wireshark
   - bleak
@@ -130,7 +131,13 @@ Passive capture only. No connection is opened and nothing is transmitted; you ar
    ```bash
    sniff_receiver.py -s /dev/ttyACM0 -o ble_adv.pcap
    ```
-   Expected: a live table of advertisers with their address, address type (Public / Random Static / RPA), RSSI and advertising data. Let it run long enough to span at least one RPA-rotation interval (≥ 15 min) if you want to observe rotation.
+   Expected: a live table of advertisers with their address, address type (Public / Random Static / RPA), RSSI and advertising data. Let it run long enough to span at least one RPA-rotation interval (>= 15 min) if you want to observe rotation.
+
+   CatSniffer-native path (Electronic Cats): the catnip CLI runs the same Sniffle capture on the CatSniffer and pipes it into Wireshark through the Sniffle extcap, so the sweep needs no separate host sniffer install:
+   ```bash
+   python catnip.py sniff ble --channel 37 --mode passive_scan --wireshark
+   ```
+   Expected: catnip flashes the Sniffle firmware if the board does not already have it, opens Wireshark on the "CatSniffer BLE" extcap interface, and advertising PDUs stream in live through the Sniffle dissector; save the capture from Wireshark to a `.pcap` for the inventory steps below. `--mode active_scan` additionally sends `SCAN_REQ`s to pull `SCAN_RSP` data (detectable). For BT5 extended-advertising or Coded-PHY advertisers, drop to `sniff_receiver.py` directly and add `-e -H` (extended) or `-l` (Coded PHY), since those flags are exposed by Sniffle rather than the catnip wrapper.
 
 2. Open the capture in Wireshark and isolate advertising PDUs:
    ```
