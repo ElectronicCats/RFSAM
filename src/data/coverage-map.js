@@ -4,6 +4,7 @@ export const coverageMap = [
   { protocol: 'BLE', controls: [
     { id: 'RFSAM-BLE-IG-01',  title: 'Known vulnerabilities of the SoC and host stack', layer: 'IG',  status: 'existing' },
     { id: 'RFSAM-BLE-SP-01',  title: 'Channel map and capture feasibility',             layer: 'SP',  status: 'existing' },
+    { id: 'RFSAM-BLE-SP-02',  title: 'Detect and inventory BLE trackers (Find My / AirTag)', layer: 'SP', status: 'existing' },
     { id: 'RFSAM-BLE-PHY-01', title: 'Demodulation and bit recovery',                   layer: 'PHY', status: 'existing' },
     { id: 'RFSAM-BLE-LL-01',  title: 'Advertising and identifier exposure',             layer: 'LL',  status: 'existing' },
     { id: 'RFSAM-BLE-LL-02',  title: 'Connection-data capture',                         layer: 'LL',  status: 'existing' },
