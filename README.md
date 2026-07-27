@@ -1,6 +1,6 @@
 # RFSAM — Radio Frequency Security Assessment Methodology
 
-An open, structured methodology for RF research and auditing, by [Electronic Cats](https://electroniccats.com).
+An open, structured methodology for RF research and auditing, by [Electronic Cats](https://electroniccats.com) and [PWNLabs](https://pwnlab.mx).
 
 RFSAM is meant to be **a north** for RF work: faced with an unknown signal or device, where do you start — and how do you know what you've missed? It walks you from the spectrum up through the signal, link, crypto, attack and application layers, per protocol, with a verification procedure and a real worked example at each step.
 
