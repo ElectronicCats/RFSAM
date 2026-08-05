@@ -1,101 +1,104 @@
-# Informe Técnico de Auditoría de Seguridad RF — {{OBJETIVO}}
+# RF Security Audit Technical Report — {{TARGET}}
 
-> Plantilla del **informe técnico** de una auditoría RFSAM. `scripts/scaffold_report.py`
-> genera el esqueleto desde `loot/rfsam_findings.jsonl`; el agente completa análisis,
-> impacto y remediación. Reemplaza los marcadores `{{...}}`. El **resumen ejecutivo**
-> (audiencia no técnica) es documento aparte — ver `assets/executive-summary-template.md`.
+> Template for the **technical report** of an RFSAM audit. `scripts/scaffold_report.py`
+> generates the skeleton from `loot/rfsam_findings.jsonl`; the agent completes the
+> analysis, impact and remediation. Replace the `{{...}}` placeholders. The **executive
+> summary** (non-technical audience) is a separate document — see
+> `assets/executive-summary-template.md`.
 
-**Fecha**: {{ISO}}
-**Auditor**: {{nombre/rol}}
-**Cliente/Propietario**: {{cliente}}
-**Metodología**: RFSAM (Radio Frequency Security Assessment Methodology) — Electronic Cats
-**Marco complementario**: OSSTMM, BSAM (Tarlogic), linaje SDR-pentest
-**Licencia del contenido**: CC BY-SA 4.0
-**Clasificación del informe**: {{Confidencial / Público / Interno}}
-
----
-
-## 1. Resumen técnico
-
-- **Hallazgos totales**: {{N}} (Critical: {{c}} · High: {{h}} · Medium: {{m}} · Low: {{l}} · Observacional: {{o}})
-- **Confirmados**: {{nc}} · **Hipótesis (sin `repro.txt`)**: {{nh}} — _las hipótesis no cuentan como hallazgos confirmados._
-- **Protocolos auditados**: {{BLE, Wi-Fi, ...}}
-- **Cobertura de controles RFSAM**: {{X/Y}} (ver §5)
-- **Modo de operación**: {{observacional / activo / lab-contenido / defensivo}}
-
-> Síntesis técnica (2–4 líneas): qué se auditó, superficie cubierta, riesgo residual
-> técnico. La síntesis de **negocio** va en el resumen ejecutivo, no aquí.
+**Date**: {{ISO}}
+**Auditor**: {{name/role}}
+**Client/Owner**: {{client}}
+**Methodology**: RFSAM (Radio Frequency Security Assessment Methodology) — Electronic Cats
+**Complementary framework**: OSSTMM, BSAM (Tarlogic), SDR-pentest lineage
+**Content license**: CC BY-SA 4.0
+**Report classification**: {{Confidential / Public / Internal}}
 
 ---
 
-## 2. Alcance y autorización
+## 1. Technical summary
+
+- **Total findings**: {{N}} (Critical: {{c}} · High: {{h}} · Medium: {{m}} · Low: {{l}} · Observational: {{o}})
+- **Confirmed**: {{nc}} · **Hypotheses (no `repro.txt`)**: {{nh}} — _hypotheses do not count as confirmed findings._
+- **Audited protocols**: {{BLE, Wi-Fi, ...}}
+- **RFSAM control coverage**: {{X/Y}} (see §5)
+- **Mode of operation**: {{observational / active / lab-contained / defensive}}
+
+> Technical synthesis (2–4 lines): what was audited, surface covered, technical residual
+> risk. The **business** synthesis goes in the executive summary, not here.
+
+---
+
+## 2. Scope and authorization
 
 ```
-Objetivo: {{descripción del dispositivo/sistema/señal}}
-Propietario / autorización: {{PROPIO / CONTRATO <ref> / LAB}}
-Modo de operación: {{observacional / activo / lab-contenido / defensivo}}
-Autorizado por: {{nombre/rol del autorizante}}
-Fecha de autorización: {{ISO}}
-Protocolo(s) en scope: {{BLE / WIFI / ...}}
-Limitaciones: {{ej. solo RX; no deauth; no clonar credenciales reales; ventana de captura X MHz}}
-Retención de capturas: {{default 30 días post-entrega; purge solicitado: sí/no}}
+Target: {{description of the device/system/signal}}
+Owner / authorization: {{OWN / CONTRACT <ref> / LAB}}
+Mode of operation: {{observational / active / lab-contained / defensive}}
+Authorized by: {{name/role of authorizing party}}
+Authorization date: {{ISO}}
+Protocol(s) in scope: {{BLE / WIFI / ...}}
+Limitations: {{e.g. RX only; no deauth; do not clone real credentials; capture window X MHz}}
+Capture retention: {{default 30 days post-delivery; purge requested: yes/no}}
 ```
 
-> El modo de operación acotó las técnicas ejecutadas. Los pasos de capa Attack se realizaron
-> únicamente donde el scope lo permitió; el resto se documenta como hipótesis verificable en
-> entorno autorizado. Toda PII de terceros (IMSI/IMEI, BLE addr persistente, SSIDs probe,
-> RFID UID ajeno) se mask/hash en este reporte; en claro solo identificadores del activo auditado.
+> The mode of operation constrained the techniques executed. Attack-layer steps were
+> performed only where the scope permitted; the rest are documented as verifiable
+> hypotheses in an authorized environment. Any third-party PII (IMSI/IMEI, persistent BLE
+> address, probe SSIDs, foreign RFID UID) is masked/hashed in this report; only audited
+> asset identifiers appear in cleartext.
 
 ---
 
-## 3. Metodología
+## 3. Methodology
 
-Auditoría conforme al **descenso RFSAM de 7 capas** (IG → SP → PHY+LL → CR → AT → AP) por
-protocolo. PHY y LL se evalúan en conjunto (el mismo tool produce ambas). Cada hallazgo se
-mapea a un control `RFSAM-<PROTO>-<LAYER>-NN` y se califica con el **modelo RFSAM de 4 ejes**
-(Impacto, Explotabilidad, Exposición, Alcance A/B/C/D) consolidado en CVSS 4.0 — ver
-`references/03-registro-hallazgos.md §7`. En RF casi siempre `AV:A` (adjacent, alcance de radio).
+Audit following the **RFSAM 7-layer descent** (IG → SP → PHY+LL → CR → AT → AP) per
+protocol. PHY and LL are assessed together (the same tool produces both). Each finding is
+mapped to a control `RFSAM-<PROTO>-<LAYER>-NN` and scored with the **RFSAM 4-axis model**
+(Impact, Exploitability, Exposure, Scope A/B/C/D) consolidated into CVSS 4.0 — see
+`references/03-registro-hallazgos.md §7`. In RF almost always `AV:A` (adjacent, radio range).
 
-| Capa | Qué se verificó |
-|------|-----------------|
-| IG | Identificación de SoC/host stack + cruce con CVEs publicadas |
-| SP | Viabilidad de captura (banda vs IBW del radio) |
-| PHY+LL | Demodulación → bits; captura de tramas → Wireshark |
-| CR | Evaluación de criptografía / recuperación de claves débiles |
-| AT | Toma de control (solo donde el scope lo autorizó) |
-| AP | Lo que el dispositivo confía sobre el enlace |
+| Layer | What was verified |
+|-------|-------------------|
+| IG | SoC/host stack identification + cross-reference with published CVEs |
+| SP | Capture feasibility (band vs radio IBW) |
+| PHY+LL | Demodulation → bits; frame capture → Wireshark |
+| CR | Cryptography assessment / weak key recovery |
+| AT | Takeover (only where scope authorized it) |
+| AP | What the device trusts over the link |
 
-Para Bluetooth (BLE/Classic) en capa de enlace y arriba, RFSAM defiere a **BSAM** y aporta solo
-el prerrequisito de captura RF. Para LoRa/LTE/RFID/Sub-GHz/etc., RFSAM es dueño end-to-end.
+For Bluetooth (BLE/Classic) at the link layer and above, RFSAM defers to **BSAM** and
+contributes only the RF capture prerequisite. For LoRa/LTE/RFID/Sub-GHz/etc., RFSAM owns
+the assessment end-to-end.
 
 ---
 
-## 4. Hallazgos
+## 4. Findings
 
-> Ordenados por severidad (Critical → Observacional). Cada hallazgo **confirmado** incluye
-> `repro.txt` en `loot/poc/RF-NNN/`; sin `repro.txt` se registra como hipótesis, no como
-> confirmado.
+> Sorted by severity (Critical → Observational). Each **confirmed** finding includes a
+> `repro.txt` in `loot/poc/RF-NNN/`; without `repro.txt` it is registered as a hypothesis,
+> not as confirmed.
 
 ### 4.1 CRITICAL
 
-#### {{RF-001}} — {{título}}
-- **Protocolo/Capa**: {{BLE / AT}} · **Control**: `RFSAM-BLE-AT-01`
-- **Severidad**: CRITICAL
-- **Modelo RFSAM**: Impacto {{1-4}}/4 · Explotabilidad {{1-4}}/4 · Exposición {{1-4}}/4 · Alcance {{A/B/C/D}}
+#### {{RF-001}} — {{title}}
+- **Protocol/Layer**: {{BLE / AT}} · **Control**: `RFSAM-BLE-AT-01`
+- **Severity**: CRITICAL
+- **RFSAM model**: Impact {{1-4}}/4 · Exploitability {{1-4}}/4 · Exposure {{1-4}}/4 · Scope {{A/B/C/D}}
 - **CVSS 4.0**: `{{vector}}` ({{score}}, {{sev}})
-- **Descripción**: {{qué se encontró, mecanismo, por qué importa}}
-- **Evidencia**:
+- **Description**: {{what was found, mechanism, why it matters}}
+- **Evidence**:
   ```
-  COMANDO: {{tool + flags exactos}}
-  SALIDA:  {{fragmento que confirma}}
+  COMMAND: {{exact tool + flags}}
+  OUTPUT:  {{excerpt that confirms}}
   ```
-- **Reproducción**: `loot/poc/RF-001/repro.txt` (comando verbatim + entorno + condiciones de captura)
-- **Impacto**: {{qué puede hacer un atacante}}
-- **Mitigación** (3 capas):
-  - _Desarrollador_: {{...}}
-  - _Integrador_: {{...}}
-  - _Operador_: {{...}}
-- **Referencias**: {{CVE / paper / tool + URL}}
+- **Reproduction**: `loot/poc/RF-001/repro.txt` (verbatim command + environment + capture conditions)
+- **Impact**: {{what an attacker can do}}
+- **Mitigation** (3 layers):
+  - _Developer_: {{...}}
+  - _Integrator_: {{...}}
+  - _Operator_: {{...}}
+- **References**: {{CVE / paper / tool + URL}}
 
 ### 4.2 HIGH
 {{...}}
@@ -106,50 +109,50 @@ el prerrequisito de captura RF. Para LoRa/LTE/RFID/Sub-GHz/etc., RFSAM es dueño
 ### 4.4 LOW
 {{...}}
 
-### 4.5 OBSERVACIONAL (incluye hallazgos defensivos / detección)
+### 4.5 OBSERVATIONAL (includes defensive findings / detection)
 {{...}}
 
 ---
 
-## 5. Cobertura de controles RFSAM
+## 5. RFSAM control coverage
 
-> Volcar la salida de `python3 scripts/coverage_check.py` aquí.
+> Paste the output of `python3 scripts/coverage_check.py` here.
 
-{{tabla por protocolo: controles cubiertos / pendientes / no aplica}}
-
----
-
-## 6. Limitaciones
-
-- **Gaps de visibilidad**: {{radio/IBW usado; qué no se pudo observar y por qué}}
-- **Controles fuera de scope**: {{ej. AT no ejecutado por modo observacional}}
-- **Supuestos**: {{ej. no se capturó el join porque el dispositivo no re-pareó durante la ventana}}
-- **Crypto fuerte declarada no rompible**: {{ej. LESC ECDH en este device → CR evalúa, no descifra}}
+{{table per protocol: covered / pending / not applicable controls}}
 
 ---
 
-## 7. Remediación prioritizada
+## 6. Limitations
 
-| Prioridad | Hallazgo | Acción | Capa responsable | Esfuerzo | Plazo |
-|-----------|----------|--------|------------------|----------|-------|
-| 1 | {{RF-001}} | {{acción concreta}} | {{Developer/Integrator/Operator}} | {{bajo/med/alto}} | {{inmediato/30d/90d}} |
+- **Visibility gaps**: {{radio/IBW used; what could not be observed and why}}
+- **Out-of-scope controls**: {{e.g. AT not executed due to observational mode}}
+- **Assumptions**: {{e.g. join not captured because the device did not re-pair during the window}}
+- **Declared strong crypto not breakable**: {{e.g. LESC ECDH on this device → CR assesses, does not decrypt}}
+
+---
+
+## 7. Prioritized remediation
+
+| Priority | Finding | Action | Responsible layer | Effort | Deadline |
+|----------|---------|--------|-------------------|--------|----------|
+| 1 | {{RF-001}} | {{concrete action}} | {{Developer/Integrator/Operator}} | {{low/med/high}} | {{immediate/30d/90d}} |
 | 2 | {{...}} | {{...}} | {{...}} | {{...}} | {{...}} |
 
-> `critical`/`high` exigen las 3 capas (Developer/Integrator/Operator); `low`/observacional
-> pueden cerrar con Operator solo.
+> `critical`/`high` require all 3 layers (Developer/Integrator/Operator); `low`/observational
+> may close with Operator alone.
 
 ---
 
-## 8. Anexos
+## 8. Appendices
 
-- **A. Capturas**: PCAPs, IQ waterfalls, dumps de Proxmark (en `loot/captures/`)
-- **B. PoC**: `loot/poc/RF-NNN/` con `repro.txt` por hallazgo confirmado
-- **C. Logs de sesión**: `loot/session_state.json`, `loot/rfsam_findings.jsonl`, `loot/hardware.txt`
-- **D. Referencias**: lista completa de CVE, papers, herramientas con URL
-- **E. Kit utilizado**: radios/sniffers/software + versión (volcar `loot/hardware.txt`)
+- **A. Captures**: PCAPs, IQ waterfalls, Proxmark dumps (in `loot/captures/`)
+- **B. PoC**: `loot/poc/RF-NNN/` with `repro.txt` per confirmed finding
+- **C. Session logs**: `loot/session_state.json`, `loot/rfsam_findings.jsonl`, `loot/hardware.txt`
+- **D. References**: full list of CVEs, papers, tools with URLs
+- **E. Kit used**: radios/sniffers/software + version (paste `loot/hardware.txt`)
 
 ---
 
-_Fin del informe técnico. Generado siguiendo RFSAM (CC BY-SA 4.0). Evidencia reproducible
-disponible en `loot/`. Re-validación recomendada tras aplicar remediación. Para la versión
-ejecutiva no técnica, ver `assets/executive-summary-template.md`._
+_End of technical report. Generated following RFSAM (CC BY-SA 4.0). Reproducible evidence
+available in `loot/`. Re-validation recommended after applying remediation. For the
+non-technical executive version, see `assets/executive-summary-template.md`._

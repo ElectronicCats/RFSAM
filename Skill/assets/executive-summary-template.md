@@ -1,132 +1,123 @@
-# Resumen Ejecutivo — Auditoría de Seguridad de Radiofrecuencia · {{OBJETIVO}}
+# Executive Summary — Radio Frequency Security Audit · {{TARGET}}
 
-> Plantilla del **resumen ejecutivo** de una auditoría RFSAM, dirigida a
-> patrocinadores y comités no técnicos. **Sin comandos, sin vectores CVSS, sin
-> IDs de control.** El agente traduce los hallazgos del informe técnico
-> (`assets/report-template.md`) a riesgo de negocio, impacto y prioridades de
-> remediación. Reemplaza los marcadores `{{...}}` con lenguaje claro y
-> concreto. Longitud objetivo: **1–2 páginas**. Si excede, recortar detalle y
-> moverlo a un anexo del informe técnico.
+> Template for the **executive summary** of an RFSAM audit, aimed at sponsors and
+> non-technical committees. **No commands, no CVSS vectors, no control IDs.** The agent
+> translates findings from the technical report (`assets/report-template.md`) into
+> business risk, impact and remediation priorities. Replace the `{{...}}` placeholders
+> with clear, concrete language. Target length: **1–2 pages**. If it exceeds that, trim
+> detail and move it to an appendix in the technical report.
 
-**Fecha de entrega**: {{ISO}}
-**Preparado para**: {{nombre/cargo del patrocinador o comité}}
-**Preparado por**: {{nombre/rol del auditor}}
-**Clasificación**: {{Confidencial / Interno / Público}}
-**Informe técnico asociado**: `{{ruta a informe-rfsam-<objetivo>.md}}`
-
----
-
-## 1. Contexto en una frase
-
-{{Una o dos oraciones: qué sistema o entorno de radiofrecuencia se evaluó, por
-qué importa al negocio y bajo qué encargo se realizó. Ej.: «Se revisó la
-exposición inalámbrica de la planta de manufactura X para confirmar que las
-comunicaciones de control y los dispositivos móviles no permiten accesos no
-autorizados.»}}
-
-## 2. Conclusión principal
-
-{{Veredicto ejecutivo en 2–3 líneas: nivel de riesgo global y cuál es el
-mensaje único que debe llevarse el lector. Ej.: «El entorno presenta riesgos
-inhalámbricos **altos** concentrados en 3 hallazgos críticos. Son cerrables en
-menos de 90 días con acciones coordinadas de los proveedores de los
-dispositivos y el equipo de operaciones.»}}
-
-**Riesgo global**: {{Crítico / Alto / Medio / Bajo}}
+**Delivery date**: {{ISO}}
+**Prepared for**: {{name/title of sponsor or committee}}
+**Prepared by**: {{name/role of auditor}}
+**Classification**: {{Confidential / Internal / Public}}
+**Associated technical report**: `{{path to rfsam-report-<target>.md}}`
 
 ---
 
-## 3. Hallazgos en cifras
+## 1. Context in one sentence
 
-| Nivel de riesgo | Cantidad | Qué significa en la práctica |
-|-----------------|----------|------------------------------|
-| **Crítico** | {{c}} | Explotable hoy; puede comprometer operaciones, datos o seguridad física |
-| **Alto** | {{h}} | Explotable con esfuerzo o bajo condiciones específicas; impacto serio si ocurre |
-| **Medio** | {{m}} | Requiere acceso favorable o combinaciones; impacto limitado o localizado |
-| **Bajo / Informativo** | {{l}} | Endurecimiento recomendado; sin exposición inmediata |
+{{One or two sentences: what radio frequency system or environment was assessed, why
+it matters to the business and under what engagement it was performed. E.g.: "The
+wireless exposure of manufacturing plant X was reviewed to confirm that control
+communications and mobile devices do not allow unauthorized access."}}
 
-> Total de hallazgos confirmados: **{{N}}**. Adicionalmente **{{nh}}** se
-> documentan como hipótesis verificables que requieren pruebas adicionales en
-> entorno controlado antes de confirmarse.
+## 2. Main conclusion
 
----
+{{Executive verdict in 2–3 lines: overall risk level and the single takeaway the reader
+should come away with. E.g.: "The environment presents **high** wireless risks
+concentrated in 3 critical findings. They are closable in under 90 days with coordinated
+actions from device vendors and the operations team."}}
 
-## 4. Riesgos que requieren atención inmediata
-
-> Un bloque por hallazgo **crítico o alto**. Máximo 5–7 ítems; si hay más,
-> agrupar por tema. Para cada uno: **qué pasa** (sin jerga), **a qué afecta**
-> (negocio/operación/cumplimiento/seguridad) y **qué tan fácil es explotarlo**.
-> No incluir cómo se explota ni pasos técnicos.
-
-### Riesgo 1 — {{título corto, orientado a negocio}}
-- **Qué observamos**: {{descripción en lenguaje llano. Ej.: «Cualquier persona
-  con equipo accesible en el mercado puede suplantar la señal de los sensores y
-  enviar lecturas falsas al sistema central.»}}
-- **Impacto si se materializa**: {{operacional / financiero / de seguridad /
-  regulatorio / reputacional. Ej.: «Decisiones automatizadas tomadas sobre datos
-  falseados; posible paro de línea y rechazos de calidad.»}}
-- **Probabilidad de ocurrencia**: {{Alta / Media / Baja}} — {{razón breve:
-  herramientas disponibles públicamente / requiere cercanía física / exige
-  conocimiento especializado}}.
-- **Prioridad de cierre**: {{Inmediata / 30 días / 90 días}}.
-
-{{... más riesgos en orden de prioridad ...}}
+**Overall risk**: {{Critical / High / Medium / Low}}
 
 ---
 
-## 5. Qué está bien
+## 3. Findings in figures
 
-{{2–4 viñetas cortas sobre controles, capas o prácticas que sí funcionan y que
-la auditoría confirmó como robustas. Equilibra el mensaje y orienta dónde NO
-intervenir. Ej.: «La encriptación de la red Wi-Fi corporativa usa estándares
-actuales y no presentó debilidades; los dispositivos LoRa usan claves únicas
-por nodo y no son clonables.»}}
+| Risk level | Count | What it means in practice |
+|------------|-------|---------------------------|
+| **Critical** | {{c}} | Exploitable today; can compromise operations, data or physical safety |
+| **High** | {{h}} | Exploitable with effort or under specific conditions; serious impact if it occurs |
+| **Medium** | {{m}} | Requires favorable access or combinations; limited or localized impact |
+| **Low / Informational** | {{l}} | Hardening recommended; no immediate exposure |
+
+> Total confirmed findings: **{{N}}**. Additionally **{{nh}}** are documented as verifiable
+> hypotheses that require further testing in a controlled environment before being confirmed.
 
 ---
 
-## 6. Plan de acción recomendado
+## 4. Risks requiring immediate attention
 
-| Prioridad | Riesgo a cerrar | Acción principal (sin detalle técnico) | Responsable sugerido | Esfuerzo estimado | Plazo |
-|-----------|-----------------|----------------------------------------|----------------------|-------------------|-------|
-| 1 | {{Riesgo 1}} | {{acción de negocio, ej.: «Coordinar con el proveedor del sensor el cambio de mecanismo de autenticación.»}} | {{Operaciones / TI / Proveedor}} | {{Bajo/Medio/Alto}} | {{inmediato / 30d / 90d}} |
-| 2 | {{Riesgo 2}} | {{...}} | {{...}} | {{...}} | {{...}} |
+> One block per **critical or high** finding. Maximum 5–7 items; if there are more,
+> group by theme. For each: **what happens** (without jargon), **what it affects**
+> (business/operations/compliance/security) and **how easy it is to exploit**.
+> Do not include how to exploit it or technical steps.
+
+### Risk 1 — {{short, business-oriented title}}
+- **What we observed**: {{plain-language description. E.g.: "Anyone with commercially
+  available equipment can spoof the signal from the sensors and send false readings to
+  the central system."}}
+- **Impact if it materializes**: {{operational / financial / safety /
+  regulatory / reputational. E.g.: "Automated decisions made on falsified data; possible
+  line stoppage and quality rejections."}}
+- **Likelihood of occurrence**: {{High / Medium / Low}} — {{brief reason:
+  publicly available tools / requires physical proximity / requires specialized
+  knowledge}}.
+- **Remediation priority**: {{Immediate / 30 days / 90 days}}.
+
+{{... more risks in priority order ...}}
+
+---
+
+## 5. What is working well
+
+{{2–4 short bullets about controls, layers or practices that do work and that the audit
+confirmed as robust. This balances the message and indicates where NOT to intervene.
+E.g.: "Corporate Wi-Fi network encryption uses current standards and showed no weaknesses;
+LoRa devices use unique keys per node and are not clonable."}}
+
+---
+
+## 6. Recommended action plan
+
+| Priority | Risk to close | Main action (no technical detail) | Suggested owner | Estimated effort | Deadline |
+|----------|---------------|-----------------------------------|-----------------|------------------|----------|
+| 1 | {{Risk 1}} | {{business action, e.g.: "Coordinate with the sensor vendor to change the authentication mechanism."}} | {{Operations / IT / Vendor}} | {{Low/Medium/High}} | {{immediate / 30d / 90d}} |
+| 2 | {{Risk 2}} | {{...}} | {{...}} | {{...}} | {{...}} |
 | 3 | {{...}} | {{...}} | {{...}} | {{...}} | {{...}} |
 
-> Los hallazgos **críticos y altos** requieren acción coordinada en tres
-> niveles: el **fabricante** del dispositivo/firmware, el **integrador** que
-> despliega y configura, y el **operador** que monitorea y responde. Los
-> hallazgos **bajos o informativos** pueden cerrarse con acciones del operador
-> únicamente.
+> **Critical and high** findings require coordinated action at three levels: the device/
+> firmware **manufacturer**, the **integrator** who deploys and configures, and the
+> **operator** who monitors and responds. **Low or informational** findings may be closed
+> with operator actions alone.
 
 ---
 
-## 7. Alcance y confianza
+## 7. Scope and confidence
 
-- **Qué cubrimos**: {{protocolos y dispositivos evaluados, modo de operación:
-  solo escucha pasiva / pruebas activas autorizadas / entorno de laboratorio}}.
-- **Qué NO cubrimos**: {{protocolos o dispositivos fuera de alcance; ventanas
-  de tiempo o bandas no observadas; dispositivos que no estuvieron operativos
-  durante la auditoría}}.
-- **Confianza**: los hallazgos **confirmados** están respaldados por evidencia
-  reproducible. Los marcados como **hipótesis** requieren verificación
-  adicional antes de tomarse como ciertos.
-- **Cumplimiento aplicable**: {{si aplica, mencionar marcos relevantes — ISO
-  27001, IEC 62443, PCI-DSS, regulación local de espectro— y si la auditoría
-  aporta evidencia a favor o en contra}}.
+- **What we covered**: {{protocols and devices assessed, mode of operation:
+  passive listening only / authorized active testing / lab environment}}.
+- **What we did NOT cover**: {{out-of-scope protocols or devices; time windows or bands
+  not observed; devices that were not operational during the audit}}.
+- **Confidence**: **confirmed** findings are backed by reproducible evidence. Those marked
+  as **hypotheses** require additional verification before being treated as confirmed.
+- **Applicable compliance**: {{if applicable, mention relevant frameworks — ISO 27001,
+  IEC 62443, PCI-DSS, local spectrum regulation — and whether the audit provides evidence
+  for or against}}.
 
 ---
 
-## 8. Próximos pasos sugeridos
+## 8. Suggested next steps
 
-1. **Validar prioridades** con el equipo técnico y de negocio (reunión de 1 hora).
-2. **Iniciar cierre** de hallazgos críticos en la ventana acordada.
-3. **Re-auditar** tras aplicar remediación para confirmar el cierre efectivo.
-4. **Establecer cadencia** de revisión de superficie inalámbrica (semestral o
-   ante cambios relevantes en el parque de dispositivos).
+1. **Validate priorities** with the technical and business teams (1-hour meeting).
+2. **Begin closure** of critical findings within the agreed window.
+3. **Re-audit** after applying remediation to confirm effective closure.
+4. **Establish a cadence** for wireless surface review (semi-annually or upon relevant
+   changes to the device fleet).
 
 ---
 
-_Resumen ejecutivo generado siguiendo RFSAM (CC BY-SA 4.0). El detalle técnico
-completo, comandos, evidencia y mapeo a controles están en el informe técnico
-asociado. Para preguntas técnicas, contactar al auditor; para decisiones de
-negocio, al patrocinador._
+_Executive summary generated following RFSAM (CC BY-SA 4.0). Full technical detail,
+commands, evidence and control mapping are in the associated technical report. For
+technical questions, contact the auditor; for business decisions, the sponsor._

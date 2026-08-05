@@ -1,23 +1,23 @@
 # 25 — Troubleshooting RF
 
-> Diagnóstico cuando una fase del descenso no progresa. Úsalo **antes** de declarar gap (Ruta A) o escalar
-> (CONSULTA): la mayoría de los "no funciona" son entorno (permisos/drivers/antena), no falta de señal ni
-> fortaleza de cripto. Fuente: §1 (setup), §2 (diagnóstico), §3 (orden de diagnosis), §4 (falsos positivos).
+> Diagnosis when a descent phase is not progressing. Use it **before** declaring a gap (Route A) or escalating
+> (CONSULT): most "it doesn't work" cases are environment (permissions/drivers/antenna), not lack of signal or
+> crypto strength. Source: §1 (setup), §2 (diagnosis), §3 (order of diagnosis), §4 (false positives).
 
-## Índice
-1. §setup — 5 checks de entorno (Fase 0, cachea resultado en `loot/notes/hardware.txt`)
-2. §diagnostico — tabla síntoma → causa probable → acción
-3. §orden — regla de diagnosis (antena antes que driver antes que binario)
-4. §falsos-positivos — hallazgo que parece confirmado pero no lo es
+## Index
+1. §setup — 5 environment checks (Phase 0, cache result in `loot/notes/hardware.txt`)
+2. §diagnostico — symptom → probable cause → action table
+3. §orden — diagnosis rule (antenna before driver before binary)
+4. §falsos-positivos — finding that looks confirmed but is not
 
 ---
 
-## 1. §setup — 5 checks de entorno (Fase 0)
+## 1. §setup — 5 environment checks (Phase 0)
 
-Un comando por check, sin dependencias externas. El resultado se cachea en `loot/notes/hardware.txt`
-(re-lectura en cada eje 4 del árbol de decisión, no se re-corre por comando salvo TX).
+One command per check, no external dependencies. The result is cached in `loot/notes/hardware.txt`
+(re-read at each axis 4 of the decision tree, not re-run per command except TX).
 
-### 1.1 Software host
+### 1.1 Host software
 
 ```sh
 for t in gqrx wireshark hackrf_transfer rtl_sdr dump1090 readsb dump978 \
@@ -30,9 +30,9 @@ for t in gqrx wireshark hackrf_transfer rtl_sdr dump1090 readsb dump978 \
 done
 ```
 
-`MISS` → no abortar; consulta el wayfinder del protocolo para sustituto RX. Si no hay, declarar gap (Ruta A).
+`MISS` → do not abort; consult the protocol wayfinder for an RX substitute. If none exists, declare a gap (Route A).
 
-### 1.2 Hardware conectado (USB bus)
+### 1.2 Connected hardware (USB bus)
 
 ```sh
 lsusb
@@ -40,15 +40,15 @@ ls /dev/ttyACM* /dev/ttyUSB* 2>/dev/null
 ls /sys/class/net
 ```
 
-Mapea vendor:product al slug usando `references/02-kit-sdr.md` (campo `spec`). Marcadores clave:
+Map vendor:product to slug using `references/02-kit-sdr.md` (field `spec`). Key markers:
 
-| Hardware | vendor:product | Notas |
+| Hardware | vendor:product | Notes |
 |----------|----------------|-------|
 | HackRF One | `1d50:6089` | |
 | bladeRF 2.0 | `1d50:6130` | |
 | USRP B210 | `2500:0020` | |
-| RTL-SDR V4 | `0bda:2838` / `1d50:6089` (EC Nano) | `rtl_test -t` valida sample rate |
-| CatSniffer (EC) | `1207:8000` | `/dev/ttyACM0` tras firmware |
+| RTL-SDR V4 | `0bda:2838` / `1d50:6089` (EC Nano) | `rtl_test -t` validates sample rate |
+| CatSniffer (EC) | `1207:8000` | `/dev/ttyACM0` after firmware |
 | nRF52840 dongle | `1915:xxxx` | Nordic |
 | Proxmark3 (Iceman) | `2d2d:504d` | |
 | ACR122U | `072f:2200` | |
@@ -57,139 +57,139 @@ Mapea vendor:product al slug usando `references/02-kit-sdr.md` (campo `spec`). M
 | Yard Stick One / CC1111 | `1d50:605b` | `/dev/ttyACM*` |
 | ESP32-family | `303a:xxxx` (S3) / `10c4:ea60` (CP210x) | |
 | Flipper Zero | `0483:df11` (DFU) / `0483:5740` (CDC) | |
-| GPS u-blox NEO | — | Tramas `$GPGGA`/`$GNGGA` legibles en `/dev/ttyACM*` |
+| GPS u-blox NEO | — | `$GPGGA`/`$GNGGA` frames readable on `/dev/ttyACM*` |
 
-### 1.3 Permisos y drivers
+### 1.3 Permissions and drivers
 
 ```sh
-# 1. Grupos de acceso a hardware
+# 1. Hardware access groups
 groups | grep -Eo 'dialout|plugdev|uucp|tty|video' | sort -u
 
-# 2. udev rules cargadas
+# 2. udev rules loaded
 ls /etc/udev/rules.d/ | grep -Ei 'hackrf|rtl-sdr|rtlsdr|proxmark|ubertooth|cat|nordic|cp210|cdc-acm'
 
-# 3. Drivers/modules cargados
+# 3. Drivers/modules loaded
 lsmod | grep -Ei 'rtl2832|hackrf|bladerf|usbserial|cp210|cdc_acm|option|ftdi'
 
-# 4. Bloqueos RF (kill switches — crítico en WiFi/BT)
+# 4. RF blocks (kill switches — critical on WiFi/BT)
 rfkill list
 ```
 
-- **Falta grupo** (`dialout`/`plugdev`) → binario abre pero device devuelve `Permission denied`. Acción: `usermod -aG` + relogin.
-- **Falta udev rule** → device aparece como `root:root`. Acción: verificar paquete o copiar regla del repo del fabricante.
-- **Falta driver** (`lsmod` vacío) → `dmesg | tail -50` muestra conexión sin bind. Acción: reinserción USB o `modprobe <driver>`.
-- **`rfkill` bloquea** → `sudo rfkill unblock all` o switch físico. Algunos firmwares marauder no sobreviven soft-block.
+- **Missing group** (`dialout`/`plugdev`) → binary opens but device returns `Permission denied`. Action: `usermod -aG` + relogin.
+- **Missing udev rule** → device shows up as `root:root`. Action: verify package or copy the rule from the manufacturer's repo.
+- **Missing driver** (`lsmod` empty) → `dmesg | tail -50` shows connection without bind. Action: USB reinsertion or `modprobe <driver>`.
+- **`rfkill` blocks** → `sudo rfkill unblock all` or physical switch. Some marauder firmwares do not survive a soft-block.
 
-### 1.4 Antena y bias-T (RF-critical)
+### 1.4 Antenna and bias-T (RF-critical)
 
-Hardware conectado ≠ señal capturada. El agente no puede verificar la antena físicamente — **pregunta al operador**.
+Connected hardware ≠ captured signal. The agent cannot physically verify the antenna — **ask the operator**.
 
-| Señal | Requisito | Síntoma si falta |
-|-------|-----------|------------------|
-| GNSS L1 | `rtl_biast -b 1` (bias-T ~5 V a antena activa) | `gqrx` muestra ruido plano a -90 dBm aunque la antena esté conectada |
-| ADS-B 1090 | Antena quarter-wave (~6.9 cm) + filtro + LNA | `dump1090` reporta 0 mensajes/min |
-| sub-GHz / GSM-850/900 | Antena telescópica o dipolo ajustada | `gqrx` muestra ruido térmico puro |
-| 2.4 GHz ISM | Antena dipolo 2.4 GHz | SDR sin antena capta BT/Wi-Fi por acoplamiento, pero 5–10 dB por debajo |
-| UWB (6.5/8 GHz) | Ningún radio del kit llega | Declarar gap de visibilidad, sin check aplicable |
+| Signal | Requirement | Symptom if missing |
+|--------|-------------|---------------------|
+| GNSS L1 | `rtl_biast -b 1` (bias-T ~5 V to active antenna) | `gqrx` shows flat noise at -90 dBm even with antenna connected |
+| ADS-B 1090 | Quarter-wave antenna (~6.9 cm) + filter + LNA | `dump1090` reports 0 messages/min |
+| sub-GHz / GSM-850/900 | Telescopic or tuned dipole antenna | `gqrx` shows pure thermal noise |
+| 2.4 GHz ISM | 2.4 GHz dipole antenna | SDR without antenna picks up BT/Wi-Fi by coupling, but 5–10 dB below |
+| UWB (6.5/8 GHz) | No radio in the kit reaches it | Declare visibility gap, no check applicable |
 
-### 1.5 Espacio y red
+### 1.5 Disk space and network
 
 ```sh
-df -h "$LOOT_DIR"          # IQ típico: 2-8 MB/s; PCAP BLE: 200 KB/s
-ip -br link show           # evita capturar tráfico del host
-ip route show default      # si la auditoría es offline, confirmar aislamiento
+df -h "$LOOT_DIR"          # Typical IQ: 2-8 MB/s; BLE PCAP: 200 KB/s
+ip -br link show           # avoid capturing host traffic
+ip route show default      # if the audit is offline, confirm isolation
 ```
 
-- **Espacio < 5 GB libre** → captura larga aborta. Limpiar o comprimir (`rtl_sdr -s 2400000 - | gzip > file.iq.gz`).
-- **WiFi monitor en interfaz equivocada** → `tshark -i <iface>` confirma BSSID del target; si captura en modo managed, el PCAP es inútil.
+- **Space < 5 GB free** → long capture aborts. Clean up or compress (`rtl_sdr -s 2400000 - | gzip > file.iq.gz`).
+- **WiFi monitor on wrong interface** → `tshark -i <iface>` confirms target BSSID; if capturing in managed mode, the PCAP is useless.
 
 ---
 
-## 2. §diagnostico — tabla síntoma → causa probable → acción
+## 2. §diagnostico — symptom → probable cause → action table
 
-### 2.1 Hardware no detectado / permisos
+### 2.1 Hardware not detected / permissions
 
-| Síntoma | Causa probable | Acción |
+| Symptom | Probable cause | Action |
 |---------|----------------|--------|
-| `lsusb` no lista el SDR | Cable USB / puerto / alimentación insuficiente (HackRF+amp) | Otro puerto USB 3.0; alimentación externa si hay amp; `dmesg -w` al conectar |
-| SDR en `lsusb` pero binario `Permission denied` | Falta grupo `dialout`/`plugdev` o udev rule | §1.3; `usermod -aG dialout,plugdev $USER` + relogin; reinstalar paquete para copiar udev rule |
-| `/dev/ttyACM0` no aparece (CatSniffer/PM3/nRF) | Firmware no cargado, cable datos-only, driver CDC-ACM | `dmesg \| grep tty`; reiniciar dispositivo en modo bootloader; `modprobe cdc_acm` |
-| `rtl_test` falla con "No supported devices found" | Driver RTL2832 no cargado o device claim por otro proceso | `lsmod \| grep rtl2832`; matar proceso que retiene el device (SDR# viejo, otro `rtl_*`) |
-| `rfkill list` muestra "Soft blocked: yes" en WiFi/BT | Kill switch de OS o hardware | `sudo rfkill unblock all`; verificar switch físico de la laptop |
-| Proxmark3 `pm3` cliente no detecta | Firmware Iceman no flasheado, puerto equivocado | `ls /dev/ttyACM*`; flash firmware Iceman; `pm3 -p /dev/ttyACM0` explícito |
-| Ubertooth no enumera | Modo DFU o firmware corrupto | `ubertooth-util -v` para versión; reflasear con `ubertooth-programmer` |
+| `lsusb` does not list the SDR | USB cable / port / insufficient power (HackRF+amp) | Another USB 3.0 port; external power if amp present; `dmesg -w` on connect |
+| SDR in `lsusb` but binary returns `Permission denied` | Missing `dialout`/`plugdev` group or udev rule | §1.3; `usermod -aG dialout,plugdev $USER` + relogin; reinstall package to copy udev rule |
+| `/dev/ttyACM0` does not appear (CatSniffer/PM3/nRF) | Firmware not loaded, data-only cable, CDC-ACM driver | `dmesg \| grep tty`; restart device in bootloader mode; `modprobe cdc_acm` |
+| `rtl_test` fails with "No supported devices found" | RTL2832 driver not loaded or device claimed by another process | `lsmod \| grep rtl2832`; kill process holding the device (old SDR#, another `rtl_*`) |
+| `rfkill list` shows "Soft blocked: yes" on WiFi/BT | OS or hardware kill switch | `sudo rfkill unblock all`; check laptop physical switch |
+| Proxmark3 `pm3` client not detected | Iceman firmware not flashed, wrong port | `ls /dev/ttyACM*`; flash Iceman firmware; `pm3 -p /dev/ttyACM0` explicitly |
+| Ubertooth does not enumerate | DFU mode or corrupt firmware | `ubertooth-util -v` for version; reflash with `ubertooth-programmer` |
 
-### 2.2 Señal no visible / captura defectuosa
+### 2.2 Signal not visible / defective capture
 
-> **Regla de diagnosis (§3)**: ante "no veo la señal", revisa en ESTE orden — antena (§1.4) → gain/overflow (aquí) → driver (§1.3) → binario (§1.1) → gap de banda. Antena y gain explican el 80% de los casos.
+> **Diagnosis rule (§3)**: on "I can't see the signal", check in THIS order — antenna (§1.4) → gain/overflow (here) → driver (§1.3) → binary (§1.1) → band gap. Antenna and gain explain 80% of cases.
 
-| Síntoma | Causa probable | Acción |
+| Symptom | Probable cause | Action |
 |---------|----------------|--------|
-| `gqrx` muestra ruido plano con hardware OK | Antena ausente/incorrecta, bias-T off (GNSS), dipolo mal sintonizado | §1.4 primero; `rtl_biast -b 1` para GNSS; pregunta al operador por antena conectada |
-| Waterfall plano a 0 dBFS (clipping) | Gain excesivo satura el ADC | Bajar gain: RTL-SDR `-g 40–49`; HackRF `-a 1 -l <lna> -g <vga>` ajustados |
-| Señal hundida en piso de ruido | Gain insuficiente | Subir gain gradualmente; verificar LNA externo (ADS-B 1090) |
-| Captura parcial de canal Wi-Fi 80/160 MHz | IBW del SDR no cubre | HackRF ~20 MHz no ve canal completo → bladeRF/USRP o declarar limitación |
-| `hackrf_transfer`/`rtl_test` reporta drops/overflows | Sample rate excede USB/host I/O | Bajar sample rate; cerrar otros procesos; SSD vs HDD; USB 3.0 directo (no hub) |
-| OFDM grid recovery falla (LTE/5G NR) | Sin GPSDO lock | `uhd_usrp_probe ... clock_source=gpsdo`; conseguir GPSDO o declarar gap |
-| `dump1090` reporta 0 mensajes/min | Antena 1090 sin LNA/filtro o mala orientación | §1.4 ADS-B; antena quarter-wave vertical + LNA + filtro 1090 |
-| Sniffle no sigue conexión BLE establecida | Access Address no fijado correctamente | Setear AA **después** de CENTRAL (flush); los advertisements durante INITIATING resetean al advertising AA y rompen decoding de data PDUs |
-| Ubertooth captura basura BT Classic | Hop no seguido, LAP desconocido | BR/EDR hop a 1600 h/s — solo `esp32_bluetooth_classic_sniffer` o Ubertooth follow por LAP conocido |
-| RFID: reader no lee tag | Modo activo en observacional, tag ausente del campo | En observacional/defensivo usar `hf 14a sniff` (pasivo, no alimenta); `hf mf autopwn` es activo |
+| `gqrx` shows flat noise with hardware OK | Antenna absent/incorrect, bias-T off (GNSS), mistuned dipole | §1.4 first; `rtl_biast -b 1` for GNSS; ask operator about connected antenna |
+| Waterfall flat at 0 dBFS (clipping) | Excessive gain saturates the ADC | Lower gain: RTL-SDR `-g 40–49`; HackRF `-a 1 -l <lna> -g <vga>` adjusted |
+| Signal buried in noise floor | Insufficient gain | Raise gain gradually; check external LNA (ADS-B 1090) |
+| Partial capture of 80/160 MHz Wi-Fi channel | SDR IBW does not cover it | HackRF ~20 MHz cannot see full channel → bladeRF/USRP or declare limitation |
+| `hackrf_transfer`/`rtl_test` reports drops/overflows | Sample rate exceeds USB/host I/O | Lower sample rate; close other processes; SSD vs HDD; direct USB 3.0 (no hub) |
+| OFDM grid recovery fails (LTE/5G NR) | No GPSDO lock | `uhd_usrp_probe ... clock_source=gpsdo`; obtain a GPSDO or declare gap |
+| `dump1090` reports 0 messages/min | 1090 antenna without LNA/filter or bad orientation | §1.4 ADS-B; vertical quarter-wave antenna + LNA + 1090 filter |
+| Sniffle does not follow established BLE connection | Access Address not set correctly | Set AA **after** CENTRAL (flush); advertisements during INITIATING reset to the advertising AA and break data PDU decoding |
+| Ubertooth captures BT Classic garbage | Hop not followed, unknown LAP | BR/EDR hop at 1600 h/s — only `esp32_bluetooth_classic_sniffer` or Ubertooth follow by known LAP |
+| RFID: reader does not read tag | Active mode in observational, tag absent from field | In observational/defensive use `hf 14a sniff` (passive, does not power); `hf mf autopwn` is active |
 
-### 2.3 Análisis no decodifica (CR offline)
+### 2.3 Analysis does not decode (offline CR)
 
-| Síntoma | Causa probable | Acción |
+| Symptom | Probable cause | Action |
 |---------|----------------|--------|
-| Wireshark muestra "Malformed packet" masivo | Decoder equivocado o captura corrupta | Confirmar dissector correcto: BTBR/BLE/802.15.4/LoRaTap/GSMTAP. Versión antigua de Wireshark → actualizar |
-| `crackle` falla: "no STK found" | Pairing no está en el PCAP | El evento pairing faltó de la captura — re-capturar SP/PHY+LL durante el bonding; no es fortaleza de cripto |
-| `hashcat -m 22000` no carga | PCAP sin PMKID/EAPOL completo | Re-capturar; PMKID clientless chain `hcxdumptool` → `hcxpcapngtool` requiere interacción del cliente |
-| `kraken` A5/1 no encuentra clave | Keystream insuficiente o BB-.tables no indexadas | Capturar más tráfico; verificar `index` de BB tables (~2 TB); no descartar fortaleza |
-| `hf mf autopwn` no recupera keys | Distancia/ángulo del tag, clave desconocida | Probar `hf mf list` + `mfkey32/64` del sniff del reader; distancia 1-3 cm; tag MIFARE Plus evade Classic |
-| Análisis sobre PCAP con overflows ≠ 0 | Captura base silenciosamente incompleta | Re-capturar (safe-capture §4); los overflows hacen que se decodifique basura presentada como hallazgo |
-| Conclusión sin artefacto citado | Opinión flotante, no evidencia | Cada conclusión cita `loot/captures/...` + comando; mapeo artefacto→hallazgo obligatorio |
+| Wireshark shows massive "Malformed packet" | Wrong decoder or corrupt capture | Confirm correct dissector: BTBR/BLE/802.15.4/LoRaTap/GSMTAP. Old Wireshark version → update |
+| `crackle` fails: "no STK found" | Pairing is not in the PCAP | The pairing event was missed in the capture — re-capture SP/PHY+LL during bonding; it is not crypto strength |
+| `hashcat -m 22000` does not load | PCAP without complete PMKID/EAPOL | Re-capture; clientless PMKID chain `hcxdumptool` → `hcxpcapngtool` requires client interaction |
+| `kraken` A5/1 does not find the key | Insufficient keystream or BB-.tables not indexed | Capture more traffic; verify BB tables `index` (~2 TB); do not dismiss crypto strength |
+| `hf mf autopwn` does not recover keys | Tag distance/angle, unknown key | Try `hf mf list` + `mfkey32/64` from reader sniff; distance 1-3 cm; MIFARE Plus tag evades Classic |
+| Analysis on PCAP with overflows ≠ 0 | Base capture silently incomplete | Re-capture (safe-capture §4); overflows cause garbage to be decoded and presented as a finding |
+| Conclusion without cited artifact | Floating opinion, not evidence | Every conclusion cites `loot/captures/...` + command; artifact→finding mapping mandatory |
 
 ---
 
-## 3. §orden — regla de diagnosis
+## 3. §orden — diagnosis rule
 
-Ante "no veo / no funciona", NO declare gap inmediatamente. Sigue este orden:
+On "I can't see / it doesn't work", do NOT declare a gap immediately. Follow this order:
 
-1. **Antena** (§1.4) — ¿está conectada y es correcta para la banda? `gqrx` con ruido plano + hardware OK = antena primero.
-2. **Gain/overflow** (§2.2) — ¿satura o se hunde? Ajustar antes de declarar "sin señal".
-3. **Driver/permisos** (§1.3) — ¿el device abre? `Permission denied` ≠ hardware roto.
-4. **Binario/decoder** (§1.1, §2.3) — ¿la tool y el decoder correctos están? `which`, versión de Wireshark.
-5. **Banda** — ¿el radio llega a la frecuencia? RTL-SDR no ve 2.4 GHz; UWB 6.5/8 GHz no lo cubre ningún radio del kit.
-6. **Solo entonces** → declarar gap de visibilidad en `loot/notes/gaps.md` (Ruta A) o escalar (CONSULTA).
+1. **Antenna** (§1.4) — is it connected and correct for the band? `gqrx` with flat noise + hardware OK = antenna first.
+2. **Gain/overflow** (§2.2) — is it saturating or buried? Adjust before declaring "no signal".
+3. **Driver/permissions** (§1.3) — does the device open? `Permission denied` ≠ broken hardware.
+4. **Binary/decoder** (§1.1, §2.3) — are the right tool and decoder present? `which`, Wireshark version.
+5. **Band** — does the radio reach the frequency? RTL-SDR cannot see 2.4 GHz; UWB 6.5/8 GHz is not covered by any radio in the kit.
+6. **Only then** → declare a visibility gap in `loot/notes/gaps.md` (Route A) or escalate (CONSULT).
 
-> Antena y gain explican ~80% de los "no veo la señal". Una declaración de gap sin haber revisado antena+gain es
-> un falso negativo.
-
----
-
-## 4. §falsos-positivos — hallazgo que parece confirmado pero no lo es
-
-Antes de registrar, descarta el falso positivo típico del patrón (ver §4 abajo columna
-"Falso positivo típico" por familia). Casos transversales:
-
-| Síntoma (parece hallazgo) | Falso positivo típico | Verificación |
-|----------------------------|----------------------|--------------|
-| Crack falló → "cripto fuerte" | El evento pairing/join/handshake **no estaba** en la captura (gap de captura, no fortaleza) | Re-capturar; confirmar evento presente en el PCAP antes de atribuir a fortaleza |
-| Decodificación produce basura | Captura base con overflows ≠ 0 (silenciosamente incompleta) | Verificar overflow counters en la envolvente; re-capturar si > 0 |
-| "Señal desconocida" en survey | Interferencia local (router propio, microondas, Bluetooth del host) | Apagar host BT/Wi-Fi; correlacionar horario; mover antena |
-| Tráfico en claro "descubierto" | Decoder equivocado muestra bytes legibles por coincidencia | Confirmar dissector; validar con longitud/checkbox del protocolo |
-| Anomalía GNSS C/N0 | Multipath urbano o jamming legítimo (radar militar) | Correlacionar con horario/ubicación; no reportar spoof sin forge observado |
-| "BLE de dispositivo desconocido" | Dispositivo del propio operador/entorno | Correlacionar contra inventario antes de etiquetar stalking |
-
-> **"No observado" bajo una ventana finita es gap de visibilidad, no evidencia de ausencia.** Pero "observado"
-> también puede ser falso positivo si la captura base está corrupta o el decoder no corresponde. Verifica ambos
-> extremos antes de registrar.
+> Antenna and gain explain ~80% of "I can't see the signal". A gap declaration without having checked antenna+gain
+> is a false negative.
 
 ---
 
-## 5. Mapeo a fases downstream
+## 4. §falsos-positivos — finding that looks confirmed but is not
 
-- **SKILL.md Fase 0** cita §setup como cuerpo del check de entorno.
-- **SKILL.md Ruta B** cita §diagnostico como paso anterior a escalar.
-- **Wayfinders** (`references/NN-proto.md`) pueden citar "ver troubleshooting §2.2" para la familia específica.
-- **Fase 7.1 (validación):** cada "no funciona" documentado en `loot/notes/` debe referenciar §orden — sin ese
-  orden recorrido, el gap es débil.
+Before registering, discard the typical false positive of the pattern (see §4 below, "Typical false positive"
+column per family). Cross-cutting cases:
+
+| Symptom (looks like a finding) | Typical false positive | Verification |
+|---------------------------------|------------------------|--------------|
+| Crack failed → "strong crypto" | The pairing/join/handshake event **was not** in the capture (capture gap, not strength) | Re-capture; confirm the event is present in the PCAP before attributing to strength |
+| Decoding produces garbage | Base capture with overflows ≠ 0 (silently incomplete) | Check overflow counters in the wrapper; re-capture if > 0 |
+| "Unknown signal" in survey | Local interference (your own router, microwave, host Bluetooth) | Turn off host BT/Wi-Fi; correlate with time; move antenna |
+| "Discovered" cleartext traffic | Wrong decoder shows readable bytes by coincidence | Confirm dissector; validate against protocol length/checksum |
+| GNSS C/N0 anomaly | Urban multipath or legitimate jamming (military radar) | Correlate with time/location; do not report spoof without observed forge |
+| "BLE from unknown device" | The operator's own device/environment | Correlate against inventory before labeling as stalking |
+
+> **"Not observed" under a finite window is a visibility gap, not evidence of absence.** But "observed" can also
+> be a false positive if the base capture is corrupt or the decoder does not match. Verify both extremes before
+> registering.
+
+---
+
+## 5. Mapping to downstream phases
+
+- **SKILL.md Phase 0** cites §setup as the body of the environment check.
+- **SKILL.md Route B** cites §diagnostico as the step before escalating.
+- **Wayfinders** (`references/NN-proto.md`) may cite "see troubleshooting §2.2" for the specific family.
+- **Phase 7.1 (validation):** every "it doesn't work" documented in `loot/notes/` must reference §orden — without
+  that order traversed, the gap is weak.

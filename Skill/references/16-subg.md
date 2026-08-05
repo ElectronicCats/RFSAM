@@ -1,61 +1,61 @@
 # 16 — Sub-GHz ISM / Remotes
 
-> Wayfinder + controles RFSAM para Sub-GHz (controles de garage, sensores, TPMS, medidores).
+> Wayfinder + RFSAM controls for Sub-GHz (garage controls, sensors, TPMS, meters).
 
 ## Facts
-- **Bandas**: 315 MHz (NA/Asia remotes & TPMS) · 433.92 MHz (global, workhorse) · 868 MHz (EU, wM-Bus) · 915 MHz (US ISM 902–928).
-- **Modulación**: casi todo OOK/ASK (carrier parpadea) o (G)FSK (dos tonos). Sin spread spectrum → fácil demodular.
-- **Encoding/baud**: PWM/Manchester/PPM a cientos-miles baud, bursts cortos repetidos.
-- **Tipo de código**: fijo (mismo payload siempre — trivial replay) vs rotatorio/hopping (KeeLoq/HCS301 — nuevo valor cada press).
-- **Crypto**: la mayoría **sin confidencialidad** (payload en claro). Código rotatorio = resistencia a replay, no encriptación. KeeLoq necesita manufacturer key para forjar siguiente código (no se obtiene de captura pasiva).
+- **Bands**: 315 MHz (NA/Asia remotes & TPMS) · 433.92 MHz (global, workhorse) · 868 MHz (EU, wM-Bus) · 915 MHz (US ISM 902–928).
+- **Modulation**: almost all OOK/ASK (carrier blinks) or (G)FSK (two tones). No spread spectrum → easy to demodulate.
+- **Encoding/baud**: PWM/Manchester/PPM at hundreds-to-thousands of baud, short repeated bursts.
+- **Code type**: fixed (same payload always — trivial replay) vs rolling/hopping (KeeLoq/HCS301 — new value each press).
+- **Crypto**: most **without confidentiality** (payload in cleartext). Rolling code = replay resistance, not encryption. KeeLoq requires the manufacturer key to forge the next code (not obtainable from passive capture).
 - **Targets**: garage/gate remotes, car key fobs, TPMS, weather/soil sensors, smart-home plugs/doorbells, wM-Bus meters, alarm contacts.
 
-## Descenso por capa
+## Layer-by-layer descent
 
 ### IG (fingerprinting)
-- Frecuencia (FCC ID → fccid.io), modulación (OOK/ASK vs FSK), encoding/baud, **fijo vs rotatorio** (lo que decide todo), chip (CC1101, PT2262/EV1522, HCS301/KeeLoq), device class (rtl_433 tiene 320+ decoders).
+- Frequency (FCC ID → fccid.io), modulation (OOK/ASK vs FSK), encoding/baud, **fixed vs rolling** (this decides everything), chip (CC1101, PT2262/EV1522, HCS301/KeeLoq), device class (rtl_433 has 320+ decoders).
 
 ### SP — `RFSAM-SUBG-SP-01` Burst discovery and characterisation
-- **Objetivo**: dónde transmite; ver bursts al trigger. RTL-SDR basta (sub-GHz).
+- **Objective**: where it transmits; see bursts on trigger. RTL-SDR suffices (sub-GHz).
 - **Kit**: Gqrx (waterfall), rtl_433 (live device scan → JSON), catnip (SX1262 spectrum analyzer).
-- **Comando**: `rtl_433 -f 433.92M` → decodifica dispositivo conocido a JSON.
+- **Command**: `rtl_433 -f 433.92M` → decodes a known device to JSON.
 
 ### PHY — `RFSAM-SUBG-PHY-01` Demodulation and framing
-- **Objetivo**: clean recording del burst, demod+frame en un pase (señal simple). Grabar I/Q centrado en carrier, rate que cubra ancho de banda.
+- **Objective**: clean recording of the burst, demod+frame in one pass (simple signal). Record I/Q centered on the carrier, at a rate that covers the bandwidth.
 
 ### LL — `RFSAM-SUBG-LL-01` Frame and addressing recovery
-- **Objetivo**: burst → bits → fields. Dispositivo conocido: rtl_433 decodifica directo a JSON. Desconocido: Universal Radio Hacker (auto-detect mod/baud, diff bitstream). Pocket: rfcat (YARD Stick One), Flipper Zero (Read/Read RAW).
+- **Objective**: burst → bits → fields. Known device: rtl_433 decodes directly to JSON. Unknown: Universal Radio Hacker (auto-detect mod/baud, diff bitstream). Pocket: rfcat (YARD Stick One), Flipper Zero (Read/Read RAW).
 - **Kit**: rtl_433, Universal Radio Hacker, rfcat+yard-stick-one, Flipper Zero, catnip (SX1262 GFSK packets).
 
 ### CR — `RFSAM-SUBG-CR-01` Rolling-code assessment
-- **Objetivo**: honestidad — nada que "romper" en la mayoría (no hay crypto). Código fijo = se lee en LL. Código rotatorio = resistencia a replay, **no** canal cifrado. Para forjar siguiente código necesitas manufacturer key (no en captura pasiva). KeeLoq cryptanalysis académica fuera de scope.
-- **Sin tool de crack offline** — lee fijos, captura-y-replaya rotatorios (AT).
+- **Objective**: honesty — nothing to "break" in most cases (no crypto). Fixed code = read at LL. Rolling code = replay resistance, **not** an encrypted channel. To forge the next code you need the manufacturer key (not in passive capture). Academic KeeLoq cryptanalysis out of scope.
+- **No offline crack tool** — read fixed codes, capture-and-replay rolling codes (AT).
 
 ### AT — `RFSAM-SUBG-AT-01` Replay and forge
-- **⚠ AUTORIZACIÓN OBLIGATORIA** (transmite sub-GHz; respeta potencia/duty-cycle ISM).
-- **Objetivo**: código fijo → replay trivial. Código rotatorio → RollJam (jam+capture código sin usar, úsalo luego), RollBack (desync counter por replay masivo = DoS), brute force keyspace pequeño (DIP-switch EV1527/PT2262).
-- **Kit**: rfcat (replay fixed), Universal Radio Hacker (replay/edit TX), Flipper Zero (field replay fixed), catnip (GFSK TX scriptable).
-- **Comando**: rfcat → `d.RFxmit(captured_bytes)`.
+- **⚠ MANDATORY AUTHORIZATION** (transmits sub-GHz; respect ISM power/duty-cycle).
+- **Objective**: fixed code → trivial replay. Rolling code → RollJam (jam+capture an unused code, use it later), RollBack (desync counter via massive replay = DoS), brute force small keyspace (DIP-switch EV1527/PT2262).
+- **Kit**: rfcat (replay fixed), Universal Radio Hacker (replay/edit TX), Flipper Zero (field replay fixed), catnip (scriptable GFSK TX).
+- **Command**: rfcat → `d.RFxmit(captured_bytes)`.
 
 ### AP
-- Sin pila separada: rtl_433 JSON = capa app (sensor values, IDs, flags). Forjas esos valores para engañar gateway/display.
+- No separate stack: rtl_433 JSON = application layer (sensor values, IDs, flags). You forge those values to deceive the gateway/display.
 
-## Subflujo (especialización del flujo maestro)
+## Subflow (specialization of the master flow)
 
-Transiciones específicas de sub-GHz; los comandos verbatim viven en `Descenso por capa` arriba.
+Sub-GHz-specific transitions; verbatim commands live in `Layer-by-layer descent` above.
 
-| Avance | Criterio de avance | Marcadores |
-|--------|--------------------|------------|
-| IG → SP | Frecuencia y modulación confirmadas. **FCC ID** (fccid.io) resuelve freq/mod exactos | — |
-| SP → PHY | Bursts cortos en press/sensor report confirmados. RTL-SDR basta | — |
-| (PHY+LL en una pasada) | Clean recording del burst → demod+frame (señal simple, low baud) | — |
-| LL → CR | ¿Código **fijo** (en claro, replayable) o **rotatorio** (KeeLoq/HCS301)? | — |
-| CR → AT | Fijo confirmado (replayable) o rolling (→ RollJam en AT). La mayoría **sin crypto** → CR suele ser "lectura" | — |
-| AT | ⚠TX re-check (radio TX requerido: rfcat/YARD Stick/Flipper/catnip); ⚠ replay sobre terceros = **RA7** | ⚠TX |
+| Advance | Advancement criterion | Markers |
+|---------|----------------------|---------|
+| IG → SP | Frequency and modulation confirmed. **FCC ID** (fccid.io) resolves exact freq/mod | — |
+| SP → PHY | Short bursts confirmed on press/sensor report. RTL-SDR suffices | — |
+| (PHY+LL in one pass) | Clean recording of the burst → demod+frame (simple signal, low baud) | — |
+| LL → CR | **Fixed** code (in cleartext, replayable) or **rolling** (KeeLoq/HCS301)? | — |
+| CR → AT | Fixed confirmed (replayable) or rolling (→ RollJam at AT). Most **without crypto** → CR is usually a "read" | — |
+| AT | ⚠TX re-check (radio TX required: rfcat/YARD Stick/Flipper/catnip); ⚠ replay against third parties = **RA7** | ⚠TX |
 
-**Anomalía defensiva** (modo Defensivo, RX-only): bursts en tu banda **sin dispositivo propio conocido** = posible scanner/replay de vecino. Correlaciona con tu actividad.
+**Defensive anomaly** (Defensive mode, RX-only): bursts in your band **without a known own device** = possible neighbor scanner/replay. Correlate with your activity.
 
-## Advertencias legales
-- RX pasivo sub-GHz OK.
-- **TX/replay/forge = activo**: solo dispositivos propios/autorizados. Abrir garage/alarma ajena = allanamiento/robo. Jamming ISM ilegal al aire en muchas jurisdicciones.
-- Flipper stock firmware **rehúsa** guardar/replayar rolling codes por diseño (solo fijos).
+## Legal warnings
+- Passive RX sub-GHz OK.
+- **TX/replay/forge = active**: own/authorized devices only. Opening someone else's garage/alarm = breaking and entering/theft. ISM jamming is illegal over the air in many jurisdictions.
+- Flipper stock firmware **refuses** to save/replay rolling codes by design (fixed only).

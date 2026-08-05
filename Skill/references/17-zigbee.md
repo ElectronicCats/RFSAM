@@ -1,61 +1,61 @@
 # 17 — Zigbee / 802.15.4
 
-> Wayfinder + controles RFSAM para Zigbee. RFSAM dueño end-to-end.
+> Wayfinder + RFSAM controls for Zigbee. RFSAM owns end-to-end.
 
 ## Facts
-- **Banda**: 2.4 GHz (2.405–2.480) principal · sub-GHz 868 MHz (EU) / 902–928 (Américas).
-- **Canales**: 2.4 GHz 16 canales 11–26 (espaciados 5 MHz); un PAN en un canal (no hoppa como BLE).
-- **PHY**: IEEE 802.15.4 — 2.4 GHz O-QPSK con DSSS, 250 kbps.
+- **Band**: 2.4 GHz (2.405–2.480) primary · sub-GHz 868 MHz (EU) / 902–928 (Americas).
+- **Channels**: 2.4 GHz 16 channels 11–26 (spaced 5 MHz); one PAN on one channel (does not hop like BLE).
+- **PHY**: IEEE 802.15.4 — 2.4 GHz O-QPSK with DSSS, 250 kbps.
 - **Stack**: 802.15.4 MAC/PHY → Zigbee NWK (mesh) → APS → ZCL/ZDO. Roles: Coordinator, Router, End Device.
-- **Seguridad**: AES-128-CCM* en NWK y APS. Network key compartida por todo el PAN; Trust Center link key gatea el join. Default well-known TC link key `ZigBeeAlliance09` (hex `5A6967426565416C6C69616E63653039`).
-- **Alcance**: ~10–100 m por hop; el mesh extiende.
+- **Security**: AES-128-CCM* at NWK and APS. Network key shared by the entire PAN; Trust Center link key gates the join. Default well-known TC link key `ZigBeeAlliance09` (hex `5A6967426565416C6C69616E63653039`).
+- **Range**: ~10–100 m per hop; the mesh extends it.
 
-## Descenso por capa
+## Layer-by-layer descent
 
 ### IG (fingerprinting)
-- Chipset (Silicon Labs EFR32/EM35x, TI CC2530/CC2538/CC1352, NXP JN51xx, ESP32-C6), rol (Coordinator=Trust Center/Router/End Device), canal/PAN, modelo de join (centralized vs distributed; default TC link key vs install code vs Zigbee 3.0 install-code-only).
+- Chipset (Silicon Labs EFR32/EM35x, TI CC2530/CC2538/CC1352, NXP JN51xx, ESP32-C6), role (Coordinator=Trust Center/Router/End Device), channel/PAN, join model (centralized vs distributed; default TC link key vs install code vs Zigbee 3.0 install-code-only).
 
 ### SP — `RFSAM-ZIGBEE-SP-01` Channel survey and capture feasibility
-- **Objetivo**: en qué canal de los 16 está el PAN. Scan energía/active, no perseguir hops.
-- **Kit**: KillerBee `zbstumbler` (active beacon), Gqrx (cross-check energía), Minino (scanner), Kismet (pasivo multirradio), catnip (activity table).
-- **Caveat**: canales 15/20/25/26 en gaps Wi-Fi → comunes.
+- **Objective**: which of the 16 channels the PAN is on. Energy/active scan, no hop chasing.
+- **Kit**: KillerBee `zbstumbler` (active beacon), Gqrx (energy cross-check), Minino (scanner), Kismet (passive multi-radio), catnip (activity table).
+- **Caveat**: channels 15/20/25/26 fall in Wi-Fi gaps → common.
 
-### PHY (sin control — demod en radio 802.15.4)
-- Las radios 802.15.4 demodulan O-QPSK/DSSS (PHY) y enmarcan MAC (LL) juntas. SDR impráctico para decode live.
+### PHY (no control — demodulation on 802.15.4 radio)
+- 802.15.4 radios demodulate O-QPSK/DSSS (PHY) and frame MAC (LL) together. SDR impractical for live decode.
 
 ### LL — `RFSAM-ZIGBEE-LL-01` PAN, addressing and device discovery
-- **Objetivo**: park radio 802.15.4 en canal → PCAP. **Crítico**: capturar un device *uniéndose* (join) — ahí se transporta la network key.
-- **Kit**: KillerBee (`zbdump`/`zbwireshark`, ApiMote/nRF52840), catnip (CatSniffer), nRF Sniffer 802.15.4, whsniff (CC2531), Minino, WHAD (nRF52840/APIMote), Kismet (multirradio).
-- **Decoder**: Wireshark (802.15.4 + Zigbee NWK/APS; descifra con network key).
+- **Objective**: park an 802.15.4 radio on the channel → PCAP. **Critical**: capture a device *joining* (join) — that is where the network key is transported.
+- **Kit**: KillerBee (`zbdump`/`zbwireshark`, ApiMote/nRF52840), catnip (CatSniffer), nRF Sniffer 802.15.4, whsniff (CC2531), Minino, WHAD (nRF52840/APIMote), Kismet (multi-radio).
+- **Decoder**: Wireshark (802.15.4 + Zigbee NWK/APS; decrypts with network key).
 
 ### CR — `RFSAM-ZIGBEE-CR-01` Network-key provisioning and rotation
-- **Objetivo**: recuperar network key del join. Classic weakness: APS Transport-Key en join bajo default TC link key `ZigBeeAlliance09` (o en claro en devices viejos).
-- **Kit**: zbdsniff (extrae network key del join bajo `ZigBeeAlliance09` o en claro), Wireshark (descifra con key).
-- **Comando**: capturar join → `zbdsniff join.pcap` → pega key en Wireshark Preferences → ZigBee.
-- **Caveat**: per-device install code la derrota; Zigbee 3.0 install-code key agreement (AES-MMO) resiste capture-the-join.
+- **Objective**: recover the network key from the join. Classic weakness: APS Transport-Key on join under the default TC link key `ZigBeeAlliance09` (or in cleartext on old devices).
+- **Kit**: zbdsniff (extracts network key from join under `ZigBeeAlliance09` or in cleartext), Wireshark (decrypts with key).
+- **Command**: capture join → `zbdsniff join.pcap` → paste key in Wireshark Preferences → ZigBee.
+- **Caveat**: per-device install code defeats it; Zigbee 3.0 install-code key agreement (AES-MMO) resists capture-the-join.
 
-### AT (sin control dedicado — técnicas activas)
-- **⚠ AUTORIZACIÓN OBLIGATORIA**. Con network key: forge/inject (KillerBee `zbreplay`/scapy-radio, ApiMote TX). Forzar leave/rejoin para recapturar join. catnip OTA firmware-update MITM+jamming PoC.
+### AT (no dedicated control — active techniques)
+- **⚠ MANDATORY AUTHORIZATION**. With network key: forge/inject (KillerBee `zbreplay`/scapy-radio, ApiMote TX). Force leave/rejoin to recapture the join. catnip OTA firmware-update MITM+jamming PoC.
 - **Kit**: KillerBee (ApiMote TX), catnip (OTA MITM PoC).
 
 ### AP
-- ZCL commands (on/off, lock/unlock, level). Con network key, craft APS/ZCL cifrado e inyectar (KillerBee zbscapy).
+- ZCL commands (on/off, lock/unlock, level). With the network key, craft encrypted APS/ZCL and inject (KillerBee zbscapy).
 
-## Subflujo (especialización del flujo maestro)
+## Subflow (specialization of the master flow)
 
-Transiciones específicas de Zigbee; los comandos verbatim viven en `Descenso por capa` arriba.
+Zigbee-specific transitions; verbatim commands live in `Layer-by-layer descent` above.
 
-| Avance | Criterio de avance | Marcadores |
-|--------|--------------------|------------|
-| IG → SP | Rol (Coordinator/Router/End) y PAN identificados. TC link key default `ZigBeeAlliance09` es **well-known** | — |
-| SP → PHY+LL | Canal del PAN fijado (16 canales 2.4 GHz, **no hoppa**); radio 802.15.4 aparcada. SDR no decodifica O-QPSK/DSSS live | — |
-| PHY+LL → CR | ¿Capturas un **join**? (ahí se transporta la network key). **Crítico** para extraer la key | — |
-| CR → AT | Network key en mano o gap. Transport-Key protegido solo por TC link key default (o en claro en devices viejos); install code lo derrota | — |
-| AT | ⚠TX re-check; con key → forge/inject, forzar leave/rejoin; sin key → replay cifrado | ⚠TX |
-| AP (sin control formal) | ZCL commands (on/off, lock, level) sobre lo que el device confía | — |
+| Advance | Advancement criterion | Markers |
+|---------|----------------------|---------|
+| IG → SP | Role (Coordinator/Router/End) and PAN identified. Default TC link key `ZigBeeAlliance09` is **well-known** | — |
+| SP → PHY+LL | PAN channel fixed (16 channels 2.4 GHz, **no hopping**); 802.15.4 radio parked. SDR does not decode O-QPSK/DSSS live | — |
+| PHY+LL → CR | Do you capture a **join**? (that is where the network key is transported). **Critical** to extract the key | — |
+| CR → AT | Network key in hand or gap. Transport-Key protected only by default TC link key (or in cleartext on old devices); install code defeats it | — |
+| AT | ⚠TX re-check; with key → forge/inject, force leave/rejoin; without key → replay encrypted | ⚠TX |
+| AP (no formal control) | ZCL commands (on/off, lock, level) over what the device trusts | — |
 
-**Anomalía defensiva** (modo Defensivo, RX-only): frames de management inesperadas (leave/rejoin **forzado**) o devices desconocidos uniéndose al PAN = posible takeover. Registra.
+**Defensive anomaly** (Defensive mode, RX-only): unexpected management frames (**forced** leave/rejoin) or unknown devices joining the PAN = possible takeover. Register.
 
-## Advertencias legales
-- RX pasivo OK (802.15.4 abierto).
-- **Inject/replay/forge = activo**: solo PAN propio/autorizado. Operar lock/switch ajeno = allanamiento.
+## Legal warnings
+- Passive RX OK (802.15.4 open).
+- **Inject/replay/forge = active**: own/authorized PAN only. Operating someone else's lock/switch = breaking and entering.

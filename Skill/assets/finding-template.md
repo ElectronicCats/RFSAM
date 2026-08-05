@@ -1,109 +1,110 @@
-# Plantilla de Hallazgo RF — {{RF-NNN}}
+# RF Finding Template — {{RF-NNN}}
 
-> Documento **standalone por hallazgo**. Úsalo para `critical`/`high` que merecen un
-> write-up detallado más allá de la sección del informe (ver `assets/report-template.md §4`).
-> El bloque compacto del chat vive en `references/03-registro-hallazgos.md §3`; el modelo
-> completo de 4 ejes (tabla de decisión, ejemplos trabajados) en `§7` del mismo archivo.
+> **Standalone document per finding.** Use it for `critical`/`high` that deserve a
+> detailed write-up beyond the report section (see `assets/report-template.md §4`).
+> The compact chat block lives in `references/03-registro-hallazgos.md §3`; the
+> complete 4-axis model (decision table, worked examples) is in `§7` of the same
+> file.
 
 **ID**: {{RF-NNN}}
-**Título**: {{título específico del hallazgo}}
-**Protocolo/Capa**: {{BLE / AT}} · **Control RFSAM**: `{{RFSAM-BLE-AT-01}}`
-**Severidad**: {{CRITICAL / HIGH / MEDIUM / LOW / INFO}} · **Estado**: {{confirmed / hypothesis}}
-**Fecha**: {{ISO}}
+**Title**: {{specific finding title}}
+**Protocol/Layer**: {{BLE / AT}} · **RFSAM control**: `{{RFSAM-BLE-AT-01}}`
+**Severity**: {{CRITICAL / HIGH / MEDIUM / LOW / INFO}} · **Status**: {{confirmed / hypothesis}}
+**Date**: {{ISO}}
 
 ---
 
-## Modelo RFSAM de 4 ejes
+## RFSAM 4-axis model
 
-> Recorre los ejes en orden (Impacto fija el techo; los demás modulan). Tabla de decisión:
-> `references/03-registro-hallazgos.md §7.2`.
+> Walk through the axes in order (Impact sets the ceiling; the others modulate it).
+> Decision table: `references/03-registro-hallazgos.md §7.2`.
 
-| Eje | Valor | Justificación (1 línea) |
-|-----|-------|--------------------------|
-| **Impacto** (1–4) | {{4}} | {{takeover / clave recuperada / datos en claro / DoS / observacional}} |
-| **Explotabilidad** (1–4) | {{2}} | {{hardware necesario + fricción para reproducir}} |
-| **Exposición** (1–4) | {{2}} | {{un dispositivo / una red / infraestructura pública}} |
-| **Alcance** (A/B/C/D) | {{A}} | {{alcanzado en campo / demostrado en jaula (B) / hipotético (C) / defensivo (D)}} |
+| Axis | Value | Justification (1 line) |
+|------|-------|------------------------|
+| **Impact** (1–4) | {{4}} | {{takeover / key recovered / plaintext data / DoS / observational}} |
+| **Exploitability** (1–4) | {{2}} | {{required hardware + friction to reproduce}} |
+| **Exposure** (1–4) | {{2}} | {{single device / single network / public infrastructure}} |
+| **Scope** (A/B/C/D) | {{A}} | {{achieved in the field / demonstrated in a cage (B) / hypothetical (C) / defensive (D)}} |
 
 **CVSS 4.0**: `{{CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N}}` ({{score}}, {{sev}})
 
 ---
 
-## Descripción
+## Description
 
-{{Qué se encontró, mecanismo técnico y por qué importa. Nombra el dispositivo/escenario, el
-protocolo y la capa del descenso donde se detectó. Cita la vulnerabilidad subyacente (CVE /
-spec debilitada / mala configuración) con fuente verificable. Una afirmación no trivial sin
-fuente se flagea (ver `references/03-registro-hallazgos.md §6`).}}
-
----
-
-## Impacto
-
-{{Qué consigue un atacante real en campo: takeover, robo de credenciales, replay, DoS,
-tracking de identidad. Conecta con el eje Impacto de arriba. Si el Alcance es B/C/D, aclara
-qué se demostró vs qué queda hipotético — la severidad refleja lo que ALCANZASTE, no lo que
-podría alcanzarse en teoría.}}
+{{What was found, the technical mechanism and why it matters. Name the device/scenario,
+the protocol and the descent layer where it was detected. Cite the underlying vulnerability
+(CVE / weakened spec / misconfiguration) with a verifiable source. A non-trivial claim
+without a source is flagged (see `references/03-registro-hallazgos.md §6`).}}
 
 ---
 
-## Evidencia
+## Impact
+
+{{What a real attacker gains in the field: takeover, credential theft, replay, DoS,
+identity tracking. Connect to the Impact axis above. If Scope is B/C/D, clarify what
+was demonstrated vs what remains hypothetical — the severity reflects what you ACHIEVED,
+not what could theoretically be achieved.}}
+
+---
+
+## Evidence
 
 ```
-COMANDO: {{tool + flags exactos — verbatim}}
-SALIDA:  {{fragmento que confirma el hallazgo — AA, clave recuperada, 200 OK, frame decodificada, ...}}
+COMMAND: {{exact tool + flags — verbatim}}
+OUTPUT:  {{excerpt that confirms the finding — AA, recovered key, 200 OK, decoded frame, ...}}
 ```
 
-> Captura cruda en `loot/captures/{{PROTO}}-{{fase}}-{{NN}}-{{timestamp}}.{{ext}}`.
-> La evidencia mínima depende de la severidad — ver `SKILL.md §EVIDENCIA REPRODUCIBLE`.
+> Raw capture in `loot/captures/{{PROTO}}-{{phase}}-{{NN}}-{{timestamp}}.{{ext}}`.
+> The minimum evidence depends on severity — see `SKILL.md §REPRODUCIBLE EVIDENCE`.
 
 ---
 
-## Reproducción segura
+## Safe reproduction
 
-> Cada `poc/{{RF-NNN}}/` lleva un `repro.txt`. **Sin `repro.txt`, el finding es hipótesis,
-> no hallazgo confirmado** — no entra al reporte como confirmado.
+> Each `poc/{{RF-NNN}}/` includes a `repro.txt`. **Without `repro.txt`, the finding is a
+> hypothesis, not a confirmed finding** — it does not enter the report as confirmed.
 
 ```
-OBJETIVO:    {{dispositivo/escenario exacto}}
-HARDWARE:    {{SDR / sniffer + versión}}
-SOFTWARE:    {{tool + versión · OS}}
-COMANDO:     {{verbatim — flags, parámetros, frecuencia, sample rate, gain, canal}}
-CONDICIONES: {{proximidad · modo (observacional/activo/lab) · contención si aplica}}
-RESULTADO:   {{salida observable esperada que confirma}}
+TARGET:     {{exact device/scenario}}
+HARDWARE:   {{SDR / sniffer + version}}
+SOFTWARE:   {{tool + version · OS}}
+COMMAND:    {{verbatim — flags, parameters, frequency, sample rate, gain, channel}}
+CONDITIONS: {{proximity · mode (observational/active/lab) · containment if applicable}}
+RESULT:     {{expected observable output that confirms}}
 ```
 
-> ⚠ **Marcadores de seguridad**: si el comando implica transmisión (`⚠TX`), re-confirma
-> autorización en `loot/scope.txt` antes de ejecutar (ver gate de `SKILL.md`). Si es RX
-> pasivo, verifica el marcador RX de la herramienta (`references/25-troubleshooting.md §1`).
-> Infraestructura crítica (GNSS / ADS-B / rogue cell) exige contención (jaula/conducción)
-> incluso en modo activo.
+> ⚠ **Safety markers**: if the command involves transmission (`⚠TX`), re-confirm
+> authorization in `loot/scope.txt` before executing (see the gate in `SKILL.md`). If it
+> is passive RX, verify the tool's RX marker (`references/25-troubleshooting.md §1`).
+> Critical infrastructure (GNSS / ADS-B / rogue cell) requires containment
+> (cage/conductive enclosure) even in active mode.
 
 ---
 
-## Mitigación (3 capas)
+## Mitigation (3 layers)
 
-> Modelo de remediación RFSAM — heredado de los 49 controles. `critical`/`high` exigen las 3
-> capas; `low`/`info` pueden cerrar con Operator solo. Ver `references/03-registro-hallazgos.md §7`.
+> RFSAM remediation model — inherited from the 49 controls. `critical`/`high` require all 3
+> layers; `low`/`info` may close with Operator alone. See `references/03-registro-hallazgos.md §7`.
 
-- **Desarrollador** (fabricante / firmware): {{cambios en código o configuración del producto —
-  ej. forzar ECDH, rotar NWK key, cifrar GATT, implementar rolling code robusto}}
-- **Integrador** (despliegue / configuración): {{cambios en el despliegue — ej. rekey tras
-  comisión, deshabilitar pairing legacy, segmentar PAN, exigir LESC}}
-- **Operador** (uso / monitoreo): {{cambios operacionales — ej. monitorear advertising
-  anómalo, rotar credenciales con periodicidad, auditoría periódica, registrar solo tags
-  autorizados}}
+- **Developer** (manufacturer / firmware): {{product code or configuration changes —
+  e.g. enforce ECDH, rotate NWK key, encrypt GATT, implement robust rolling code}}
+- **Integrator** (deployment / configuration): {{deployment changes — e.g. rekey after
+  commissioning, disable legacy pairing, segment PAN, require LESC}}
+- **Operator** (use / monitoring): {{operational changes — e.g. monitor anomalous
+  advertising, rotate credentials periodically, periodic audits, register only
+  authorized tags}}
 
 ---
 
-## Referencias
+## References
 
 - {{CVE-XXXX-XXXX — https://...}}
-- {{Paper: Autor, "Título", venue año — https://...}}
+- {{Paper: Author, "Title", venue year — https://...}}
 - {{Tool: name — https://github.com/...}}
 - {{Spec: Bluetooth Core Spec v5.4, Vol 6 Part B}}
 
 ---
 
-_Generado con RFSAM (CC BY-SA 4.0). Evidencia reproducible en `loot/`. Re-validar tras
-aplicar remediación._
+_Generated with RFSAM (CC BY-SA 4.0). Reproducible evidence in `loot/`. Re-validate after
+applying remediation._

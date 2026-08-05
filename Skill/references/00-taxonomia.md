@@ -1,100 +1,100 @@
-# 00 — Taxonomía RFSAM
+# 00 — RFSAM Taxonomy
 
-> **Leer siempre al inicio de toda auditoría.** Define los dos ejes de indexación de RFSAM
-> (protocolo × capa), los IDs, la rubrica de criticidad, el coverage-map completo y la
-> deferencia a BSAM. Fuente: `RFSAM/src/lib/taxonomy.js`, `src/data/layers.js`,
+> **Always read at the start of every audit.** Defines the two RFSAM indexing axes
+> (protocol × layer), the IDs, the criticality rubric, the full coverage-map, and the
+> deference to BSAM. Source: `RFSAM/src/lib/taxonomy.js`, `src/data/layers.js`,
 > `src/data/protocols.js`, `src/data/criticality.js`, `src/data/coverage-map.js`,
 > `src/data/bsamRelation.js`.
 
-## Índice
-1. Las 7 capas de la metodología
-2. Los 15 protocolos
-3. Reglas del ID de control
-4. Rubrica de criticidad
-5. Ciclo de vida reviewStatus / confidence
-6. Coverage-map completo (todos los controles por protocolo)
-7. Relación RFSAM ↔ BSAM (deferencia)
+## Index
+1. The 7 layers of the methodology
+2. The 15 protocols
+3. Control ID rules
+4. Criticality rubric
+5. reviewStatus / confidence lifecycle
+6. Full coverage-map (all controls by protocol)
+7. RFSAM ↔ BSAM relationship (deference)
 
 ---
 
-## 1. Las 7 capas de la metodología
+## 1. The 7 layers of the methodology
 
-Una auditoría RF recorre un **descenso** top-down. IG es pre-descenso; SP→AP es el descenso.
+An RF audit follows a top-down **descent**. IG is pre-descent; SP→AP is the descent.
 
-| ID | Capa | Color | Qué pregunta |
+| ID | Layer | Color | What it asks |
 |----|------|-------|--------------|
-| `IG` | Info Gathering | #C9D4E0 | Identificar componentes y cruzar CVEs antes de tocar el aire |
-| `SP` | Spectrum | #2FB8E0 | Qué transmite, dónde, y si tu radio lo puede ver |
-| `PHY` | Signal / PHY | #3FD17C | De forma de onda a bits: modulación, demodulación, canalización |
-| `LL` | Link / Protocol | #9B8CFF | Estructura de trama, direccionamiento, identificadores, discovery |
-| `CR` | Crypto | #FFC24B | Pairing, intercambio de claves, confidencialidad e integridad del enlace |
-| `AT` | Attack | #FF7A1A | Interacción activa: inyección, replay, hijack, infraestructura rogue |
-| `AP` | Application | #FF5A5F | Lo que el dispositivo confía sobre el enlace: auth, firmas, updates |
+| `IG` | Info Gathering | #C9D4E0 | Identify components and cross-reference CVEs before touching the air |
+| `SP` | Spectrum | #2FB8E0 | What it transmits, where, and whether your radio can see it |
+| `PHY` | Signal / PHY | #3FD17C | From waveform to bits: modulation, demodulation, channelization |
+| `LL` | Link / Protocol | #9B8CFF | Frame structure, addressing, identifiers, discovery |
+| `CR` | Crypto | #FFC24B | Pairing, key exchange, link confidentiality and integrity |
+| `AT` | Attack | #FF7A1A | Active interaction: injection, replay, hijack, rogue infrastructure |
+| `AP` | Application | #FF5A5F | What the device trusts over the link: auth, signatures, updates |
 
-**Principio rector**: el descenso es top-down. No se salta a CR/AT sin haber pasado por SP/PHY/LL.
-La captura limpia es el piso de todo lo demás. "No observado" bajo una ventana de radio limitada
-es un **gap de visibilidad, no evidencia de ausencia**.
+**Guiding principle**: the descent is top-down. Do not jump to CR/AT without having passed through SP/PHY/LL.
+A clean capture is the foundation of everything else. "Not observed" under a limited radio window
+is a **visibility gap, not evidence of absence**.
 
-## 2. Los 15 protocolos
+## 2. The 15 protocols
 
-| ID | Nombre | Banda | Prefijo | Estado |
-|----|--------|-------|---------|--------|
+| ID | Name | Band | Prefix | Status |
+|----|------|-------|---------|--------|
 | `BLE` | Bluetooth Low Energy | 2.400–2.480 GHz | RFSAM-BLE | deepen |
 | `BTC` | Bluetooth Classic | 2.402–2.480 GHz (BR/EDR) | RFSAM-BTC | new |
 | `WIFI` | Wi-Fi (802.11) | 2.4 / 5 / 6 GHz | RFSAM-WIFI | deepen |
 | `LORA` | LoRa / LoRaWAN | ISM sub-GHz (US915 / EU868) | RFSAM-LORA | deepen |
-| `LTE` | LTE / 4G | Celular licenciado | RFSAM-LTE | deepen |
+| `LTE` | LTE / 4G | Licensed cellular | RFSAM-LTE | deepen |
 | `RFID` | RFID / NFC | 125 kHz LF / 13.56 MHz HF | RFSAM-RFID | deepen |
 | `SUBG` | Sub-GHz ISM / Remotes | 315 / 433 / 868 / 915 MHz | RFSAM-SUBG | deepen |
 | `ZIGBEE` | Zigbee / 802.15.4 | 2.4 GHz (+ 868/915 MHz) | RFSAM-ZIGBEE | new |
 | `ZWAVE` | Z-Wave | Sub-GHz regional (~868/908 MHz) | RFSAM-ZWAVE | new |
 | `THREAD` | Thread / Matter | 2.4 GHz (802.15.4) | RFSAM-THREAD | new |
 | `GNSS` | GNSS / GPS | L-band (GPS L1 1575.42 MHz) | RFSAM-GNSS | new |
-| `ADSB` | ADS-B (aviación) | 1090 MHz / 978 MHz UAT | RFSAM-ADSB | new |
+| `ADSB` | ADS-B (aviation) | 1090 MHz / 978 MHz UAT | RFSAM-ADSB | new |
 | `NR5G` | 5G NR | FR1 sub-6 GHz / FR2 mmWave | RFSAM-NR5G | new |
 | `GSM` | GSM / 2G | 850 / 900 / 1800 / 1900 MHz | RFSAM-GSM | new |
 | `UWB` | Ultra-Wideband | 3.1–10.6 GHz | RFSAM-UWB | new |
 
-## 3. Reglas del ID de control
+## 3. Control ID rules
 
-Formato: **`RFSAM-<PROTOCOL>-<LAYER>-<NN>`** — ej. `RFSAM-BLE-AT-01`.
+Format: **`RFSAM-<PROTOCOL>-<LAYER>-<NN>`** — e.g. `RFSAM-BLE-AT-01`.
 
-- `<PROTOCOL>` ∈ los 15 IDs de arriba.
+- `<PROTOCOL>` ∈ the 15 IDs above.
 - `<LAYER>` ∈ `IG SP PHY LL CR AT AP`.
-- `<NN>` = número de secuencia de dos dígitos.
+- `<NN>` = two-digit sequence number.
 
-**Invariante validada**: los segmentos PROTOCOL y LAYER del ID **deben coincidir** con los campos
-`protocol` y `layer` del frontmatter/control. Si no coinciden, es un error.
+**Validated invariant**: the ID's PROTOCOL and LAYER segments **must match** the
+`protocol` and `layer` fields of the frontmatter/control. If they do not match, it is an error.
 
 Regex: `^RFSAM-(BLE|BTC|WIFI|LORA|LTE|RFID|SUBG|ZIGBEE|ZWAVE|THREAD|GNSS|ADSB|NR5G|GSM|UWB)-(IG|SP|PHY|LL|CR|AT|AP)-\d{2}$`
 
-## 4. Rubrica de criticidad
+## 4. Criticality rubric
 
-| Nivel | Color | Cuándo |
-|-------|-------|--------|
-| `info` | #8B9AAB | Observacional; sin impacto directo (ej. viabilidad de captura) |
-| `low` | #3FD17C | Exposición menor o brecha de endurecimiento |
-| `medium` | #FFC24B | Debilidad significativa que requiere condiciones específicas |
-| `high` | #FF7A1A | Debilidad fácilmente explotable con impacto significativo |
-| `critical` | #FF5A5F | Compromiso total (toma de control, recuperación de clave, suplantación) |
+| Level | Color | When |
+|-------|-------|------|
+| `info` | #8B9AAB | Observational; no direct impact (e.g. capture feasibility) |
+| `low` | #3FD17C | Minor exposure or hardening gap |
+| `medium` | #FFC24B | Significant weakness requiring specific conditions |
+| `high` | #FF7A1A | Easily exploitable weakness with significant impact |
+| `critical` | #FF5A5F | Total compromise (takeover, key recovery, spoofing) |
 
-**Regla**: la severidad refleja lo que **alcanzaste** con evidencia, no el máximo teórico.
+**Rule**: severity reflects what you **achieved** with evidence, not the theoretical maximum.
 
-## 5. Ciclo de vida reviewStatus / confidence
+## 5. reviewStatus / confidence lifecycle
 
-- `stub` → esqueleto migrado, poco contenido real.
-- `draft` → investigado y citado, puede llevar `[!FLAG]` sin resolver. Lo que produce un sub-agente.
-- `reviewed` → citas y método confirmados, pero el field case es plantilla ilustrativa.
-- `verified` → revisado Y demostrado con un field case real; ≥1 referencia, cero `[!FLAG]`.
+- `stub` → migrated skeleton, little real content.
+- `draft` → researched and cited, may carry unresolved `[!FLAG]`. What a sub-agent produces.
+- `reviewed` → citations and method confirmed, but the field case is an illustrative template.
+- `verified` → reviewed AND demonstrated with a real field case; ≥1 reference, zero `[!FLAG]`.
 
-`confidence` ∈ `low medium high` — autoevaluación honesta del borrador.
+`confidence` ∈ `low medium high` — honest self-assessment of the draft.
 
-## 6. Coverage-map completo
+## 6. Full coverage-map
 
-Mapa de todos los controles que RFSAM define (uno por celda protocolo×capra relevante).
-`status: existing` = existe archivo; muchos son `stub`s a profundizar.
+Map of all controls that RFSAM defines (one per relevant protocol×layer cell).
+`status: existing` = file exists; many are `stub`s to be deepened.
 
-**BLE**: IG-01 (vulns SoC/host stack) · SP-01 (channel map) · PHY-01 (demod/bit recovery) ·
+**BLE**: IG-01 (SoC/host stack vulns) · SP-01 (channel map) · PHY-01 (demod/bit recovery) ·
 LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR-01 (pairing/encryption) · AT-01 (hijack live connection)
 
 **BTC**: IG-01 (identify device/BR-EDR/vuln corpus) · SP-01 (inquiry-scan) · LL-01 (baseband capture) · CR-01 (pairing/key strength) · AT-01 (LMP resilience) · AP-01 (exposed profiles)
@@ -117,7 +117,7 @@ LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR
 
 **GNSS**: SP-01 (signal presence/interference survey) · AT-01 (spoofing/jamming resilience)
 
-**ADSB**: PHY-01 (message capture/decode) · LL-01 (message authenticity) · AT-01 (forge/inject, lab contenido)
+**ADSB**: PHY-01 (message capture/decode) · LL-01 (message authenticity) · AT-01 (forge/inject, lab contained)
 
 **NR5G**: SP-01 (cell ID/capture) · LL-01 (broadcast/identity exposure)
 
@@ -125,20 +125,20 @@ LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR
 
 **UWB**: PHY-01 (ranging signal capture) · AT-01 (distance-manipulation resilience)
 
-> El script `scripts/coverage_check.py` automatiza la comparación contra este mapa.
+> The `scripts/coverage_check.py` script automates the comparison against this map.
 
-## 7. Relación RFSAM ↔ BSAM
+## 7. RFSAM ↔ BSAM relationship
 
-**RFSAM es complementario a BSAM (Tarlogic), no un reemplazo.** BSAM es la referencia madura para
-Bluetooth; RFSAM es el norte multi-protocolo.
+**RFSAM is complementary to BSAM (Tarlogic), not a replacement.** BSAM is the mature reference for
+Bluetooth; RFSAM is the multi-protocol north star.
 
 ### Ownership
-- **Spectrum (SP) + Signal/PHY** → RFSAM es dueño para todos los protocolos. BSAM no cubre aquí.
-- **BLE link layer y arriba** → heredado de BSAM. RFSAM añade solo el prerequisito de captura RF
-  y referencia los controles BSAM-xx específicos.
-- **LoRa/LoRaWAN, LTE, y el resto** → RFSAM es dueño end-to-end. BSAM es solo Bluetooth.
+- **Spectrum (SP) + Signal/PHY** → RFSAM is the owner for all protocols. BSAM does not cover here.
+- **BLE link layer and above** → inherited from BSAM. RFSAM adds only the RF capture prerequisite
+  and references the specific BSAM-xx controls.
+- **LoRa/LoRaWAN, LTE, and the rest** → RFSAM is the owner end-to-end. BSAM is Bluetooth only.
 
-### Registro BSAM que RFSAM referencia
+### BSAM registry that RFSAM references
 - `BSAM-IG-01` Bluetooth controller lifecycle status
 - `BSAM-IG-02` Bluetooth controller vulnerabilities
 - `BSAM-IG-03` Host stack vulnerabilities
@@ -157,7 +157,7 @@ Bluetooth; RFSAM es el norte multi-protocolo.
 - `BSAM-AP-05` Replay attacks
 - `BSAM-AP-06` Packet injection
 
-URL BSAM: <https://www.tarlogic.com/bsam/>
+BSAM URL: <https://www.tarlogic.com/bsam/>
 
-**Regla**: cuando un control BLE/BTC es `deferred: true`, NO redirivas el contenido de BSAM.
-Describe solo el prerequisito de captura RF y cita el control BSAM (`BSAM-XX-NN`) al que se entrega.
+**Rule**: when a BLE/BTC control is `deferred: true`, do NOT redirect BSAM content.
+Describe only the RF capture prerequisite and cite the BSAM control (`BSAM-XX-NN`) to which it is handed off.

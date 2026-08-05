@@ -1,57 +1,57 @@
-# 21 — ADS-B (aviación)
+# 21 — ADS-B (aviation)
 
-> Wayfinder + controles RFSAM para ADS-B. Broadcast **sin cifrado ni autenticación** → injection trivial (en lab).
-> **⚠ 1090 MHz = espectro protegido de aviación. Forjar/inject al aire es delito grave. Solo conducción + jaula.**
+> Wayfinder + RFSAM controls for ADS-B. Broadcast **without encryption or authentication** → injection trivial (in lab).
+> **⚠ 1090 MHz = protected aviation spectrum. Forging/injecting over the air is a serious crime. Conducted + cage only.**
 
 ## Facts
-- **Banda**: 1090 MHz Mode S Extended Squitter (1090ES) mundial; 978 MHz UAT (Universal Access Transceiver) adicional en US para general aviation baja cota.
-- **Señal (1090ES)**: Pulse-Position Modulation (PPM) 1 Mbps en carrier 1090 MHz; Extended Squitter = 112-bit message (8 µs preamble + 112 µs data). 978 UAT waveform ~1.04 Mbps, message 272-bit.
-- **Mensajes**: ADS-B "out" en Mode S downlink format DF17 (transponder) y DF18 (non-transponder/TIS-B). Cada uno lleva 24-bit ICAO aircraft address + type code: identification (callsign), airborne/surface position (CPR-encoded), velocity.
-- **Identificadores**: ICAO 24-bit (radio ID único), callsign 8-char, CPR-encoded lat/lon. **Ninguno autenticado** → todos forjables.
-- **Seguridad**: broadcast y **sin cifrado**. Estructura pública. **No hay auth ni integrity** → receiver no distingue frame genuino de forjado → spoofing/injection posibles.
+- **Band**: 1090 MHz Mode S Extended Squitter (1090ES) worldwide; 978 MHz UAT (Universal Access Transceiver) additional in US for low-altitude general aviation.
+- **Signal (1090ES)**: Pulse-Position Modulation (PPM) 1 Mbps on 1090 MHz carrier; Extended Squitter = 112-bit message (8 µs preamble + 112 µs data). 978 UAT waveform ~1.04 Mbps, message 272-bit.
+- **Messages**: ADS-B "out" in Mode S downlink format DF17 (transponder) and DF18 (non-transponder/TIS-B). Each carries 24-bit ICAO aircraft address + type code: identification (callsign), airborne/surface position (CPR-encoded), velocity.
+- **Identifiers**: ICAO 24-bit (unique radio ID), callsign 8-char, CPR-encoded lat/lon. **None authenticated** → all forgeable.
+- **Security**: broadcast and **without encryption**. Public structure. **No auth or integrity** → receiver cannot distinguish a genuine frame from a forged one → spoofing/injection possible.
 
-## Descenso por capa
+## Layer-by-layer descent
 
-### IG (fingerprinting — lo que escuchas)
-- Qué link: 1090ES (mundial) vs 978 UAT (US general aviation). Link unauthenticated/unencrypted — positions, callsigns, ICAO en claro, no integrity check. ICAO 24-bit = ID único en cada frame. DF17 vs DF18 mix, type codes. Setup RX: antena quarter-wave (~6.9 cm) + 1090 MHz band-pass filter + LNA para débil/distante.
+### IG (fingerprinting — what you hear)
+- Which link: 1090ES (worldwide) vs 978 UAT (US general aviation). Link unauthenticated/unencrypted — positions, callsigns, ICAO in cleartext, no integrity check. ICAO 24-bit = unique ID in each frame. DF17 vs DF18 mix, type codes. RX setup: quarter-wave antenna (~6.9 cm) + 1090 MHz band-pass filter + LNA for weak/distant signals.
 
-### SP — parte de PHY (confirmar energía 1090)
-- 1090 MHz dentro de casi cualquier SDR. En waterfall pulses bursty al squitter (sobre noise floor, visible). RTL-SDR = 1090 receiver canónico, llega 1090 y 978.
+### SP — part of PHY (confirm 1090 energy)
+- 1090 MHz within almost any SDR. In the waterfall, bursty pulses at the squitter (above noise floor, visible). RTL-SDR = canonical 1090 receiver, reaches 1090 and 978.
 
 ### PHY — `RFSAM-ADSB-PHY-01` Message capture and decode
-- **Objetivo**: receive+decode ADS-B frames (plaintext broadcast). Tune 1090 → demod PPM → validate CRC → DF17/DF18 (ICAO, callsign, CPR position, velocity). 978 UAT → dump978.
+- **Objective**: receive+decode ADS-B frames (plaintext broadcast). Tune 1090 → demod PPM → validate CRC → DF17/DF18 (ICAO, callsign, CPR position, velocity). 978 UAT → dump978.
 - **Kit**: dump1090 (RTL-SDR, classic), readsb (high-perf fork), dump978 (US UAT), gr-air-modes (GNU Radio).
-- **Decoder**: no Wireshark; output es frames decoded en Beast/raw/JSON para mapa/plausibility.
+- **Decoder**: no Wireshark; output is decoded frames in Beast/raw/JSON for mapping/plausibility.
 
 ### LL — `RFSAM-ADSB-LL-01` Message authenticity assessment
-- **Objetivo**: ¿qué garantías de autenticidad, si alguna, provee el link? (Respuesta: ninguna — base de injection).
+- **Objective**: what authenticity guarantees, if any, does the link provide? (Answer: none — basis for injection).
 
-### CR (sin control — no hay nada que descifrar)
-- Plaintext broadcast: format y CPR encoding públicos. Positions/callsigns/ICAO leídos (decoded), no crackeados. Problema real = opuesto de confidencialidad: **no auth ni integrity**. Receiver no prueba frame del aircraft que dice; no signature sobre position; no replay protection. Ese gap de diseño = lo que hace AT posible: cualquiera que transmita frame 1090ES bien formado es, para todo receiver en rango, indistinguible de aircraft real.
+### CR (no control — nothing to decrypt)
+- Plaintext broadcast: format and CPR encoding public. Positions/callsigns/ICAO are read (decoded), not cracked. The real problem = the opposite of confidentiality: **no auth or integrity**. The receiver cannot prove the frame is from the aircraft it claims; no signature over position; no replay protection. This design gap = what makes AT possible: anyone transmitting a well-formed 1090ES frame is, for every receiver in range, indistinguishable from a real aircraft.
 
-### AT — `RFSAM-ADSB-AT-01` Forge and inject (lab contenido obligatorio)
-- **⚠ 1090 MHz = espectro de aviación protegido. TX ADS-B afecta systems ATC reales. Solo lab autorizado por CONDUCCIÓN/CABLE o JAULA — jamás al aire.** Sin auth, ataque = imitar: transmitir frames 1090ES forjados (ICAO/callsign/position elegidos) → todo receiver en rango acepta como aircraft real → ghost aircraft, mover track existente, o flood el cuadro. RTL-SDR RX-only.
-- **Kit**: ADSB-Out (encoder Python → I/Q → TX HackRF via hackrf_transfer).
-- **Caveat**: autor states académico solo; estable pero inactivo (~2021).
+### AT — `RFSAM-ADSB-AT-01` Forge and inject (contained lab mandatory)
+- **⚠ 1090 MHz = protected aviation spectrum. TX ADS-B affects real ATC systems. Authorized lab only via CONDUCTED/CABLE or CAGE — never over the air.** Without auth, the attack = imitate: transmit forged 1090ES frames (chosen ICAO/callsign/position) → every receiver in range accepts as a real aircraft → ghost aircraft, move an existing track, or flood the picture. RTL-SDR RX-only.
+- **Kit**: ADSB-Out (Python encoder → I/Q → TX on HackRF via hackrf_transfer).
+- **Caveat**: author states academic only; stable but inactive (~2021).
 
 ### AP
-- "Air picture": stream decoded → tracked aircraft + fusión + plausibility. Donde se defiende missing auth: sanity-check del broadcast. tar1090 (mapa live interactivo), pyModeS (decode en código → anti-spoof/plausibility checks: kinematics imposibles, inconsistency cross-receiver, ICAO sospechoso). MLAT (multilateration cross-receiver) = cross-check anti-spoof estándar.
-- **Kit**: tar1090 (map desde readsb/dump1090), pyModeS (decode + plausibility).
+- "Air picture": decoded stream → tracked aircraft + fusion + plausibility. This is where missing auth is defended: sanity-check of the broadcast. tar1090 (live interactive map), pyModeS (decode in code → anti-spoof/plausibility checks: impossible kinematics, cross-receiver inconsistency, suspicious ICAO). MLAT (multilateration cross-receiver) = standard anti-spoof cross-check.
+- **Kit**: tar1090 (map from readsb/dump1090), pyModeS (decode + plausibility).
 
-## Subflujo (especialización del flujo maestro)
+## Subflow (specialization of the master flow)
 
-Transiciones específicas de ADS-B; los comandos verbatim viven en `Descenso por capa` arriba. Broadcast **sin auth ni integrity** → todos los IDs forjables.
+ADS-B-specific transitions; verbatim commands live in `Layer-by-layer descent` above. Broadcast **without auth or integrity** → all IDs forgeable.
 
-| Avance | Criterio de avance | Marcadores |
-|--------|--------------------|------------|
-| IG → SP | Link identificado (1090ES mundial vs 978 UAT US). Setup RX: antena quarter-wave (~6.9 cm) + filtro 1090 + LNA | — |
-| SP → PHY+LL | Pulses bursty sobre noise floor al squitter. RTL-SDR llega 1090 y 978 | — |
-| PHY+LL → CR | Frames decodificados (ICAO/callsign/CPR position/velocity). Sin cifrado → nada que descifrar; el problema es **opuesto**: no auth | — |
-| CR → AT | Sin auth/integrity/replay-protection confirmado → cualquier frame 1090ES bien formado es indistinguible de aircraft real. AT funciona | — |
-| AT | ⚠TX re-check; **1090 MHz = aviación protegida**, TX afecta ATC real. Solo conducción + jaula + autorización. RTL-SDR RX-only jamás transmite | ⚠TX |
+| Advance | Advance criterion | Markers |
+|---------|--------------------|---------|
+| IG → SP | Link identified (1090ES worldwide vs 978 UAT US). RX setup: quarter-wave antenna (~6.9 cm) + 1090 filter + LNA | — |
+| SP → PHY+LL | Bursty pulses above noise floor at the squitter. RTL-SDR reaches 1090 and 978 | — |
+| PHY+LL → CR | Frames decoded (ICAO/callsign/CPR position/velocity). Without encryption → nothing to decrypt; the problem is the **opposite**: no auth | — |
+| CR → AT | No auth/integrity/replay-protection confirmed → any well-formed 1090ES frame is indistinguishable from a real aircraft. AT works | — |
+| AT | ⚠TX re-check; **1090 MHz = protected aviation**, TX affects real ATC. Conducted + cage + authorization only. RTL-SDR RX-only never transmits | ⚠TX |
 
-**Anomalía defensiva** (modo Defensivo, RX-only): aircraft ghost (ICAO/callsign que aparece/desaparece), kinematics imposibles, o inconsistencia cross-receiver = posible inyección. pyModeS (plausibility checks) y MLAT (multilateration) son cross-checks anti-spoof. Registra; **no** desciendas a AT.
+**Defensive anomaly** (Defensive mode, RX-only): ghost aircraft (ICAO/callsign that appears/disappears), impossible kinematics, or cross-receiver inconsistency = possible injection. pyModeS (plausibility checks) and MLAT (multilateration) are anti-spoof cross-checks. Log it; **do not** descend to AT.
 
-## Advertencias legales
-- RX pasivo 1090/978 OK (señales públicas; base de trackers como Flightradar24).
-- **TX/forge ADS-B al aire = delito grave** (espectro aviación, safety-of-life). Solo conducción cableada + jaula + autorización. Nunca radiar.
+## Legal warnings
+- Passive 1090/978 RX OK (public signals; basis for trackers like Flightradar24).
+- **TX/forge ADS-B over the air = serious crime** (aviation spectrum, safety-of-life). Conducted wired + cage + authorization only. Never radiate.

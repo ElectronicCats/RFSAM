@@ -1,130 +1,130 @@
-# 26 — Calidad: verificar antes de reportar
+# 26 — Quality: verify before reporting
 
-> Gate de calidad transversal. Aplica en cualquier capa del descenso, **antes de registrar** un hallazgo Y
-> **antes de cerrar** el reporte. Una afirmación que no pasa estas reglas es **hipótesis**, no hallazgo
-> confirmado. Fuente: §1 (reglas Q1–Q8), §2 (criticality), §5 (consistencia interna / `scripts/register_finding.py`).
+> Cross-cutting quality gate. Applies at any layer of the descent, **before registering** a finding AND
+> **before closing** the report. A claim that does not pass these rules is a **hypothesis**, not a confirmed
+> finding. Source: §1 (rules Q1–Q8), §2 (criticality), §5 (internal consistency / `scripts/register_finding.py`).
 
-## Índice
+## Index
 
-1. §reglas — 8 reglas de verificación obligatoria (Q1–Q8)
-2. §criticality — rúbrica de severidad honesta
-3. §lifecycle — draft vs verified (la verificación es una pasada separada)
-4. §pre-registro — checklist antes de escribir en el JSONL
-5. §cross-refs — consistencia interna (modelo validate.mjs)
-
----
-
-## 1. §reglas — 8 reglas de verificación obligatoria
-
-Antes de registrar un hallazgo o incluirlo en el reporte, cada regla debe pasar. Si una falla → no registrar
-todavía (conseguir evidencia, citar fuente, degradar severidad o declarar gap). SKILL.md §CALIDAD contiene la
-versión rápida; esta tabla es la fuente autoritativa.
-
-| # | Regla | Qué verificar | Si falla |
-|---|-------|---------------|----------|
-| **Q1** | **Citar o flaggear** | Cada claim no trivial mapea a una fuente resoluble (CVE en NVD, paper/URL real, slug del catálogo de tools) o lleva `> [!FLAG] …` inline | No registrar hasta citar o flaggear explícitamente |
-| **Q2** | **Comandos verbatim** | Los strings de comando del wayfinder se copian exactos (flags, parámetros, valores war-story). No parafrasear, "completar" ni inventar | Reemplazar por el verbatim del wayfinder; si no existe, flaggear |
-| **Q3** | **Criticality honesta** | Observacional/factibilidad = `info`/`low`; takeover / clave recuperada / impersonation = `high`/`critical`. La severidad refleja lo **alcanzado** en este modo, no lo teórico | Degradar severidad al nivel que la evidencia soporta |
-| **Q4** | **BSAM deference** | BLE/BTC en LL+ → citar BSAM (cross-ref `BSAM-xx`), describir **solo** el prerequisito de captura RF. No rederivar contenido BSAM | Reescribir como deference; quitar el contenido BSAM duplicado |
-| **Q5** | **Framing autorizado** | Cada paso TX / replay / decrypt / rogue lleva nota de equipo propio, SIM/dispositivo de prueba, contención, permiso explícito | Añadir el framing o degradar a hipótesis (no ejecutar TX sin él) |
-| **Q6** | **Evidencia suficiente** | Comando + parámetros + tool+versión + condiciones de captura reproducibles (`repro.txt`). Ver tabla de suficiencia por severidad en SKILL.md §EVIDENCIA REPRODUCIBLE | Degradar severidad y marcar `evidence_status: partial`; sin `repro.txt` = hipótesis |
-| **Q7** | **Sin control dedicado → nota de capa** | Si no hay control `RFSAM-<PROTO>-<LAYER>-NN` mapeable, **no omitas** el hallazgo: registra con `control: null` y `notes` indicando la capa aproximada | Añadir nota de capa; no omitir |
-| **Q8** | **Cross-refs resuelven** | Todo `control` ID, `RFSAM-RES-NN`, slug de tool y path de reference citado en el reporte existe en la skill. Modelo: `validate.mjs` (id↔protocol↔layer, cada ref resuelve, enums válidos) — ver §cross-refs | Corregir la ref o marcar como no verificada |
-
-> **Q1–Q8 son obligatorias** para `critical`/`high`. `medium` puede registrar con Q6 parcial
-> (`evidence_status: partial`). `low`/`info` pueden cerrar con Q1+Q2+Q6 mínimas. **Excepción — modo Defensivo**
-> (Alcance D): nunca reporta `critical`; su techo es `medium` (tipo `detection`).
+1. §reglas — 8 mandatory verification rules (Q1–Q8)
+2. §criticality — honest severity rubric
+3. §lifecycle — draft vs verified (verification is a separate pass)
+4. §pre-registro — checklist before writing to the JSONL
+5. §cross-refs — internal consistency (validate.mjs model)
 
 ---
 
-## 2. §criticality — rúbrica de severidad honesta
+## 1. §reglas — 8 mandatory verification rules
 
-Fuente: `§2` de este archivo. La severidad la fija el modelo de 4 ejes de SKILL.md §SEVERIDAD Y
-CLASIFICACIÓN; esta rúbrica es el sanity check de que la severidad asignada es honesta con la evidencia:
+Before registering a finding or including it in the report, each rule must pass. If one fails → do not register
+yet (obtain evidence, cite a source, degrade severity, or declare a gap). SKILL.md §CALIDAD contains the quick
+version; this table is the authoritative source.
 
-| Nivel | Definición honesta | Abuso común a evitar |
-|-------|---------------------|----------------------|
-| **info** | Observacional; sin impacto directo (factibilidad de captura, identifier exposure) | Reportar una captura exitosa como si fuera vulnerabilidad |
-| **low** | Exposición menor o gap de hardening sin exploit práctico | "Firmware antiguo" sin CVE confirmado como `high` |
-| **medium** | Debilidad que requiere condiciones específicas; hipótesis con techo (Alcance C); detección defensiva (D) | Hipótesis sin PoC como `high`; detections como `critical` |
-| **high** | Debilidad explotable con impacto significativo; datos en claro; infraestructura crítica **en jaula** (B) | Activos contained (jaula) como `critical` sin etiqueta `contained` |
-| **critical** | Compromiso completo (takeover, key recovery, impersonation) con precondiciones prácticas **Y** PoC en campo (A) | Sin PoC (C) como `critical`; contained (B) como `critical` sin `contained` |
+| # | Rule | What to verify | If it fails |
+|---|------|----------------|-------------|
+| **Q1** | **Cite or flag** | Each non-trivial claim maps to a resolvable source (CVE on NVD, real paper/URL, tool catalog slug) or carries an inline `> [!FLAG] …` | Do not register until cited or explicitly flagged |
+| **Q2** | **Verbatim commands** | Wayfinder command strings are copied exactly (flags, parameters, war-story values). Do not paraphrase, "complete," or invent | Replace with the wayfinder verbatim; if none exists, flag |
+| **Q3** | **Honest criticality** | Observational/feasibility = `info`/`low`; takeover / key recovery / impersonation = `high`/`critical`. Severity reflects what is **achieved** in this mode, not the theoretical | Degrade severity to the level the evidence supports |
+| **Q4** | **BSAM deference** | BLE/BTC at LL+ → cite BSAM (cross-ref `BSAM-xx`), describe **only** the RF capture prerequisite. Do not re-derive BSAM content | Rewrite as deference; remove duplicated BSAM content |
+| **Q5** | **Authorized framing** | Every TX / replay / decrypt / rogue step carries a note of own equipment, test SIM/device, containment, explicit permission | Add the framing or degrade to hypothesis (do not execute TX without it) |
+| **Q6** | **Sufficient evidence** | Command + parameters + tool+version + reproducible capture conditions (`repro.txt`). See sufficiency table by severity in SKILL.md §EVIDENCIA REPRODUCIBLE | Degrade severity and mark `evidence_status: partial`; without `repro.txt` = hypothesis |
+| **Q7** | **No dedicated control → layer note** | If there is no mappable `RFSAM-<PROTO>-<LAYER>-NN` control, **do not omit** the finding: register with `control: null` and `notes` indicating the approximate layer | Add a layer note; do not omit |
+| **Q8** | **Cross-refs resolve** | Every `control` ID, `RFSAM-RES-NN`, tool slug, and reference path cited in the report exists in the skill. Model: `validate.mjs` (id↔protocol↔layer, every ref resolves, valid enums) — see §cross-refs | Fix the ref or mark as unverified |
 
-**Reglas de oro:**
+> **Q1–Q8 are mandatory** for `critical`/`high`. `medium` may register with partial Q6
+> (`evidence_status: partial`). `low`/`info` may close with minimal Q1+Q2+Q6. **Exception — Defensive mode**
+> (Scope D): never reports `critical`; its ceiling is `medium` (type `detection`).
 
-- Sin PoC (Alcance C) → máximo `medium`.
-- Contained / jaula (B) → `critical` baja a `high` con etiqueta `contained`.
-- Defensivo (D) → techo `medium`, tipo `detection`, sin `critical`.
-- El eje **Impacto** fija el techo; Explotabilidad / Exposición / Alcance **solo modulan a la baja**, nunca al alza.
-- "No observado" bajo ventana finita es **gap de visibilidad**, no evidencia de ausencia — pero "observado" puede
-  ser **falso positivo** si la captura base está corrupta (overflows ≠ 0) o el decoder no corresponde
-  (ver `references/25-troubleshooting.md` §falsos-positivos). Verifica ambos extremos antes de fijar severidad.
+---
+
+## 2. §criticality — honest severity rubric
+
+Source: `§2` of this file. Severity is set by the 4-axis model of SKILL.md §SEVERIDAD Y
+CLASIFICATION; this rubric is the sanity check that the assigned severity is honest with the evidence:
+
+| Level | Honest definition | Common abuse to avoid |
+|-------|-------------------|-----------------------|
+| **info** | Observational; no direct impact (capture feasibility, identifier exposure) | Reporting a successful capture as if it were a vulnerability |
+| **low** | Minor exposure or hardening gap without practical exploit | "Old firmware" without a confirmed CVE as `high` |
+| **medium** | Weakness requiring specific conditions; hypothesis with a ceiling (Scope C); defensive detection (D) | Hypothesis without PoC as `high`; detections as `critical` |
+| **high** | Exploitable weakness with significant impact; cleartext data; critical infrastructure **in a cage** (B) | Contained (cage) assets as `critical` without the `contained` label |
+| **critical** | Full compromise (takeover, key recovery, impersonation) with practical preconditions **AND** a field PoC (A) | Without PoC (C) as `critical`; contained (B) as `critical` without `contained` |
+
+**Golden rules:**
+
+- Without PoC (Scope C) → maximum `medium`.
+- Contained / cage (B) → `critical` drops to `high` with the `contained` label.
+- Defensive (D) → ceiling `medium`, type `detection`, no `critical`.
+- The **Impact** axis sets the ceiling; Exploitability / Exposure / Scope **only modulate downward**, never upward.
+- "Not observed" under a finite window is a **visibility gap**, not evidence of absence — but "observed" can also
+  be a **false positive** if the base capture is corrupt (overflows ≠ 0) or the decoder does not match
+  (see `references/25-troubleshooting.md` §falsos-positivos). Verify both extremes before setting severity.
 
 ---
 
 ## 3. §lifecycle — draft vs verified
 
-Principio de `§3` de este archivo, adaptado al agente que audita:
+Principle from `§3` of this file, adapted to the auditing agent:
 
-- **Durante el descenso**, el agente produce hallazgos en estado **draft**: investigados, con evidencia, pueden
-  llevar `[!FLAG]`s donde queda incertidumbre. Eso es legítimo y se registra en el JSONL.
-- **Antes del reporte**, una pasada de verificación (el mismo agente en Fase 7 / Cierre, o un reviewer separado)
-  debe **resolver cada flag** y **confirmar cada cita**. Un hallazgo con flags sin resolver entra al reporte como
-  **hipótesis / observación**, no como confirmado.
-- **`confidence`** (`low` / `medium` / `high`) es la autoevaluación honesta del hallazgo. No la inflas: si la
-  evidencia es indirecta o la tool no es concluyente, `low` / `medium` es correcto.
+- **During the descent**, the agent produces findings in **draft** state: researched, with evidence, may carry
+  `[!FLAG]`s where uncertainty remains. This is legitimate and is registered in the JSONL.
+- **Before the report**, a verification pass (the same agent in Phase 7 / Close, or a separate reviewer)
+  must **resolve every flag** and **confirm every citation**. A finding with unresolved flags enters the report as
+  a **hypothesis / observation**, not as confirmed.
+- **`confidence`** (`low` / `medium` / `high`) is the honest self-assessment of the finding. Do not inflate it: if
+  the evidence is indirect or the tool is inconclusive, `low` / `medium` is correct.
 
-> Un sub-agente (o una pasada rápida del descenso) produce `draft`. La verificación es una pasada **separada** que
-> eleva a `verified`. No reportes como `verified` lo que solo pasaste volando.
-
----
-
-## 4. §pre-registro — checklist antes de escribir en el JSONL
-
-Antes de ejecutar `scripts/register_finding.py` (o escribir a mano en `rfsam_findings.jsonl`):
-
-```
-□ Captura/salida de comando exacta como evidencia              (Q2, Q6)
-□ Severidad refleja lo ALCANZADO en este modo, no lo teórico   (Q3)
-□ Comando reproducible (objetivo, flags, parámetros) → poc/RF-NNN/repro.txt   (Q6)
-□ Fuente citada (CVE/paper/tool) o incertidumbre flageada ([!FLAG])   (Q1)
-□ Control RFSAM-<PROTO>-<LAYER>-NN mapeado, o nota de capa si no hay control dedicado   (Q7)
-□ Si TX: framing autorizado presente (equipo propio, contención, permiso)   (Q5)
-□ Si BLE/BTC LL+: BSAM deference aplicada, no rederivada      (Q4)
-```
-
-Si cualquier ítem es NO → **no registrar todavía**; conseguir evidencia, citar, degradar severidad o declarar
-gap. El checklist de **pre-cierre** (por sesión) vive en SKILL.md §CIERRE DE AUDITORÍA — no se duplica aquí.
+> A sub-agent (or a quick pass of the descent) produces `draft`. Verification is a **separate** pass that
+> elevates to `verified`. Do not report as `verified` what you only glanced over.
 
 ---
 
-## 5. §cross-refs — consistencia interna (modelo validate.mjs)
+## 4. §pre-registro — checklist before writing to the JSONL
 
-Modelo aplicado al reporte que la skill genera (ver `scripts/register_finding.py` para los enums
-validados y la regex de control). Antes de entregar, verifica:
+Before running `scripts/register_finding.py` (or writing by hand to `rfsam_findings.jsonl`):
 
-- **ID ↔ protocolo ↔ capa**: cada `RFSAM-<PROTO>-<LAYER>-NN` citado tiene segmentos consistentes
-  (PROTOCOL ∈ los 15 canónicos: BLE/WIFI/LORA/LTE/RFID/SUBG/ZIGBEE/ZWAVE/THREAD/GNSS/ADSB/NR5G/GSM/UWB/BTC;
+```
+□ Exact capture/command output as evidence                              (Q2, Q6)
+□ Severity reflects what was ACHIEVED in this mode, not the theoretical (Q3)
+□ Reproducible command (target, flags, parameters) → poc/RF-NNN/repro.txt   (Q6)
+□ Source cited (CVE/paper/tool) or uncertainty flagged ([!FLAG])        (Q1)
+□ Control RFSAM-<PROTO>-<LAYER>-NN mapped, or layer note if no dedicated control   (Q7)
+□ If TX: authorized framing present (own equipment, containment, permission)   (Q5)
+□ If BLE/BTC LL+: BSAM deference applied, not re-derived               (Q4)
+```
+
+If any item is NO → **do not register yet**; obtain evidence, cite, degrade severity, or declare a gap. The
+**pre-close** checklist (per session) lives in SKILL.md §AUDIT CLOSURE — it is not duplicated here.
+
+---
+
+## 5. §cross-refs — internal consistency (validate.mjs model)
+
+Model applied to the report the skill generates (see `scripts/register_finding.py` for the validated enums
+and the control regex). Before delivering, verify:
+
+- **ID ↔ protocol ↔ layer**: every cited `RFSAM-<PROTO>-<LAYER>-NN` has consistent segments
+  (PROTOCOL ∈ the 15 canonical: BLE/WIFI/LORA/LTE/RFID/SUBG/ZIGBEE/ZWAVE/THREAD/GNSS/ADSB/NR5G/GSM/UWB/BTC;
   LAYER ∈ IG/SP/PHY/LL/CR/AT/AP).
-- **Cada referencia resuelve**: cada `control`, `RFSAM-RES-NN`, slug de tool y path de reference citado en el
-  reporte existe en la skill (en `references/`, `assets/` o el catálogo de tools del wayfinder).
-- **Enums válidos**: severidad ∈ critical/high/medium/low/info; `scope_reach` ∈ A/B/C/D; `mode` ∈
+- **Every reference resolves**: every `control`, `RFSAM-RES-NN`, tool slug, and reference path cited in the
+  report exists in the skill (in `references/`, `assets/`, or the wayfinder tool catalog).
+- **Valid enums**: severity ∈ critical/high/medium/low/info; `scope_reach` ∈ A/B/C/D; `mode` ∈
   observacional/activo/lab/defensivo.
-- **Sin campos vacíos en hallazgos críticos**: un `critical`/`high` sin `repro.txt`, sin control mapeado (o nota
-  de capa) o sin mitigación en las 3 capas (Developer/Integrator/Operator) es un hallazgo **incompleto**, no
-  confirmado.
+- **No empty fields on critical findings**: a `critical`/`high` without `repro.txt`, without a mapped control (or
+  layer note), or without mitigation across the 3 layers (Developer/Integrator/Operator) is an **incomplete**
+  finding, not confirmed.
 
-> Si una cross-ref no resuelve, **no la inventes**: marca el hallazgo como `confidence: low` con
-> `[!FLAG] ref sin resolver`, o quítala. Una URL inventada viola Q1 (citar o flaggear).
+> If a cross-ref does not resolve, **do not invent it**: mark the finding as `confidence: low` with
+> `[!FLAG] unresolved ref`, or remove it. An invented URL violates Q1 (cite or flag).
 
 ---
 
-## 6. Mapeo a fases downstream
+## 6. Mapping to downstream phases
 
-- **SKILL.md §CALIDAD** cita §reglas como gate rápido (las 10 reglas inline son la versión compacta; Q1–Q8 es la
-  fuente autoritativa).
-- **SKILL.md §SEVERIDAD "Antes de registrar"** delega a §pre-registro (no duplica el checklist).
-- **SKILL.md §CIERRE DE AUDITORÍA** mantiene su propio checklist por sesión (pre-cierre); §cross-refs amplía lo
-  que "verificar cross-refs" significa en la práctica.
-- **Fase 7.1 (validación):** la checklist de validación confirma que cada hallazgo del JSONL pasó Q1–Q8 y que las
-  cross-refs del reporte resuelven.
+- **SKILL.md §CALIDAD** cites §reglas as the quick gate (the 10 inline rules are the compact version; Q1–Q8 is the
+  authoritative source).
+- **SKILL.md §SEVERIDAD "Before registering"** delegates to §pre-registro (does not duplicate the checklist).
+- **SKILL.md §AUDIT CLOSURE** maintains its own per-session checklist (pre-close); §cross-refs expands what
+  "verify cross-refs" means in practice.
+- **Phase 7.1 (validation):** the validation checklist confirms that every finding in the JSONL passed Q1–Q8 and
+  that the report's cross-refs resolve.

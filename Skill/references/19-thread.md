@@ -1,61 +1,61 @@
 # 19 — Thread / Matter
 
-> Wayfinder + controles RFSAM para Thread/Matter. Thread = mesh IPv6 sobre 802.15.4; Matter monta encima.
+> Wayfinder + RFSAM controls for Thread/Matter. Thread = IPv6 mesh over 802.15.4; Matter rides on top.
 
 ## Facts
-- **Banda**: 2.4 GHz ISM — IEEE 802.15.4 O-QPSK (misma capa radio que Zigbee).
-- **Canales**: 16 × 5 MHz, 11–26 (2.405–2.480); red Thread en un canal.
-- **Stack**: mesh IPv6: 802.15.4 MAC → 6LoWPAN → MLE routing → UDP. Matter (CHIP) encima.
-- **Seguridad Thread**: MAC AES-128-CCM* con network key — link crypto fuerte. Commissioning: Commissioner auth con PSKc; Joiner admitido con PSKd via DTLS.
-- **Matter transport**: Thread (via Border Router) o Wi-Fi; comisionado sobre BLE LE. DNS-SD: `_matterc._udp` (commissionable), `_matter._tcp` (operational), `_meshcop._udp` (Border Router Thread).
+- **Band**: 2.4 GHz ISM — IEEE 802.15.4 O-QPSK (same radio layer as Zigbee).
+- **Channels**: 16 × 5 MHz, 11–26 (2.405–2.480); a Thread network on one channel.
+- **Stack**: IPv6 mesh: 802.15.4 MAC → 6LoWPAN → MLE routing → UDP. Matter (CHIP) on top.
+- **Thread security**: MAC AES-128-CCM* with network key — strong link crypto. Commissioning: Commissioner auth with PSKc; Joiner admitted with PSKd via DTLS.
+- **Matter transport**: Thread (via Border Router) or Wi-Fi; commissioned over BLE LE. DNS-SD: `_matterc._udp` (commissionable), `_matter._tcp` (operational), `_meshcop._udp` (Border Router Thread).
 - **Matter onboarding**: QR (`MT:` Base-38) / 11-digit manual code → 27-bit setup passcode + 12-bit discriminator + 16-bit Vendor ID + ProductID.
-- **Matter crypto**: PASE = SPAKE2+ (P-256) desde setup passcode (solo ventana comisionado); CASE = cert (NOC bajo Root CA, SIGMA P-256) operational. **Passcode = weak link, no el cipher**.
+- **Matter crypto**: PASE = SPAKE2+ (P-256) from setup passcode (commissioning window only); CASE = cert (NOC under Root CA, SIGMA P-256) operational. **Passcode = weak link, not the cipher**.
 
-## Descenso por capa
+## Layer-by-layer descent
 
-### IG (fingerprinting — leer QR/label)
-- ¿Thread o Zigbee? (ambos 802.15.4 — distinguir por upper layers 6LoWPAN+MLE). ¿Matter device? QR/numeric code + BLE onboarding. Resolver VID/PID contra **DCL** (Distributed Compliance Ledger — Test-Vendor VID 0xFFF1–0xFFF4 en producto shipping = red flag). Chipset/SDK + CVEs (CASE Sigma1-replay CVE-2024-3297, fabric-footprinting CVE-2024-3454).
+### IG (fingerprinting — read QR/label)
+- Thread or Zigbee? (both 802.15.4 — distinguish by upper layers 6LoWPAN+MLE). Matter device? QR/numeric code + BLE onboarding. Resolve VID/PID against **DCL** (Distributed Compliance Ledger — Test-Vendor VID 0xFFF1–0xFFF4 on a shipping product = red flag). Chipset/SDK + CVEs (CASE Sigma1-replay CVE-2024-3297, fabric-footprinting CVE-2024-3454).
 - **Kit**: matter-dcl (resolve VID/PID), chip-tool (decode payload + discover BLE/DNS-SD).
 
-### SP — cómo ver la banda (parte de LL Thread)
-- Thread vive en un canal 802.15.4. Gqrx (banda), Minino (scanner 802.15.4), catnip (activity + topology). BLE onboarding de Matter vive en advertising channels BLE (ver wayfinder BLE).
+### SP — how to see the band (part of Thread LL)
+- Thread lives on one 802.15.4 channel. Gqrx (band), Minino (802.15.4 scanner), catnip (activity + topology). Matter BLE onboarding lives on BLE advertising channels (see BLE wayfinder).
 
-### PHY (sin control — demod en radio 802.15.4)
-- Las radios 802.15.4 demod+frame juntas; SDR solo para encontrar canal.
+### PHY (no control — demodulation on 802.15.4 radio)
+- 802.15.4 radios demod+frame together; SDR only to find the channel.
 
 ### LL — `RFSAM-THREAD-LL-01` Mesh discovery and commissioning exposure
-- **Objetivo**: park radio 802.15.4 en canal → PCAP. MAC payload AES-128-CCM* bajo network key; Wireshark descifra con esa key.
+- **Objective**: park an 802.15.4 radio on the channel → PCAP. MAC payload AES-128-CCM* under network key; Wireshark decrypts with that key.
 - **Kit**: nRF Sniffer 802.15.4 (nRF52840), pyspinel (OpenThread NCP/RCP sniffer), CatSniffer, Minino, WHAD (nRF52840/APIMote).
 - **Decoder**: Wireshark (802.15.4 + Thread/6LoWPAN/MLE).
-- (Matter BLE commissioning handshake = captura BLE separada — ver wayfinder BLE.)
+- (Matter BLE commissioning handshake = separate BLE capture — see BLE wayfinder.)
 
 ### CR — `RFSAM-THREAD-CR-01` Network credential assessment
-- **Objetivo**: honestidad — crypto fuerte (AES-128-CCM*, SPAKE2+, CASE cert). **No offline key-recovery**. El premio es la Thread network key: viene de credenciales de comisioning débiles/default/expuestas (PSKc/Joiner PSKd). Matter PASE solo tan fuerte como setup passcode (default/printable → colapsa). Verifier extraído de device inseguro → offline recovery (baja entropía). Online guessing rate-limited (~20 intentos → sale de commissioning mode; ventana ≤15 min en fabric).
-- **Kit**: Wireshark (descifra Thread con network key en tabla decryption-keys), chip-tool (PASE/passcode test con candidato).
-- **Sin herramienta de crackeo offline** — ataca comisioning/credenciales.
+- **Objective**: honesty — strong crypto (AES-128-CCM*, SPAKE2+, CASE cert). **No offline key-recovery**. The prize is the Thread network key: it comes from weak/default/exposed commissioning credentials (PSKc/Joiner PSKd). Matter PASE is only as strong as the setup passcode (default/printable → collapses). Verifier extracted from an insecure device → offline recovery (low entropy). Online guessing is rate-limited (~20 attempts → drops out of commissioning mode; window ≤15 min in fabric).
+- **Kit**: Wireshark (decrypts Thread with network key in decryption-keys table), chip-tool (PASE/passcode test with candidate).
+- **No offline cracking tool** — attack commissioning/credentials.
 
-### AT (sin control dedicado — comisioning/fabric abuse)
-- **⚠ AUTORIZACIÓN OBLIGATORIA**. La superficie real es comisioning/fabric onboarding: unirse al mesh con creds capturadas/adivinadas (pyspinel), o comisionar Matter device con ventana BLE abierta/passcode débil (chip-tool `pairing ble-thread`). Multi-admin: ventana de comisioning puede abrirse/hijackearse. Controller **no prueba trustworthiness** al device → quien pase comisioning = admin total.
-- **Kit**: pyspinel (join/probe mesh), chip-tool (commission onto fabric), chip-repl (script multi-fabric).
+### AT (no dedicated control — commissioning/fabric abuse)
+- **⚠ MANDATORY AUTHORIZATION**. The real surface is commissioning/fabric onboarding: join the mesh with captured/guessed creds (pyspinel), or commission a Matter device with an open BLE window/weak passcode (chip-tool `pairing ble-thread`). Multi-admin: the commissioning window can be opened/hijacked. The controller **does not verify trustworthiness** of the device → whoever passes commissioning = full admin.
+- **Kit**: pyspinel (join/probe mesh), chip-tool (commission onto fabric), chip-repl (multi-fabric scripting).
 
 ### AP
-- Matter clusters/atributos sobre CASE (read/write/invoke/subscribe). ACL que refrena admin recién añadido. Comisionado = admin total → app layer suele wide open.
-- **Kit**: chip-tool (cluster interaction), chip-repl (enum cluster tree), python-matter-server (controller persistente).
+- Matter clusters/attributes over CASE (read/write/invoke/subscribe). ACL that constrains a newly added admin. Commissioned = full admin → app layer is usually wide open.
+- **Kit**: chip-tool (cluster interaction), chip-repl (enum cluster tree), python-matter-server (persistent controller).
 
-## Subflujo (especialización del flujo maestro)
+## Subflow (specialization of the master flow)
 
-Transiciones específicas de Thread/Matter; los comandos verbatim viven en `Descenso por capa` arriba.
+Thread/Matter-specific transitions; verbatim commands live in `Layer-by-layer descent` above.
 
-| Avance | Criterio de avance | Marcadores |
-|--------|--------------------|------------|
-| IG → SP | ¿Thread o Zigbee? (distinguir por upper layers 6LoWPAN+MLE). Matter device: QR/code + BLE onboarding. VID/PID contra DCL | — |
-| SP → PHY+LL | Canal 802.15.4 fijado (2.4 GHz, 16 canales 11–26, **no hoppa**); radio aparcada. SDR no decodifica O-QPSK/DSSS live | — |
-| PHY+LL → CR | MAC payload AES-128-CCM* bajo network key — Wireshark descifra con esa key. Thread crypto fuerte | — |
-| CR → AT | Sin offline key-recovery. Premios: comisioning débil/default (PSKc/PSKd), Matter PASE limitado por setup passcode | — |
-| AT | ⚠TX re-check; comisioning/fabric onboarding = superficie real. Join/probe mesh (pyspinel), commission Matter (chip-tool) | ⚠TX |
+| Advance | Advancement criterion | Markers |
+|---------|----------------------|---------|
+| IG → SP | Thread or Zigbee? (distinguish by upper layers 6LoWPAN+MLE). Matter device: QR/code + BLE onboarding. VID/PID against DCL | — |
+| SP → PHY+LL | 802.15.4 channel fixed (2.4 GHz, 16 channels 11–26, **no hopping**); radio parked. SDR does not decode O-QPSK/DSSS live | — |
+| PHY+LL → CR | MAC payload AES-128-CCM* under network key — Wireshark decrypts with that key. Thread crypto strong | — |
+| CR → AT | No offline key-recovery. Prizes: weak/default commissioning (PSKc/PSKd), Matter PASE limited by setup passcode | — |
+| AT | ⚠TX re-check; commissioning/fabric onboarding = real surface. Join/probe mesh (pyspinel), commission Matter (chip-tool) | ⚠TX |
 
-**Anomalía defensiva** (modo Defensivo, RX-only): device desconocido intentando commissioning sobre tu fabric, o ventana BLE de comisioning abierta sin actividad propia = posible fabric hijack. Registra; **no** desciendas a AT.
+**Defensive anomaly** (Defensive mode, RX-only): unknown device attempting commissioning onto your fabric, or an open BLE commissioning window without your own activity = possible fabric hijack. Register; do **not** descend to AT.
 
-## Advertencias legales
-- RX pasivo 802.15.4 OK.
-- **Join/commission/inject = activo**: solo mesh/fabric propio/autorizado. Comisionar device ajeno = acceso no autorizado.
+## Legal warnings
+- Passive RX 802.15.4 OK.
+- **Join/commission/inject = active**: own/authorized mesh/fabric only. Commissioning someone else's device = unauthorized access.
