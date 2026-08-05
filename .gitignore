@@ -5,7 +5,11 @@ dist/
 .DS_Store
 .env
 .env.*
+__pycache__/
 
 # Internal working docs — never published
 docs/
 /.atl
+
+# RFSAM Skill — audit artifacts and secrets, never committed
+Skill/loot/

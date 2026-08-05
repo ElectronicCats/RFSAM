@@ -7,7 +7,7 @@
 - **Ancho**: 6 anchos — 1.4/3/5/10/15/20 MHz; carrier identificado por EARFCN.
 - **Modulación**: DL OFDMA, UL SC-FDMA; QPSK/16/64/256-QAM. Frame 10 ms → 10 subframes (1 ms) → 2 slots.
 - **Cell ID**: PSS→N_ID(2) (0–2), SSS→N_ID(1) (0–167); PCI = 3·N_ID(1)+N_ID(2) → 504 (0–503).
-- **Broadcast**: MIB en PBH (bandwidth, PHICH, SFN); SIB1 en PDSCH via SI-RNTI (PLMN, cell ID, TAC). SIBs en claro.
+- **Broadcast**: MIB en PBCH (bandwidth, PHICH, SFN); SIB1 en PDSCH via SI-RNTI (PLMN, cell ID, TAC). SIBs en claro.
 - **Control**: PDCCH lleva DCI, addressed por RNTIs (C-RNTI, SI-RNTI, P-RNTI paging). Blind-decode common search space expone scheduling/identity pasivamente.
 - **Seguridad**: air crypto SNOW 3G/AES/ZUC keyed from USIM (EPS-AKA) — **no recuperable de captura pasiva**. User-plane cifrado opcional por bearer; broadcast/paging sin protección.
 

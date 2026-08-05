@@ -18,7 +18,7 @@
 - **Kit**: matter-dcl (resolve VID/PID), chip-tool (decode payload + discover BLE/DNS-SD).
 
 ### SP — cómo ver la banda (parte de LL Thread)
-- Thread vive en un canal 802.15.4. Gqrx (banda), Minino (scanner 802.15.4), catnip (cativity + topology). BLE onboarding de Matter vive en advertising channels BLE (ver wayfinder BLE).
+- Thread vive en un canal 802.15.4. Gqrx (banda), Minino (scanner 802.15.4), catnip (activity + topology). BLE onboarding de Matter vive en advertising channels BLE (ver wayfinder BLE).
 
 ### PHY (sin control — demod en radio 802.15.4)
 - Las radios 802.15.4 demod+frame juntas; SDR solo para encontrar canal.

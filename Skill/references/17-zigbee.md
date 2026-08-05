@@ -17,7 +17,7 @@
 
 ### SP — `RFSAM-ZIGBEE-SP-01` Channel survey and capture feasibility
 - **Objetivo**: en qué canal de los 16 está el PAN. Scan energía/active, no perseguir hops.
-- **Kit**: KillerBee `zbstumbler` (active beacon), Gqrx (cross-check energía), Minino (scanner), Kismet (pasivo multirradio), catnip (cativity activity table).
+- **Kit**: KillerBee `zbstumbler` (active beacon), Gqrx (cross-check energía), Minino (scanner), Kismet (pasivo multirradio), catnip (activity table).
 - **Caveat**: canales 15/20/25/26 en gaps Wi-Fi → comunes.
 
 ### PHY (sin control — demod en radio 802.15.4)
@@ -32,7 +32,7 @@
 - **Objetivo**: recuperar network key del join. Classic weakness: APS Transport-Key en join bajo default TC link key `ZigBeeAlliance09` (o en claro en devices viejos).
 - **Kit**: zbdsniff (extrae network key del join bajo `ZigBeeAlliance09` o en claro), Wireshark (descifra con key).
 - **Comando**: capturar join → `zbdsniff join.pcap` → pega key en Wireshark Preferences → ZigBee.
-- **Caveat**: per-device install code la derrota; Zigbee 3.0 S2-style ECDH resiste capture-the-join.
+- **Caveat**: per-device install code la derrota; Zigbee 3.0 install-code key agreement (AES-MMO) resiste capture-the-join.
 
 ### AT (sin control dedicado — técnicas activas)
 - **⚠ AUTORIZACIÓN OBLIGATORIA**. Con network key: forge/inject (KillerBee `zbreplay`/scapy-radio, ApiMote TX). Forzar leave/rejoin para recapturar join. catnip OTA firmware-update MITM+jamming PoC.
