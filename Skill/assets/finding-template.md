@@ -2,7 +2,7 @@
 
 > **Standalone document per finding.** Use it for `critical`/`high` that deserve a
 > detailed write-up beyond the report section (see `assets/report-template.md §4`).
-> The compact chat block lives in `references/03-registro-hallazgos.md §3`; the
+> The compact chat block lives in `references/03-finding-registration.md §3`; the
 > complete 4-axis model (decision table, worked examples) is in `§7` of the same
 > file.
 
@@ -17,7 +17,7 @@
 ## RFSAM 4-axis model
 
 > Walk through the axes in order (Impact sets the ceiling; the others modulate it).
-> Decision table: `references/03-registro-hallazgos.md §7.2`.
+> Decision table: `references/03-finding-registration.md §7.2`.
 
 | Axis | Value | Justification (1 line) |
 |------|-------|------------------------|
@@ -35,7 +35,7 @@
 {{What was found, the technical mechanism and why it matters. Name the device/scenario,
 the protocol and the descent layer where it was detected. Cite the underlying vulnerability
 (CVE / weakened spec / misconfiguration) with a verifiable source. A non-trivial claim
-without a source is flagged (see `references/03-registro-hallazgos.md §6`).}}
+without a source is flagged (see `references/03-finding-registration.md §6`).}}
 
 ---
 
@@ -84,8 +84,8 @@ RESULT:     {{expected observable output that confirms}}
 
 ## Mitigation (3 layers)
 
-> RFSAM remediation model — inherited from the 49 controls. `critical`/`high` require all 3
-> layers; `low`/`info` may close with Operator alone. See `references/03-registro-hallazgos.md §7`.
+> RFSAM remediation model — inherited from the 50 controls. `critical`/`high` require all 3
+> layers; `low`/`info` may close with Operator alone. `medium` requires at least Integrator + Operator. See `references/03-finding-registration.md §7`.
 
 - **Developer** (manufacturer / firmware): {{product code or configuration changes —
   e.g. enforce ECDH, rotate NWK key, encrypt GATT, implement robust rolling code}}

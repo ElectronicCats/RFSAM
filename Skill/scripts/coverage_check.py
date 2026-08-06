@@ -19,7 +19,7 @@ import sys
 
 # ── Canonical RFSAM coverage-map ──
 # ⚠ SINGLE SOURCE: `src/data/coverage-map.js`. This table and
-# `references/00-taxonomia.md §6` must be kept in sync with that file. If you
+# `references/00-taxonomy.md §6` must be kept in sync with that file. If you
 # add or change a control, update all three locations (or better, derive this
 # table from the JS in the future).
 # Each control: id, title, layer, status (existing/planned).

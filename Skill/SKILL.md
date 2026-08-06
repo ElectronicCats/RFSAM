@@ -81,7 +81,7 @@ infrastructure, or fraud → Route B. If the goal is an owned/authorized asset b
 - **RD4** Forensics of an incident that already occurred → RF forensics. The skill is preventive audit; if there is a capture of the incident, Defensive mode can analyze it as evidence.
 - **RD5** Hardware/antenna design → RF engineering / electromagnetics. The skill uses existing hardware, does not design it.
 
-Detailed table of techniques vs. permission by jurisdiction: `references/01-autorizacion.md`.
+Detailed table of techniques vs. permission by jurisdiction: `references/01-authorization.md`.
 
 ---
 
@@ -181,7 +181,7 @@ with the operator — the answers feed `loot/scope.txt`:
 
 ---
 
-# RFSAM — RF Security Auditor
+# RFSAM — Radio Frequency Security Assessment Methodology
 
 ## IDENTITY
 
@@ -216,14 +216,14 @@ python3 scripts/register_finding.py \
   --notes "bettercap + btlejack over CatSniffer; handle 0x000E controls color"
 ```
 
-> If you cannot run it, write the finding by hand in `loot/rfsam_findings.jsonl` using the schema from `references/03-registro-hallazgos.md`. **Without a record in `loot/rfsam_findings.jsonl` the finding does not exist for the report.**
+> If you cannot run it, write the finding by hand in `loot/rfsam_findings.jsonl` using the schema from `references/03-finding-registration.md`. **Without a record in `loot/rfsam_findings.jsonl` the finding does not exist for the report.**
 
 ---
 
 ## MASTER FLOW — 7-LAYER DESCENT AS AN OPERATIONAL CHECKLIST
 
 > The descent is **top-down and mandatory**: `IG → SP → PHY+LL → CR → AT → AP → Closure`. Each layer is indexed
-> as `RFSAM-<PROTO>-<LAYER>-NN`. The 7 layers and coverage-map live in `references/00-taxonomia.md`; here only
+> as `RFSAM-<PROTO>-<LAYER>-NN`. The 7 layers and coverage-map live in `references/00-taxonomy.md`; here only
 > the per-phase checklist. **Principle**: "not observed" under a finite window is a **visibility gap**, not evidence
 > of absence. The recording, severity, evidence and quality sections (below) are **transversal**:
 > they apply throughout the descent, not at a fixed point.
@@ -249,7 +249,7 @@ Before choosing the radio/sniffer at any capture layer:
 - **Precondition:** Gate confirmed (Route A/B), mode declared and persisted in `loot/scope.txt`, scoping questions answered.
 - **Action:**
   - Create the evidence structure: `mkdir -p loot/{captures,poc,keys,notes,report}`.
-  - Read `references/00-taxonomia.md` to confirm the protocol and its applicable layers; load the complete wayfinder `references/NN-proto.md` (its `## Subflow` section provides transitions and family-specific defensive anomaly). **SDR survey with no known protocol**: load `02-kit-sdr.md` and pin the canonical protocol at SP (exception from MINIMUM SCOPING QUESTIONS).
+  - Read `references/00-taxonomy.md` to confirm the protocol and its applicable layers; load the complete wayfinder `references/NN-proto.md` (its `## Subflow` section provides transitions and family-specific defensive anomaly). **SDR survey with no known protocol**: load `02-kit-sdr.md` and pin the canonical protocol at SP (exception from MINIMUM SCOPING QUESTIONS).
   - List the applicable controls `RFSAM-<PROTO>-<LAYER>-NN` and create `loot/scope.txt` (mode, protocol, target, hardware, date, operator, default retention 30 days).
   - Verify the environment (5 checks — see `references/25-troubleshooting.md` §setup). Result → `loot/notes/hardware.txt`.
 - **Exit criterion:**
@@ -342,7 +342,7 @@ Record the reason for the deviation in `loot/notes/`.
 
 > Transversal: applies at any layer of the descent, not at a fixed point.
 
-**4 levels** — ceiling set by the **Impact** axis (takeover/key = critical ceiling; data/relay = high; DoS/tracking = medium;
+**5 levels** — ceiling set by the **Impact** axis (takeover/key = critical ceiling; data/relay = high; DoS/tracking = medium;
 observational = low/info), modulated by Exploitability, Exposure and **Scope** (what I reached in this mode):
 
 | Level | Trigger | RF example |
@@ -353,23 +353,24 @@ observational = low/info), modulated by Exploitability, Exposure and **Scope** (
 | **low / info** | Hardening, observational, identifier exposure | persistent BD_ADDR, firmware without confirmed CVE |
 
 **Decision by 4-axis model** (Impact × Exploitability × Exposure × Scope A/B/C/D), complete decision table
-and 13 worked examples: `references/03-registro-hallazgos.md §rf-severity`. **Golden rules:** without PoC (Scope C) the
+and 13 worked examples: `references/03-finding-registration.md §rf-severity`. **Golden rules:** without PoC (Scope C) the
 maximum is `medium`; cage (B) lowers `critical`→`high` (label `contained`); Defensive (D) never reports `critical`
 (type `detection`). The model produces the severity; §EVIDENCE verifies that the evidence supports it, or degrades it.
 
 **CVSS 4.0** is the finding's external vector (technical report, client). RF is almost always `AV:A` (Adjacent) — the
 attacker must be within radio range, not on the network. Base vector:
 `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N`. Extended table of 9 vectors by type:
-`references/03-registro-hallazgos.md §5`. **Exposure and Scope live in the JSONL**, not in the CVSS vector (CVSS does not
+`references/03-finding-registration.md §5`. **Exposure and Scope live in the JSONL**, not in the CVSS vector (CVSS does not
 capture them; the RF model does).
 
 **Prioritization for report and remediation:** descending order by severity (critical→info); within the same level,
 break ties by Exposure (larger surface first) and then Exploitability (more frictionable first). **Exception — Defensive
 mode:** an active detected threat (Scope D) leads the report even if its technical severity is medium — operational
 urgency (ongoing threat) overrides technical severity. Remediation rule: `critical`/`high` require all 3 layers
-(Developer/Integrator/Operator); `low`/`info` can close with Operator only (see `references/03-registro-hallazgos.md §7`).
+(Developer/Integrator/Operator); `medium` requires at least Integrator + Operator; `low`/`info` can close
+with Operator only (see `references/03-finding-registration.md §7`).
 
-**Before registering**, run the Q1–Q8 checklist (`references/26-calidad.md §pre-registration`); if any item is
+**Before registering**, run the Q1–Q8 checklist (`references/26-quality.md §pre-registration`); if any item is
 NO → do not register yet.
 
 ---
@@ -390,7 +391,7 @@ loot/
 
 **Capture naming:** `<PROTO>-<phase>-<NN>-<timestamp>.<ext>` — e.g. `loot/captures/BLE-3-01-20260619-143022.pcap`. One
 capture = one file; never rename one already referenced in a finding (re-capture = new NN). Acceptable formats by type
-and complete `repro.txt` template: `references/03-registro-hallazgos.md`.
+and complete `repro.txt` template: `references/03-finding-registration.md`.
 
 **Reproducibility = `repro.txt`:** each `poc/RF-NNN/` contains a `repro.txt` with the exact command (verbatim, flags
 and parameters), environment (hardware, OS, tool + version) and capture conditions (frequency, sample rate, gain,
@@ -415,7 +416,7 @@ without a command, captures without timestamp or associated command.
 ## CHECKPOINT — SAVE STATE EVERY 5 FINDINGS
 
 ```bash
-python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/session_state.json'; s=json.load(open(p)) if os.path.exists(p) else {}; s.update({'fase':'{{CURRENT_PHASE}}','protocolo':'{{PROTO}}','completado':s.get('completado',[])+['{{COMPLETED_PHASE}}'],'proxima_prueba':'{{EXACT_TEST — tool, layer, parameters}}','last_updated':datetime.datetime.now().isoformat()}); json.dump(s,open(p,'w'),indent=2,ensure_ascii=False)"
+python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/session_state.json'; s=json.load(open(p)) if os.path.exists(p) else {}; s.update({'phase':'{{CURRENT_PHASE}}','protocol':'{{PROTO}}','completed':s.get('completed',[])+['{{COMPLETED_PHASE}}'],'next_test':'{{EXACT_TEST — tool, layer, parameters}}','last_updated':datetime.datetime.now().isoformat()}); json.dump(s,open(p,'w'),indent=2,ensure_ascii=False)"
 ```
 
 > Replace the `{{...}}` markers with the actual session values before executing.
@@ -428,13 +429,13 @@ python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/
 
 | File | Read when... |
 |---------|----------------|
-| `references/00-taxonomia.md` | **Always at the start** — layers, IDs, criticality, coverage-map, BSAM deference |
-| `references/01-autorizacion.md` | Before any active step — legal frameworks by technique/jurisdiction |
+| `references/00-taxonomy.md` | **Always at the start** — layers, IDs, criticality, coverage-map, BSAM deference |
+| `references/01-authorization.md` | Before any active step — legal frameworks by technique/jurisdiction |
 | `references/02-kit-sdr.md` | When choosing a radio at SP — catalog of SDRs/sniffers and their limits |
-| `references/03-registro-hallazgos.md` | Before the first finding — JSONL schema, finding format, CVSS 4.0 RF |
+| `references/03-finding-registration.md` | Before the first finding — JSONL schema, finding format, CVSS 4.0 RF |
 | `references/10-ble.md` … `24-uwb.md` | **When selecting the protocol in Phase 0** — wayfinder + controls per layer |
 | `references/25-troubleshooting.md` | When a phase does not progress — diagnosis before Route A |
-| `references/26-calidad.md` | Before registering/closing — Q1–Q8 rubric and criticality |
+| `references/26-quality.md` | Before registering/closing — Q1–Q8 rubric and criticality |
 
 **Progressive disclosure**: only load the `NN-proto.md` for the protocol in scope.
 
@@ -443,7 +444,7 @@ python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/
 ## QUALITY — VERIFY BEFORE REPORTING
 
 > Transversal: before registering and closing the report. What does not pass is hypothesis, not finding. Expanded
-> Q1–Q8 rubric: `references/26-calidad.md`.
+> Q1–Q8 rubric: `references/26-quality.md`.
 
 1. **Authorization first** — never execute AT without a confirmed gate; observational mode by default.
 2. **Cite or flag (Q1)** — every non-trivial claim carries a verifiable CVE/paper/tool or `> [!FLAG]`.
@@ -461,7 +462,7 @@ python3 -c "import json,datetime,os; os.makedirs('loot',exist_ok=True); p='loot/
 ## FINDING FORMAT (block in chat, in addition to the JSONL)
 
 Complete template (fields, order, 4-axis model, 3-layer remediation): `assets/finding-template.md`; JSONL schema:
-`references/03-registro-hallazgos.md`. The chat block synthesizes title, severity, protocol/layer/control, description,
+`references/03-finding-registration.md`. The chat block synthesizes title, severity, protocol/layer/control, description,
 evidence (command + output), impact, PoC, remediation and CVSS 4.0.
 
 ---
@@ -485,16 +486,16 @@ And recommend escalating to additional hardware/permission (e.g., bladeRF for fu
 **Complete audit criterion:** the 7 layers of the protocol in scope traversed or gap documented for each non-applicable
 layer (Phase 7 precondition).
 
-**Closure checklist — per finding:** Q1–Q8 rubric passed (`references/26-calidad.md §pre-registration`); `repro.txt` + verbatim
+**Closure checklist — per finding:** Q1–Q8 rubric passed (`references/26-quality.md §pre-registration`); `repro.txt` + verbatim
 command in `loot/poc/RF-NNN/` (§EVIDENCE); 4-axis model + CVSS 4.0 (§SEVERITY); `RFSAM-<PROTO>-<LAYER>-NN` control mapped;
-3-layer mitigation — `critical`/`high` require all 3.
+3-layer mitigation — `critical`/`high` require all 3; `medium` requires Integrator + Operator.
 
 **Closure checklist — per session:** scope respected (no TX outside scope); `loot/scope.txt` finalized (closure date,
 retention confirmed); visibility gaps declared; PII sanitized in evidence and report (PII policy in §SCOPE).
 
 **Deliverables:**
 1. `python3 scripts/coverage_check.py` → lists covered vs. pending controls per protocol (dump to report §5).
-2. `python3 scripts/scaffold_report.py` → generates `rfsam-report-<target>.md` from the JSONL (uses `assets/report-template.md`).
+2. `python3 scripts/scaffold_report.py` → generates `rfsam-report-<target>.md` from the JSONL.
 3. **Technical report** — fill in `assets/report-template.md` with analysis, impact and remediation.
 4. **Executive summary** — generate the non-technical version using `assets/executive-summary-template.md`.
 5. Report to the user: findings by severity, covered controls, visibility gaps, next steps.

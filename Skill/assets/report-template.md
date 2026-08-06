@@ -18,7 +18,7 @@
 
 ## 1. Technical summary
 
-- **Total findings**: {{N}} (Critical: {{c}} · High: {{h}} · Medium: {{m}} · Low: {{l}} · Observational: {{o}})
+- **Total findings**: {{N}} (Critical: {{c}} · High: {{h}} · Medium: {{m}} · Low: {{l}} · Info: {{o}})
 - **Confirmed**: {{nc}} · **Hypotheses (no `repro.txt`)**: {{nh}} — _hypotheses do not count as confirmed findings._
 - **Audited protocols**: {{BLE, Wi-Fi, ...}}
 - **RFSAM control coverage**: {{X/Y}} (see §5)
@@ -56,7 +56,7 @@ Audit following the **RFSAM 7-layer descent** (IG → SP → PHY+LL → CR → A
 protocol. PHY and LL are assessed together (the same tool produces both). Each finding is
 mapped to a control `RFSAM-<PROTO>-<LAYER>-NN` and scored with the **RFSAM 4-axis model**
 (Impact, Exploitability, Exposure, Scope A/B/C/D) consolidated into CVSS 4.0 — see
-`references/03-registro-hallazgos.md §7`. In RF almost always `AV:A` (adjacent, radio range).
+`references/03-finding-registration.md §7`. In RF almost always `AV:A` (adjacent, radio range).
 
 | Layer | What was verified |
 |-------|-------------------|
@@ -75,7 +75,7 @@ the assessment end-to-end.
 
 ## 4. Findings
 
-> Sorted by severity (Critical → Observational). Each **confirmed** finding includes a
+> Sorted by severity (Critical → Info). Each **confirmed** finding includes a
 > `repro.txt` in `loot/poc/RF-NNN/`; without `repro.txt` it is registered as a hypothesis,
 > not as confirmed.
 
@@ -109,7 +109,7 @@ the assessment end-to-end.
 ### 4.4 LOW
 {{...}}
 
-### 4.5 OBSERVATIONAL (includes defensive findings / detection)
+### 4.5 INFO (includes defensive findings / detection)
 {{...}}
 
 ---
@@ -138,8 +138,8 @@ the assessment end-to-end.
 | 1 | {{RF-001}} | {{concrete action}} | {{Developer/Integrator/Operator}} | {{low/med/high}} | {{immediate/30d/90d}} |
 | 2 | {{...}} | {{...}} | {{...}} | {{...}} | {{...}} |
 
-> `critical`/`high` require all 3 layers (Developer/Integrator/Operator); `low`/observational
-> may close with Operator alone.
+> `critical`/`high` require all 3 layers (Developer/Integrator/Operator); `medium` requires Integrator
+> + Operator; `low`/`info` may close with Operator alone.
 
 ---
 

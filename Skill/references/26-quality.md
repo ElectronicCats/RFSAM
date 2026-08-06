@@ -10,14 +10,14 @@
 2. §criticality — honest severity rubric
 3. §lifecycle — draft vs verified (verification is a separate pass)
 4. §pre-registration — checklist before writing to the JSONL
-5. §cross-refs — internal consistency (validate.mjs model)
+5. §cross-refs — internal consistency (coverage_check.py model)
 
 ---
 
 ## 1. §rules — 8 mandatory verification rules
 
 Before registering a finding or including it in the report, each rule must pass. If one fails → do not register
-yet (obtain evidence, cite a source, degrade severity, or declare a gap). SKILL.md §CALIDAD contains the quick
+yet (obtain evidence, cite a source, degrade severity, or declare a gap). SKILL.md §QUALITY contains the quick
 version; this table is the authoritative source.
 
 | # | Rule | What to verify | If it fails |
@@ -27,9 +27,9 @@ version; this table is the authoritative source.
 | **Q3** | **Honest criticality** | Observational/feasibility = `info`/`low`; takeover / key recovery / impersonation = `high`/`critical`. Severity reflects what is **achieved** in this mode, not the theoretical | Degrade severity to the level the evidence supports |
 | **Q4** | **BSAM deference** | BLE/BTC at LL+ → cite BSAM (cross-ref `BSAM-xx`), describe **only** the RF capture prerequisite. Do not re-derive BSAM content | Rewrite as deference; remove duplicated BSAM content |
 | **Q5** | **Authorized framing** | Every TX / replay / decrypt / rogue step carries a note of own equipment, test SIM/device, containment, explicit permission | Add the framing or degrade to hypothesis (do not execute TX without it) |
-| **Q6** | **Sufficient evidence** | Command + parameters + tool+version + reproducible capture conditions (`repro.txt`). See sufficiency table by severity in SKILL.md §EVIDENCIA REPRODUCIBLE | Degrade severity and mark `evidence_status: partial`; without `repro.txt` = hypothesis |
+| **Q6** | **Sufficient evidence** | Command + parameters + tool+version + reproducible capture conditions (`repro.txt`). See sufficiency table by severity in SKILL.md §REPRODUCIBLE EVIDENCE | Degrade severity and mark `evidence_status: partial`; without `repro.txt` = hypothesis |
 | **Q7** | **No dedicated control → layer note** | If there is no mappable `RFSAM-<PROTO>-<LAYER>-NN` control, **do not omit** the finding: register with `control: null` and `notes` indicating the approximate layer | Add a layer note; do not omit |
-| **Q8** | **Cross-refs resolve** | Every `control` ID, `RFSAM-RES-NN`, tool slug, and reference path cited in the report exists in the skill. Model: `validate.mjs` (id↔protocol↔layer, every ref resolves, valid enums) — see §cross-refs | Fix the ref or mark as unverified |
+| **Q8** | **Cross-refs resolve** | Every `control` ID, `RFSAM-RES-NN`, tool slug, and reference path cited in the report exists in the skill. Model: `coverage_check.py` (id↔protocol↔layer, every ref resolves, valid enums) — see §cross-refs | Fix the ref or mark as unverified |
 
 > **Q1–Q8 are mandatory** for `critical`/`high`. `medium` may register with partial Q6
 > (`evidence_status: partial`). `low`/`info` may close with minimal Q1+Q2+Q6. **Exception — Defensive mode**
@@ -39,8 +39,8 @@ version; this table is the authoritative source.
 
 ## 2. §criticality — honest severity rubric
 
-Source: `§2` of this file. Severity is set by the 4-axis model of SKILL.md §SEVERIDAD Y
-CLASIFICATION; this rubric is the sanity check that the assigned severity is honest with the evidence:
+Source: `§2` of this file. Severity is set by the 4-axis model of SKILL.md §FINDING SEVERITY AND
+CLASSIFICATION; this rubric is the sanity check that the assigned severity is honest with the evidence:
 
 | Level | Honest definition | Common abuse to avoid |
 |-------|-------------------|-----------------------|
@@ -98,7 +98,7 @@ If any item is NO → **do not register yet**; obtain evidence, cite, degrade se
 
 ---
 
-## 5. §cross-refs — internal consistency (validate.mjs model)
+## 5. §cross-refs — internal consistency (coverage_check.py model)
 
 Model applied to the report the skill generates (see `scripts/register_finding.py` for the validated enums
 and the control regex). Before delivering, verify:
@@ -121,9 +121,9 @@ and the control regex). Before delivering, verify:
 
 ## 6. Mapping to downstream phases
 
-- **SKILL.md §CALIDAD** cites §rules as the quick gate (the 10 inline rules are the compact version; Q1–Q8 is the
+- **SKILL.md §QUALITY** cites §rules as the quick gate (the 10 inline rules are the compact version; Q1–Q8 is the
   authoritative source).
-- **SKILL.md §SEVERIDAD "Before registering"** delegates to §pre-registration (does not duplicate the checklist).
+- **SKILL.md §FINDING SEVERITY "Before registering"** delegates to §pre-registration (does not duplicate the checklist).
 - **SKILL.md §AUDIT CLOSURE** maintains its own per-session checklist (pre-close); §cross-refs expands what
   "verify cross-refs" means in practice.
 - **Phase 7.1 (validation):** the validation checklist confirms that every finding in the JSONL passed Q1–Q8 and

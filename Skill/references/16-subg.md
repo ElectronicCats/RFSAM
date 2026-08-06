@@ -13,7 +13,7 @@
 ## Layer-by-layer descent
 
 ### IG (fingerprinting)
-- Frequency (FCC ID → fccid.io), modulation (OOK/ASK vs FSK), encoding/baud, **fixed vs rolling** (this decides everything), chip (CC1101, PT2262/EV1522, HCS301/KeeLoq), device class (rtl_433 has 320+ decoders).
+- Frequency (FCC ID → fccid.io), modulation (OOK/ASK vs FSK), encoding/baud, **fixed vs rolling** (this decides everything), chip (CC1101, PT2262/EV1527, HCS301/KeeLoq), device class (rtl_433 has 320+ decoders).
 
 ### SP — `RFSAM-SUBG-SP-01` Burst discovery and characterisation
 - **Objective**: where it transmits; see bursts on trigger. RTL-SDR suffices (sub-GHz).

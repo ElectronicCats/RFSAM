@@ -26,7 +26,7 @@
 - Confirm injection before going active: `aireplay-ng --test wlan0mon`.
 
 ### CR — `RFSAM-WIFI-CR-01` WPA handshake / PMKID assessment
-- **Objective**: assess crypto and recover key where it is weak. WPA2-PSK → offline attack on handshake/PMKID; WPS PIN → online attack; WEP → trivial. WPA3-SAE/OWE resist (Dragonblood = implementation bug).
+- **Objective**: assess crypto and recover key where it is weak. WPA2-PSK → offline attack on handshake/PMKID; WPS PIN → online attack; WEP → trivial. WPA3-SAE/OWE resist (Dragonblood = protocol-level side-channel attacks + implementation bugs).
 - **Kit**: hashcat (mode 22000 GPU), hcxtools (pcapng→.hc22000), aircrack-ng (CPU + WEP), reaver (WPS Pixie-Dust/PIN).
 - **Command**: `hcxpcapngtool -o hash.hc22000 capture.pcapng` → `hashcat -m 22000 hash.hc22000 wordlist.txt`.
 - **⚠ Deauth to force handshake**: only with authorization; PMF (802.11w/WPA3) blocks it.
@@ -47,7 +47,7 @@ Wi-Fi-specific transitions; verbatim commands live in `Layer-by-layer descent` a
 | IG → SP | AP/SSID/security identified passively (beacon/RSN IE) | — |
 | SP → PHY+LL | Target channel fixed; adapter in monitor mode. **6 GHz** requires a dedicated Wi-Fi 6E radio (SDR cannot decode 802.11ac/ax live) | — |
 | PHY+LL → CR | Handshake/PMKID captured or open link? | — |
-| CR → AT | Key recovered (WPA2-PSK/WEP/WPS) or active mode justified. WPA3-SAE/OWE **resist** offline (Dragonblood = implementation bug) | — |
+| CR → AT | Key recovered (WPA2-PSK/WEP/WPS) or active mode justified. WPA3-SAE/OWE **resist** offline (Dragonblood = protocol-level side-channel attacks + implementation bugs) | — |
 | AT | ⚠TX re-check; PMF (802.11w/WPA3) **blocks** deauth → verify first | ⚠TX |
 | AP (no formal control) | Post-association attack: captive portal, MITM, harvesting | — |
 

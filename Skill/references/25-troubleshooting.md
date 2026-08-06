@@ -47,7 +47,7 @@ Map vendor:product to slug using `references/02-kit-sdr.md` (field `spec`). Key 
 | HackRF One | `1d50:6089` | |
 | bladeRF 2.0 | `1d50:6130` | |
 | USRP B210 | `2500:0020` | |
-| RTL-SDR V4 | `0bda:2838` / `1d50:6089` (EC Nano) | `rtl_test -t` validates sample rate |
+| RTL-SDR V4 | `0bda:2838` | `rtl_test -t` validates sample rate |
 | CatSniffer (EC) | `1207:8000` | `/dev/ttyACM0` after firmware |
 | nRF52840 dongle | `1915:xxxx` | Nordic |
 | Proxmark3 (Iceman) | `2d2d:504d` | |

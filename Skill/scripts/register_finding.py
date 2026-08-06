@@ -33,10 +33,10 @@ SEVERITIES = {"info", "low", "medium", "high", "critical"}
 ID_RE = re.compile(r"^RFSAM-[A-Z0-9]+-[A-Z]+-\d{2}$")
 CVSS4_RE = re.compile(r"^CVSS:4\.0/.+$")
 # Strict control regex derived from the canonical enums (DRY: single source of truth).
-# Must match `references/00-taxonomia.md §3` and `src/data/coverage-map.js`.
+# Must match `references/00-taxonomy.md §3` and `src/data/coverage-map.js`.
 _CONTROL_INNER = f"(?:{'|'.join(sorted(PROTOCOLS))})-(?:{'|'.join(LAYERS)})"
 ID_RE_STRICT = re.compile(rf"^RFSAM-{_CONTROL_INNER}-\d{{2}}$")
-# RFSAM 4-axis model (references/03-registro-hallazgos.md §7)
+# RFSAM 4-axis model (references/03-finding-registration.md §7)
 AXIS_RANGE = range(1, 5)          # impact/exploitability/exposure: 1–4
 SCOPE_REACH = {"A", "B", "C", "D"}  # achieved / cage / hypothesis / defensive
 
@@ -57,8 +57,18 @@ def validate(args) -> list[str]:
         errs.append(f"Invalid layer: {args.layer!r}. Valid: {sorted(LAYERS)}")
     if args.severity.lower() not in SEVERITIES:
         errs.append(f"Invalid severity: {args.severity!r}. Valid: {sorted(SEVERITIES)}")
-    if args.control and not ID_RE_STRICT.match(args.control):
-        errs.append(f"--control must be RFSAM-<PROTO>-<LAYER>-NN (canonical PROTO and LAYER), received: {args.control!r}")
+    if args.control:
+        if not ID_RE_STRICT.match(args.control):
+            errs.append(f"--control must be RFSAM-<PROTO>-<LAYER>-NN (canonical PROTO and LAYER), received: {args.control!r}")
+        else:
+            # Cross-field validation: the control's PROTOCOL and LAYER must match
+            # the finding's --protocol and --layer (taxonomy invariant §3).
+            parts = args.control.split("-")  # ["RFSAM", proto, layer, nn]
+            ctl_proto, ctl_layer = parts[1], parts[2]
+            if ctl_proto != args.protocol.upper():
+                errs.append(f"--control protocol mismatch: control has {ctl_proto!r} but --protocol is {args.protocol.upper()!r}")
+            if ctl_layer != args.layer.upper():
+                errs.append(f"--control layer mismatch: control has {ctl_layer!r} but --layer is {args.layer.upper()!r}")
     if args.cvss4 and not CVSS4_RE.match(args.cvss4):
         errs.append(f"--cvss4 must start with 'CVSS:4.0/...', received: {args.cvss4!r}")
     if not (args.title and args.title.strip()):
@@ -105,7 +115,7 @@ def build_record(args) -> dict:
         "notes": args.notes or None,
         "timestamp": datetime.datetime.now().astimezone().isoformat(),
     }
-    # 4-axis model (only if provided — references/03-registro-hallazgos.md §7)
+    # 4-axis model (only if provided — references/03-finding-registration.md §7)
     if args.impact is not None:
         record["impact"] = args.impact
     if args.exploitability is not None:
@@ -178,10 +188,16 @@ def _self_test() -> bool:
     import types
 
     def _ns(**kw):
+        defaults = dict(
+            control=None, impact=None, exploitability=None, exposure=None,
+            scope_reach=None, mitigation_developer=None,
+            mitigation_integrator=None, mitigation_operator=None,
+        )
+        defaults.update(kw)
         return types.SimpleNamespace(
-            id="RF-001", title="ok", protocol="BLE", layer="AT", control=None,
+            id="RF-001", title="ok", protocol="BLE", layer="AT",
             severity="high", cvss4=None, evidence="ev", evidence_file=None,
-            notes=None, allow_hypothesis=False, loot="loot", **kw,
+            notes=None, allow_hypothesis=False, loot="loot", **defaults,
         )
 
     # Valid axes → no axis errors
@@ -200,7 +216,18 @@ def _self_test() -> bool:
                  ("impact", "exploitability", "exposure", "scope-reach"))]
     assert len(axis_errs) == 4, f"expected 4 axis errors, got {len(axis_errs)}: {axis_errs}"
 
-    print("✅ self-test OK — 4-axis validation (impact/exploitability/exposure/scope)")
+    # Cross-field validation: control protocol+layer must match finding's protocol+layer
+    # Mismatch → rejected
+    errs = validate(_ns(control="RFSAM-WIFI-CR-01"))
+    mismatch_errs = [e for e in errs if "mismatch" in e]
+    assert len(mismatch_errs) == 2, f"expected 2 mismatch errors (proto+layer), got {len(mismatch_errs)}: {mismatch_errs}"
+
+    # Match → accepted
+    errs = validate(_ns(control="RFSAM-BLE-AT-01"))
+    mismatch_errs = [e for e in errs if "mismatch" in e]
+    assert not mismatch_errs, f"matching control rejected: {mismatch_errs}"
+
+    print("✅ self-test OK — 4-axis validation + control cross-field validation")
     return True
 
 

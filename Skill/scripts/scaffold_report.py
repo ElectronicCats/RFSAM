@@ -88,7 +88,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         lines.append(scope)
         lines.append("```")
     else:
-        lines.append("> _Document the target, owner/authorization, mode (observational/active/lab) "
+        lines.append("> _Document the target, owner/authorization, mode (observational/active/lab/defensive) "
                      "and protocols in scope._")
     lines.append("")
 
@@ -116,7 +116,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         lines.append("")
         lines.append(f"- **Protocol/Layer**: {proto} / {layer}")
         lines.append(f"- **RFSAM control**: `{control}`")
-        # 4-axis model (if provided — references/03-registro-hallazgos.md §7)
+        # 4-axis model (if provided — references/03-finding-registration.md §7)
         axes = []
         for key, label in (("impact", "Impact"), ("exploitability", "Exploitability"),
                            ("exposure", "Exposure")):
@@ -191,7 +191,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         lines.append("| _—_ | _no confirmed findings_ | _—_ | _—_ | _—_ | _—_ |")
     lines.append("")
     lines.append("> `critical`/`high` require all 3 layers (Developer/Integrator/Operator); "
-                 "`low`/observational may close with Operator alone.")
+                 "`medium` requires Integrator + Operator; `low`/`info` may close with Operator alone.")
     lines.append("")
 
     lines.append("## 8. Appendices")

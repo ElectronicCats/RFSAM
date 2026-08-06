@@ -6,7 +6,7 @@
 > difference between an audit and a crime.
 
 ## Index
-1. Three modes of operation
+1. Four modes of operation
 2. Legality matrix by technique
 3. Confirmation protocol (gate 0)
 4. Jurisdictions — quick reference
@@ -15,7 +15,7 @@
 
 ---
 
-## 1. Three modes of operation
+## 1. Four modes of operation
 
 Before starting, the agent **must ask** and record the mode:
 
@@ -24,6 +24,7 @@ Before starting, the agent **must ask** and record the mode:
 | **(1) Observational / passive** | Passive RX (sniff, survey, waterfall) over traffic you can legally receive | Any TX, replay, injection, jamming, spoofing, connecting to third-party devices |
 | **(2) Active with authorization** | All of the above + TX/replay/inject **only on your own equipment or with written authorization** from the owner, respecting power/duty-cycle limits of unlicensed spectrum | Any action on third-party equipment or licensed spectrum without a test license |
 | **(3) Lab RF contained** | All of the above + jamming/spoofing/rogue-cell **inside a Faraday cage or conducted (wired)**, with test SIMs/devices | Radiating over the air jamming, GNSS, ADS-B, or false cells under any circumstances |
+| **(4) Defensive** | Passive RX on your own spectrum to **detect, correlate, and alert** on threats (jamming, rogue infrastructure, anomalous signals) | Any TX (including "to test the detector"); offensive descent; surveillance of third parties |
 
 **Safe default**: if the user does not specify, or there is doubt → **mode (1) observational**. AT steps
 are documented as hypotheses to verify in an authorized environment, **never executed**.
@@ -56,6 +57,7 @@ are documented as hypotheses to verify in an authorized environment, **never exe
 >    - (1) **Observational/passive** — RX only, without actively touching devices
 >    - (2) **Active with authorization** — TX/replay/inject on authorized equipment
 >    - (3) **Lab RF contained** — Faraday cage or conducted (wired)
+>    - (4) **Defensive** — passive RX to detect threats in your own environment (no TX)
 >
 > I will record your answer in `loot/scope.txt`. If there is doubt, I operate in observational mode."
 
@@ -70,8 +72,8 @@ are documented as hypotheses to verify in an authorized environment, **never exe
 - **USA**: FCC regulates the spectrum. Jamming is illegal (Communications Act §333). GNSS spoofing
   is illegal. Interception of electronic communications (Wiretap Act) restricts content capture.
   Exceptions: equipment owner, with consent, or legal authority.
-- **EU/UK**: national regulators + harmonized regulation. Interception without consent
-  is illegal (Communications Act). GDPR applies to personal data in captures.
+- **EU/UK**: national regulators + harmonized regulation. In the UK, interception without
+  consent is illegal (Investigatory Powers Act 2016). GDPR applies to personal data in captures.
 - **Latam**: varies. Generally: intercepting third-party communications is a crime; jamming is usually
   prohibited; passive RX of public signals is usually legal. Verify country by country.
 - **Licensed spectrum (cellular)**: transmitting without a license is illegal **everywhere**. Working
@@ -101,7 +103,7 @@ For mode (3), the ways to contain the signal:
 ```
 Target: [device/signal description]
 Owner / authorization: [OWN / CONTRACT <ref> / LAB]
-Mode: [observational / active / lab-contained]
+Mode: [observational / active / lab-contained / defensive]
 Authorized by: [name/role of authorizing party, if applicable]
 Date: [ISO timestamp]
 Protocol(s) in scope: [BLE / WIFI / ...]

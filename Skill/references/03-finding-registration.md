@@ -147,7 +147,7 @@ Recommended base vector for most RF findings:
 | Fixed-code sub-GHz replay | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N` | high (door) / medium |
 | RFID cloning / relay | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:L/VA:N/SC:N/SI:N/SA:N` | high |
 | Advertising tracking / identifier leakage | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N` | medium/low |
-| GNSS spoofing (conducted) | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N` | (context-dependent) |
+| GNSS spoofing (conducted) | `CVSS:4.0/AV:A/AC:H/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N` | (context-dependent) |
 | WPS Pixie-Dust / PMKID | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N` | high |
 
 CVSS 4.0 metrics: `AV` Attack Vector (N/A/L/P) · `AC` Attack Complexity (L/H) · `AT` Attack
@@ -206,8 +206,9 @@ Impact sets the **ceiling**: 4 never drops below `high`; 3 sets ceiling at `high
 | 2 | Medium: specialized hardware or active mode | Proxmark3 for MIFARE nested; btlejack (micro:bit); HackRF TX for sub-GHz replay; gps-sdr-sim |
 | 1 | High: mandatory containment + license + rare hardware | srsRAN+Open5GS rogue BTS (cage+SIM+license); UWB DW3000-class; bladeRF+GPSDO reliable LTE demod |
 
-Exploitability **raises** severity when it is 4 (impact 3 + exploitability 4 → `high`) and **lowers** it when it is 1
-(impact 4 GNSS spoof in cage = `high`, not `critical` — demonstrated in containment, not reproducible in the field).
+Exploitability **raises** severity when it is 4 **and exposure is ≥3** (impact 3 + exploitability 4 + exposure ≥3 → `high`),
+and **lowers** it when it is 1 (impact 4 GNSS spoof in cage = `high`, not `critical` — demonstrated in
+containment, not reproducible in the field).
 
 #### Axis 3 — Exposure (affected surface)
 
@@ -297,8 +298,8 @@ The Exposure column is the key difference: CVSS does not capture it, the RF mode
 
 | # | Finding | Impact | Exploitab. | Expos. | Scope | Severity | CVSS |
 |---|---------|---------|-----------|--------|---------|-----------|------|
-| E1 | btlejack BLE hijack confirmed in the field on own device | 4 | 2 (micro:bit) | 2 (one device) | A | **critical** | AV:A/AC:L/VC:H/VI:H |
-| E2 | MIFARE Classic key dump + clone confirmed | 4 | 2 (PM3) | 2 (one tag) | A | **critical** | AV:A/AC:L/VC:H/VI:H |
+| E1 | btlejack BLE hijack confirmed in the field on own device | 4 | 2 (micro:bit) | 2 (one device) | A | **high** | AV:A/AC:L/VC:H/VI:H |
+| E2 | MIFARE Classic key dump + clone confirmed | 4 | 2 (PM3) | 2 (one tag) | A | **high** | AV:A/AC:L/VC:H/VI:H |
 | E3 | Wi-Fi WPA2 handshake cracked, PSK recovered | 4 | 3 (wait for handshake) | 3 (entire network) | A | **critical** | AV:A/AC:L/VC:H/VI:H |
 | E4 | GNSS spoofing demonstrated in cage with gps-sdr-sim | 4 | 1 (cage+license) | 4 (public infra) | B | **high** (contained) | AV:A/AC:H/VA:H |
 | E5 | srsRAN rogue cell in cage with test SIM | 3 (theoretical identity harvest) | 1 | 4 | B | **high** (contained) | AV:A/AC:H/VC:L |
@@ -322,6 +323,6 @@ its technical severity is `medium` — the operational urgency (ongoing threat i
 technical severity when there is active intrusion. Confirmed offensive findings (`critical`/`high`) still
 top the report if they coexist with detections in the same report.
 
-**Remediation rule (see `references/03-registro-hallazgos.md §7.7`):** `critical`/`high` require all 3 layers
+**Remediation rule (see `references/03-finding-registration.md §7.7`):** `critical`/`high` require all 3 layers
 (Developer/Integrator/Operator); `medium` requires at least Integrator + Operator; `low`/`info` can close with
 Operator alone.

@@ -39,7 +39,7 @@ is a **visibility gap, not evidence of absence**.
 
 | ID | Name | Band | Prefix | Status |
 |----|------|-------|---------|--------|
-| `BLE` | Bluetooth Low Energy | 2.400–2.480 GHz | RFSAM-BLE | deepen |
+| `BLE` | Bluetooth Low Energy | 2.402–2.480 GHz | RFSAM-BLE | deepen |
 | `BTC` | Bluetooth Classic | 2.402–2.480 GHz (BR/EDR) | RFSAM-BTC | new |
 | `WIFI` | Wi-Fi (802.11) | 2.4 / 5 / 6 GHz | RFSAM-WIFI | deepen |
 | `LORA` | LoRa / LoRaWAN | ISM sub-GHz (US915 / EU868) | RFSAM-LORA | deepen |

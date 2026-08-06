@@ -5,7 +5,7 @@
 
 ## Facts
 - **Band**: impulse-radio UWB ~3.1–10.6 GHz, >500 MHz channel bandwidth per pulse. In practice two channels dominate: ch5 6.5 GHz, ch9 8.0 GHz.
-- **Standard**: IEEE 802.15.4z, two incompatible PHYs — HRP (High Rate Pulse-repetition ~64/124.8 MHz PRF — the one in phones/cars) and LRP (Low Rate, NXP/3db). Plus legacy 802.15.4-2011/4a (DW1000 old gen, no STS).
+- **Standard**: IEEE 802.15.4z, two incompatible PHYs — HRP (High Rate Pulse-repetition ~64/249.6 MHz PRF — the one in phones/cars) and LRP (Low Rate, NXP/3db). Plus legacy 802.15.4-2011/4a (DW1000 old gen, no STS).
 - **Modulation**: impulse radio — sub-nanosecond RF pulses, no continuous carrier. Bit rates 850 kbps / 6.81 Mbps. **Time-of-flight** of pulses (not signal strength) = distance → that is why it is hard to spoof and so precise (~10 cm).
 - **Purpose**: secure ranging / distance bounding and positioning, NOT bulk data. Two-Way Ranging (TWR), TDoA, PDoA/AoA. Uses: Apple U1/U2 (AirTag, iPhone Nearby Interaction), CCC Digital Key car access, Samsung SmartTag+, FiRa RTLS.
 - **Security**: 802.15.4z adds **STS (Scrambled Timestamp Sequence)** — a pseudo-random sequence of AES-keyed pulses that the receiver correlates to authenticate the ranging timestamp → an attacker cannot forge/replay a legitimate ranging pulse. Research surface = **physical distance manipulation** (early-detect/preamble-injection on the impulse waveform), NOT cracking AES.
@@ -22,7 +22,7 @@
 ### PHY (no control — despreading on the DW3000 transceiver)
 - No commodity SDR demodulates impulse-radio UWB. A DW3000-class transceiver despreads pulses against the known channel/preamble (and STS if secure ranging) and frames the 802.15.4z packet in hardware. PHY+framing together on the real chip. **You must know the PHY params** (channel, preamble code, PRF, data rate, STS mode/length) to lock — these come from IG, not from scanning.
 
-### LL — `RFSAM-UWB-PHY-01` Ranging signal capture (PHY layer in RFSAM)
+### PHY — `RFSAM-UWB-PHY-01` Ranging signal capture (PHY layer in RFSAM)
 - **Objective**: capture 802.15.4z frames with a real UWB transceiver (nothing else can). Open path: SEEMOO uwb-sniffer — firmware for the Qorvo DWM3000EVB driven by a host MCU (NUCLEO-F429ZI ref build) → pull 802.15.4z frames off the air → Wireshark via the sensniff pipe with picosecond timestamps. **Catch**: you must configure the radio with the link's PHY params (channel, preamble, data rate, STS mode/length) — UWB does not blind-scan. Off-the-shelf alternative: Forthink sniffer software + Wireshark plugin (depends on a closed commercial dongle — flagged). Another: a controllable DW3000 peer (Makerfabs board, foldedtoad driver) to generate/log known ranging exchanges. **None defeats STS** — it captures frames you can already decode.
 - **Kit**: seemoo-uwb-sniffer (DWM3000EVB + NUCLEO-F429ZI/nRF52840), forthink-uwb-sniffer (commercial dongle), dwm3000-dwt-driver (controllable peer).
 - **Decoder**: Wireshark (sensniff).
