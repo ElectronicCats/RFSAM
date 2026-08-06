@@ -10,7 +10,7 @@
 4. RFSAM severity rubric (what evidence each level requires)
 5. CVSS 4.0 for RF — typical vectors
 6. How to cite references
-7. `severidad-rf` — 4-axis model for classifying RF findings
+7. `rf-severity` — 4-axis model for classifying RF findings
 
 ---
 
@@ -171,7 +171,7 @@ If you cannot verify a source → flag inline:
 
 ---
 
-## 7. `severidad-rf` — 4-axis model for classifying RF findings
+## 7. `rf-severity` — 4-axis model for classifying RF findings
 
 §4 gives the **reactive** rubric (what evidence each level requires). This section gives the **predictive** model: before
 fixing the severity, the agent evaluates four axes specific to RF that do not appear in CVSS and that decide the level.

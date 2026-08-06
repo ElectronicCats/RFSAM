@@ -6,9 +6,9 @@
 
 ## Index
 1. §setup — 5 environment checks (Phase 0, cache result in `loot/notes/hardware.txt`)
-2. §diagnostico — symptom → probable cause → action table
-3. §orden — diagnosis rule (antenna before driver before binary)
-4. §falsos-positivos — finding that looks confirmed but is not
+2. §diagnosis — symptom → probable cause → action table
+3. §order — diagnosis rule (antenna before driver before binary)
+4. §false-positives — finding that looks confirmed but is not
 
 ---
 
@@ -105,7 +105,7 @@ ip route show default      # if the audit is offline, confirm isolation
 
 ---
 
-## 2. §diagnostico — symptom → probable cause → action table
+## 2. §diagnosis — symptom → probable cause → action table
 
 ### 2.1 Hardware not detected / permissions
 
@@ -150,7 +150,7 @@ ip route show default      # if the audit is offline, confirm isolation
 
 ---
 
-## 3. §orden — diagnosis rule
+## 3. §order — diagnosis rule
 
 On "I can't see / it doesn't work", do NOT declare a gap immediately. Follow this order:
 
@@ -166,7 +166,7 @@ On "I can't see / it doesn't work", do NOT declare a gap immediately. Follow thi
 
 ---
 
-## 4. §falsos-positivos — finding that looks confirmed but is not
+## 4. §false-positives — finding that looks confirmed but is not
 
 Before registering, discard the typical false positive of the pattern (see §4 below, "Typical false positive"
 column per family). Cross-cutting cases:
@@ -189,7 +189,7 @@ column per family). Cross-cutting cases:
 ## 5. Mapping to downstream phases
 
 - **SKILL.md Phase 0** cites §setup as the body of the environment check.
-- **SKILL.md Route B** cites §diagnostico as the step before escalating.
+- **SKILL.md Route B** cites §diagnosis as the step before escalating.
 - **Wayfinders** (`references/NN-proto.md`) may cite "see troubleshooting §2.2" for the specific family.
-- **Phase 7.1 (validation):** every "it doesn't work" documented in `loot/notes/` must reference §orden — without
+- **Phase 7.1 (validation):** every "it doesn't work" documented in `loot/notes/` must reference §order — without
   that order traversed, the gap is weak.

@@ -353,7 +353,7 @@ observational = low/info), modulated by Exploitability, Exposure and **Scope** (
 | **low / info** | Hardening, observational, identifier exposure | persistent BD_ADDR, firmware without confirmed CVE |
 
 **Decision by 4-axis model** (Impact × Exploitability × Exposure × Scope A/B/C/D), complete decision table
-and 13 worked examples: `references/03-registro-hallazgos.md §severidad-rf`. **Golden rules:** without PoC (Scope C) the
+and 13 worked examples: `references/03-registro-hallazgos.md §rf-severity`. **Golden rules:** without PoC (Scope C) the
 maximum is `medium`; cage (B) lowers `critical`→`high` (label `contained`); Defensive (D) never reports `critical`
 (type `detection`). The model produces the severity; §EVIDENCE verifies that the evidence supports it, or degrades it.
 
@@ -369,7 +369,7 @@ mode:** an active detected threat (Scope D) leads the report even if its technic
 urgency (ongoing threat) overrides technical severity. Remediation rule: `critical`/`high` require all 3 layers
 (Developer/Integrator/Operator); `low`/`info` can close with Operator only (see `references/03-registro-hallazgos.md §7`).
 
-**Before registering**, run the Q1–Q8 checklist (`references/26-calidad.md §pre-registro`); if any item is
+**Before registering**, run the Q1–Q8 checklist (`references/26-calidad.md §pre-registration`); if any item is
 NO → do not register yet.
 
 ---
@@ -485,7 +485,7 @@ And recommend escalating to additional hardware/permission (e.g., bladeRF for fu
 **Complete audit criterion:** the 7 layers of the protocol in scope traversed or gap documented for each non-applicable
 layer (Phase 7 precondition).
 
-**Closure checklist — per finding:** Q1–Q8 rubric passed (`references/26-calidad.md §pre-registro`); `repro.txt` + verbatim
+**Closure checklist — per finding:** Q1–Q8 rubric passed (`references/26-calidad.md §pre-registration`); `repro.txt` + verbatim
 command in `loot/poc/RF-NNN/` (§EVIDENCE); 4-axis model + CVSS 4.0 (§SEVERITY); `RFSAM-<PROTO>-<LAYER>-NN` control mapped;
 3-layer mitigation — `critical`/`high` require all 3.
 
@@ -494,7 +494,7 @@ retention confirmed); visibility gaps declared; PII sanitized in evidence and re
 
 **Deliverables:**
 1. `python3 scripts/coverage_check.py` → lists covered vs. pending controls per protocol (dump to report §5).
-2. `python3 scripts/scaffold_report.py` → generates `informe-rfsam-<target>.md` from the JSONL (uses `assets/report-template.md`).
+2. `python3 scripts/scaffold_report.py` → generates `rfsam-report-<target>.md` from the JSONL (uses `assets/report-template.md`).
 3. **Technical report** — fill in `assets/report-template.md` with analysis, impact and remediation.
 4. **Executive summary** — generate the non-technical version using `assets/executive-summary-template.md`.
 5. Report to the user: findings by severity, covered controls, visibility gaps, next steps.

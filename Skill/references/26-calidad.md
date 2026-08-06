@@ -6,15 +6,15 @@
 
 ## Index
 
-1. §reglas — 8 mandatory verification rules (Q1–Q8)
+1. §rules — 8 mandatory verification rules (Q1–Q8)
 2. §criticality — honest severity rubric
 3. §lifecycle — draft vs verified (verification is a separate pass)
-4. §pre-registro — checklist before writing to the JSONL
+4. §pre-registration — checklist before writing to the JSONL
 5. §cross-refs — internal consistency (validate.mjs model)
 
 ---
 
-## 1. §reglas — 8 mandatory verification rules
+## 1. §rules — 8 mandatory verification rules
 
 Before registering a finding or including it in the report, each rule must pass. If one fails → do not register
 yet (obtain evidence, cite a source, degrade severity, or declare a gap). SKILL.md §CALIDAD contains the quick
@@ -58,7 +58,7 @@ CLASIFICATION; this rubric is the sanity check that the assigned severity is hon
 - The **Impact** axis sets the ceiling; Exploitability / Exposure / Scope **only modulate downward**, never upward.
 - "Not observed" under a finite window is a **visibility gap**, not evidence of absence — but "observed" can also
   be a **false positive** if the base capture is corrupt (overflows ≠ 0) or the decoder does not match
-  (see `references/25-troubleshooting.md` §falsos-positivos). Verify both extremes before setting severity.
+  (see `references/25-troubleshooting.md` §false-positives). Verify both extremes before setting severity.
 
 ---
 
@@ -79,7 +79,7 @@ Principle from `§3` of this file, adapted to the auditing agent:
 
 ---
 
-## 4. §pre-registro — checklist before writing to the JSONL
+## 4. §pre-registration — checklist before writing to the JSONL
 
 Before running `scripts/register_finding.py` (or writing by hand to `rfsam_findings.jsonl`):
 
@@ -109,7 +109,7 @@ and the control regex). Before delivering, verify:
 - **Every reference resolves**: every `control`, `RFSAM-RES-NN`, tool slug, and reference path cited in the
   report exists in the skill (in `references/`, `assets/`, or the wayfinder tool catalog).
 - **Valid enums**: severity ∈ critical/high/medium/low/info; `scope_reach` ∈ A/B/C/D; `mode` ∈
-  observacional/activo/lab/defensivo.
+  observational/active/lab/defensive.
 - **No empty fields on critical findings**: a `critical`/`high` without `repro.txt`, without a mapped control (or
   layer note), or without mitigation across the 3 layers (Developer/Integrator/Operator) is an **incomplete**
   finding, not confirmed.
@@ -121,9 +121,9 @@ and the control regex). Before delivering, verify:
 
 ## 6. Mapping to downstream phases
 
-- **SKILL.md §CALIDAD** cites §reglas as the quick gate (the 10 inline rules are the compact version; Q1–Q8 is the
+- **SKILL.md §CALIDAD** cites §rules as the quick gate (the 10 inline rules are the compact version; Q1–Q8 is the
   authoritative source).
-- **SKILL.md §SEVERIDAD "Before registering"** delegates to §pre-registro (does not duplicate the checklist).
+- **SKILL.md §SEVERIDAD "Before registering"** delegates to §pre-registration (does not duplicate the checklist).
 - **SKILL.md §AUDIT CLOSURE** maintains its own per-session checklist (pre-close); §cross-refs expands what
   "verify cross-refs" means in practice.
 - **Phase 7.1 (validation):** the validation checklist confirms that every finding in the JSONL passed Q1–Q8 and
