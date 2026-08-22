@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""scaffold_report.py — Generates the skeleton of an RFSAM audit report.
+"""scaffold_report.py - Generates the skeleton of an RFSAM audit report.
 
 Reads `loot/rfsam_findings.jsonl` (and optionally `loot/scope.txt`,
 `loot/session_state.json`) and produces a Markdown report sorted by severity
@@ -59,7 +59,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         by_sev[f.get("severity", "info")] = by_sev.get(f.get("severity", "info"), 0) + 1
 
     lines = []
-    lines.append(f"# RF Security Audit Technical Report — {title}")
+    lines.append(f"# RF Security Audit Technical Report - {title}")
     lines.append("")
     lines.append(f"**Date**: {date}  ")
     lines.append("**Methodology**: RFSAM (Radio Frequency Security Assessment Methodology)  ")
@@ -75,7 +75,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
             lines.append(f"- **{sev.upper()}**: {by_sev[sev]}")
     n_confirmed = sum(1 for f in findings_sorted if f.get("status") != "hypothesis")
     n_hyp = sum(1 for f in findings_sorted if f.get("status") == "hypothesis")
-    lines.append(f"- **Confirmed**: {n_confirmed} · **Hypotheses (no PoC)**: {n_hyp}")
+    lines.append(f"- **Confirmed**: {n_confirmed} - **Hypotheses (no PoC)**: {n_hyp}")
     lines.append("")
     lines.append("> _The agent completes the executive synthesis here: business impact, "
                  "residual risk and remediation priorities._")
@@ -94,10 +94,10 @@ def render(scope: str, findings: list[dict], target: str) -> str:
 
     lines.append("## 3. Methodology")
     lines.append("")
-    lines.append("Audit following the RFSAM 7-layer descent (IG → SP → PHY+LL → CR → AT → AP) "
+    lines.append("Audit following the RFSAM 7-layer descent (IG -> SP -> PHY+LL -> CR -> AT -> AP) "
                  "per protocol. Each finding is mapped to a control `RFSAM-<PROTO>-<LAYER>-NN` "
                  "and scored with the 4-axis model consolidated into CVSS 4.0 (in RF typically "
-                 "`AV:A` — adjacent, radio range).")
+                 "`AV:A` - adjacent, radio range).")
     lines.append("")
 
     lines.append("## 4. Findings")
@@ -109,14 +109,14 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         sev = f.get("severity", "info").upper()
         proto = f.get("protocol", "?")
         layer = f.get("layer", "?")
-        control = f.get("control") or "—"
-        cvss = f.get("cvss4") or "—"
+        control = f.get("control") or "-"
+        cvss = f.get("cvss4") or "-"
         status_tag = " (HYPOTHESIS)" if f.get("status") == "hypothesis" else ""
-        lines.append(f"### {f.get('id','?')} · {sev}{status_tag} — {f.get('title','(untitled)')}")
+        lines.append(f"### {f.get('id','?')} - {sev}{status_tag} - {f.get('title','(untitled)')}")
         lines.append("")
         lines.append(f"- **Protocol/Layer**: {proto} / {layer}")
         lines.append(f"- **RFSAM control**: `{control}`")
-        # 4-axis model (if provided — references/03-finding-registration.md §7)
+        # 4-axis model (if provided - references/03-finding-registration.md Sec 7)
         axes = []
         for key, label in (("impact", "Impact"), ("exploitability", "Exploitability"),
                            ("exposure", "Exposure")):
@@ -125,7 +125,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         if f.get("scope_reach"):
             axes.append(f"Scope {f['scope_reach']}")
         if axes:
-            lines.append(f"- **RFSAM model**: {' · '.join(axes)}")
+            lines.append(f"- **RFSAM model**: {' - '.join(axes)}")
         lines.append(f"- **CVSS 4.0**: `{cvss}`")
         ev = (f.get("evidence") or "").strip()
         if ev:
@@ -169,7 +169,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
     lines.append("")
     lines.append("| Priority | Finding | Action | Responsible layer | Effort | Deadline |")
     lines.append("|----------|---------|--------|-------------------|--------|----------|")
-    # One row per confirmed finding, sorted by severity (same as §4).
+    # One row per confirmed finding, sorted by severity (same as Sec 4).
     # Action = first available mitigation layer (developer > integrator > operator);
     # Responsible layer = list of layers with content; Effort/Deadline are filled in by the agent.
     prio = 0
@@ -188,7 +188,7 @@ def render(scope: str, findings: list[dict], target: str) -> str:
         deadline = "_{immediate/30d/90d}_"
         lines.append(f"| {prio} | {f.get('id','?')} | {action} | {resp} | {effort} | {deadline} |")
     if prio == 0:
-        lines.append("| _—_ | _no confirmed findings_ | _—_ | _—_ | _—_ | _—_ |")
+        lines.append("| _-_ | _no confirmed findings_ | _-_ | _-_ | _-_ | _-_ |")
     lines.append("")
     lines.append("> `critical`/`high` require all 3 layers (Developer/Integrator/Operator); "
                  "`medium` requires Integrator + Operator; `low`/`info` may close with Operator alone.")
@@ -216,7 +216,7 @@ def main(argv=None) -> int:
     out = args.out or f"rfsam-report-{datetime.date.today().isoformat()}.md"
     with open(out, "w", encoding="utf-8") as fh:
         fh.write(report)
-    print(f"✅ Report generated: {out} ({len(findings)} findings)")
+    print(f"OK: Report generated: {out} ({len(findings)} findings)")
     return 0
 
 

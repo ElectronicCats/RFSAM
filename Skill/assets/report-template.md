@@ -1,15 +1,15 @@
-# RF Security Audit Technical Report — {{TARGET}}
+# RF Security Audit Technical Report - {{TARGET}}
 
 > Template for the **technical report** of an RFSAM audit. `scripts/scaffold_report.py`
 > generates the skeleton from `loot/rfsam_findings.jsonl`; the agent completes the
 > analysis, impact and remediation. Replace the `{{...}}` placeholders. The **executive
-> summary** (non-technical audience) is a separate document — see
+> summary** (non-technical audience) is a separate document - see
 > `assets/executive-summary-template.md`.
 
 **Date**: {{ISO}}
 **Auditor**: {{name/role}}
 **Client/Owner**: {{client}}
-**Methodology**: RFSAM (Radio Frequency Security Assessment Methodology) — Electronic Cats
+**Methodology**: RFSAM (Radio Frequency Security Assessment Methodology) - Electronic Cats
 **Complementary framework**: OSSTMM, BSAM (Tarlogic), SDR-pentest lineage
 **Content license**: CC BY-SA 4.0
 **Report classification**: {{Confidential / Public / Internal}}
@@ -18,13 +18,13 @@
 
 ## 1. Technical summary
 
-- **Total findings**: {{N}} (Critical: {{c}} · High: {{h}} · Medium: {{m}} · Low: {{l}} · Info: {{o}})
-- **Confirmed**: {{nc}} · **Hypotheses (no `repro.txt`)**: {{nh}} — _hypotheses do not count as confirmed findings._
+- **Total findings**: {{N}} (Critical: {{c}} - High: {{h}} - Medium: {{m}} - Low: {{l}} - Info: {{o}})
+- **Confirmed**: {{nc}} - **Hypotheses (no `repro.txt`)**: {{nh}} - _hypotheses do not count as confirmed findings._
 - **Audited protocols**: {{BLE, Wi-Fi, ...}}
-- **RFSAM control coverage**: {{X/Y}} (see §5)
+- **RFSAM control coverage**: {{X/Y}} (see Sec 5)
 - **Mode of operation**: {{observational / active / lab-contained / defensive}}
 
-> Technical synthesis (2–4 lines): what was audited, surface covered, technical residual
+> Technical synthesis (2-4 lines): what was audited, surface covered, technical residual
 > risk. The **business** synthesis goes in the executive summary, not here.
 
 ---
@@ -52,17 +52,17 @@ Capture retention: {{default 30 days post-delivery; purge requested: yes/no}}
 
 ## 3. Methodology
 
-Audit following the **RFSAM 7-layer descent** (IG → SP → PHY+LL → CR → AT → AP) per
+Audit following the **RFSAM 7-layer descent** (IG -> SP -> PHY+LL -> CR -> AT -> AP) per
 protocol. PHY and LL are assessed together (the same tool produces both). Each finding is
 mapped to a control `RFSAM-<PROTO>-<LAYER>-NN` and scored with the **RFSAM 4-axis model**
-(Impact, Exploitability, Exposure, Scope A/B/C/D) consolidated into CVSS 4.0 — see
-`references/03-finding-registration.md §7`. In RF almost always `AV:A` (adjacent, radio range).
+(Impact, Exploitability, Exposure, Scope A/B/C/D) consolidated into CVSS 4.0 - see
+`references/03-finding-registration.md Sec 7`. In RF almost always `AV:A` (adjacent, radio range).
 
 | Layer | What was verified |
 |-------|-------------------|
 | IG | SoC/host stack identification + cross-reference with published CVEs |
 | SP | Capture feasibility (band vs radio IBW) |
-| PHY+LL | Demodulation → bits; frame capture → Wireshark |
+| PHY+LL | Demodulation -> bits; frame capture -> Wireshark |
 | CR | Cryptography assessment / weak key recovery |
 | AT | Takeover (only where scope authorized it) |
 | AP | What the device trusts over the link |
@@ -75,16 +75,16 @@ the assessment end-to-end.
 
 ## 4. Findings
 
-> Sorted by severity (Critical → Info). Each **confirmed** finding includes a
+> Sorted by severity (Critical -> Info). Each **confirmed** finding includes a
 > `repro.txt` in `loot/poc/RF-NNN/`; without `repro.txt` it is registered as a hypothesis,
 > not as confirmed.
 
 ### 4.1 CRITICAL
 
-#### {{RF-001}} — {{title}}
-- **Protocol/Layer**: {{BLE / AT}} · **Control**: `RFSAM-BLE-AT-01`
+#### {{RF-001}} - {{title}}
+- **Protocol/Layer**: {{BLE / AT}} - **Control**: `RFSAM-BLE-AT-01`
 - **Severity**: CRITICAL
-- **RFSAM model**: Impact {{1-4}}/4 · Exploitability {{1-4}}/4 · Exposure {{1-4}}/4 · Scope {{A/B/C/D}}
+- **RFSAM model**: Impact {{1-4}}/4 - Exploitability {{1-4}}/4 - Exposure {{1-4}}/4 - Scope {{A/B/C/D}}
 - **CVSS 4.0**: `{{vector}}` ({{score}}, {{sev}})
 - **Description**: {{what was found, mechanism, why it matters}}
 - **Evidence**:
@@ -127,7 +127,7 @@ the assessment end-to-end.
 - **Visibility gaps**: {{radio/IBW used; what could not be observed and why}}
 - **Out-of-scope controls**: {{e.g. AT not executed due to observational mode}}
 - **Assumptions**: {{e.g. join not captured because the device did not re-pair during the window}}
-- **Declared strong crypto not breakable**: {{e.g. LESC ECDH on this device → CR assesses, does not decrypt}}
+- **Declared strong crypto not breakable**: {{e.g. LESC ECDH on this device -> CR assesses, does not decrypt}}
 
 ---
 

@@ -1,15 +1,15 @@
-# 01 — Authorization Protocol and Legal Framework
+# 01 - Authorization Protocol and Legal Framework
 
 > **Read this before any active step (AT layer) or any transmission.** RFSAM is intrinsically
 > dual-use. RF crosses physical property and regulated spectrum: what you receive may not be yours,
-> and what you transmit is almost never legal without permission. This is not bureaucracy — it is the
+> and what you transmit is almost never legal without permission. This is not bureaucracy - it is the
 > difference between an audit and a crime.
 
 ## Index
 1. Four modes of operation
 2. Legality matrix by technique
 3. Confirmation protocol (gate 0)
-4. Jurisdictions — quick reference
+4. Jurisdictions - quick reference
 5. RF containment for lab
 6. Scope documentation
 
@@ -26,7 +26,7 @@ Before starting, the agent **must ask** and record the mode:
 | **(3) Lab RF contained** | All of the above + jamming/spoofing/rogue-cell **inside a Faraday cage or conducted (wired)**, with test SIMs/devices | Radiating over the air jamming, GNSS, ADS-B, or false cells under any circumstances |
 | **(4) Defensive** | Passive RX on your own spectrum to **detect, correlate, and alert** on threats (jamming, rogue infrastructure, anomalous signals) | Any TX (including "to test the detector"); offensive descent; surveillance of third parties |
 
-**Safe default**: if the user does not specify, or there is doubt → **mode (1) observational**. AT steps
+**Safe default**: if the user does not specify, or there is doubt -> **mode (1) observational**. AT steps
 are documented as hypotheses to verify in an authorized environment, **never executed**.
 
 ## 2. Legality matrix by technique
@@ -34,17 +34,17 @@ are documented as hypotheses to verify in an authorized environment, **never exe
 | Technique | Allowed without authorization? | Restrictions |
 |---------|------------------------------|---------------|
 | Passive reception (sniff, survey) | Generally yes | Third-party personal data is regulated (GDPR/privacy) |
-| Capture traffic from your device | Yes (it is yours) | — |
+| Capture traffic from your device | Yes (it is yours) | - |
 | Capture third-party traffic | Depends | Usually illegal to decrypt/use; RX of public signals (ADS-B) OK |
 | Connect to a third-party device (BLE GATT) | **No** without permission | Unauthorized access |
-| Transmit / replay / forge | **No** without explicit permission from the device owner | — |
+| Transmit / replay / forge | **No** without explicit permission from the device owner | - |
 | Wi-Fi deauth / forced disconnection | **No** without permission | Disrupts third-party service |
 | Jamming (saturating band) | **Almost never** | Illegal over the air in almost all jurisdictions (FCC, ITU) |
 | GNSS spoofing over the air | **No** (crime) | Conducted/cable + cage only |
 | ADS-B spoofing/forging over the air | **No** (protected aviation spectrum) | Conducted + cage only |
 | Rogue cell LTE/GSM/5G (IMSI catcher) | **No** (licensed spectrum) | Lab + test SIMs + test license + cage only |
 | Clone/emulate your own RFID | Yes (it is yours) | Cloning third-party credentials = fraud |
-| Force re-pair/re-join of your network | Yes (it is yours) | — |
+| Force re-pair/re-join of your network | Yes (it is yours) | - |
 
 ## 3. Confirmation protocol (gate 0)
 
@@ -54,22 +54,22 @@ are documented as hypotheses to verify in an authorized environment, **never exe
 >
 > 1. Is the target **yours** or are you **authorized in writing** to audit it?
 > 2. In which mode do I work?
->    - (1) **Observational/passive** — RX only, without actively touching devices
->    - (2) **Active with authorization** — TX/replay/inject on authorized equipment
->    - (3) **Lab RF contained** — Faraday cage or conducted (wired)
->    - (4) **Defensive** — passive RX to detect threats in your own environment (no TX)
+>    - (1) **Observational/passive** - RX only, without actively touching devices
+>    - (2) **Active with authorization** - TX/replay/inject on authorized equipment
+>    - (3) **Lab RF contained** - Faraday cage or conducted (wired)
+>    - (4) **Defensive** - passive RX to detect threats in your own environment (no TX)
 >
 > I will record your answer in `loot/scope.txt`. If there is doubt, I operate in observational mode."
 
 - Record the answer in `loot/scope.txt` (created by the Phase 0 snippet in SKILL.md).
-- **Re-verify** the scope before each AT step. If the scope says observational → block AT.
-- On ambiguity ("it's a friend's", "I think I can") → assume observational and warn.
+- **Re-verify** the scope before each AT step. If the scope says observational -> block AT.
+- On ambiguity ("it's a friend's", "I think I can") -> assume observational and warn.
 
-## 4. Jurisdictions — quick reference
+## 4. Jurisdictions - quick reference
 
 > This is not legal advice. Orientation only. Verify local law before operating.
 
-- **USA**: FCC regulates the spectrum. Jamming is illegal (Communications Act §333). GNSS spoofing
+- **USA**: FCC regulates the spectrum. Jamming is illegal (Communications Act Sec 333). GNSS spoofing
   is illegal. Interception of electronic communications (Wiretap Act) restricts content capture.
   Exceptions: equipment owner, with consent, or legal authority.
 - **EU/UK**: national regulators + harmonized regulation. In the UK, interception without

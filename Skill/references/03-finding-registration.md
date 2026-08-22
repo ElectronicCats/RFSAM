@@ -1,4 +1,4 @@
-# 03 — Finding Registry: Schema, Severity, and CVSS 4.0 RF
+# 03 - Finding Registry: Schema, Severity, and CVSS 4.0 RF
 
 > Defines the canonical JSONL schema, the finding block format, the RFSAM severity rubric,
 > and the typical CVSS 4.0 vectors for RF. Use it before registering the first finding.
@@ -8,9 +8,9 @@
 2. Usage of `register_finding.py`
 3. Finding format in chat
 4. RFSAM severity rubric (what evidence each level requires)
-5. CVSS 4.0 for RF — typical vectors
+5. CVSS 4.0 for RF - typical vectors
 6. How to cite references
-7. `rf-severity` — 4-axis model for classifying RF findings
+7. `rf-severity` - 4-axis model for classifying RF findings
 
 ---
 
@@ -29,9 +29,9 @@ Each line of `loot/rfsam_findings.jsonl` is a JSON object with this schema:
   "cvss4": "CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
   "status": "confirmed",                   // confirmed|hypothesis (auto per --allow-hypothesis)
   "evidence": "Got CONNECT_REQ ... AA 0x0a2f7b1d ...",  // mandatory unless hypothesis
-  "impact": 4,                             // optional, axis of the §7 model (1–4)
-  "exploitability": 2,                     // optional, axis of the §7 model (1–4)
-  "exposure": 2,                           // optional, axis of the §7 model (1–4)
+  "impact": 4,                             // optional, axis of the Sec 7 model (1-4)
+  "exploitability": 2,                     // optional, axis of the Sec 7 model (1-4)
+  "exposure": 2,                           // optional, axis of the Sec 7 model (1-4)
   "scope_reach": "A",                      // optional, A|B|C|D (achieved|cage|hypothesis|defensive)
   "mitigation": {                          // optional, 3 layers (only those provided)
     "developer": "force LESC",
@@ -45,16 +45,16 @@ Each line of `loot/rfsam_findings.jsonl` is a JSON object with this schema:
 
 **Rules validated by `register_finding.py`**:
 - `id` must match `^RF-\d{3}$`.
-- `protocol` ∈ the 15 IDs; `layer` ∈ the 7; `severity` ∈ the 5.
+- `protocol` in the 15 IDs; `layer` in the 7; `severity` in the 5.
 - `control` if provided must match `^RFSAM-<PROTO>-<LAYER>-\d{2}$`.
 - `cvss4` if provided must start with `CVSS:4.0/`.
 - `title` not empty.
-- `impact`/`exploitability`/`exposure` if provided must be 1–4.
+- `impact`/`exploitability`/`exposure` if provided must be 1-4.
 - `scope_reach` if provided must be A/B/C/D.
 - **Evidence mandatory** unless `--allow-hypothesis` is passed (then `status=hypothesis`).
 
 > The 4 axes (`impact`/`exploitability`/`exposure`/`scope_reach`) are optional but
-> **recommended**: they operationalize the §7 model and feed both the technical report and the
+> **recommended**: they operationalize the Sec 7 model and feed both the technical report and the
 > executive summary with the severity justification. Mitigation is stored only for the
 > layers that are provided.
 
@@ -78,8 +78,8 @@ python3 scripts/register_finding.py \
 
 Flags:
 - `--evidence "text"` inline evidence; `--evidence-file path` reads it from the file.
-- `--allow-hypothesis` registers without a PoC (status `hypothesis`) — for findings to be verified.
-- `--impact`/`--exploitability`/`--exposure` (1–4) and `--scope-reach` (A/B/C/D): the 4 axes of the §7 model. Optional but recommended.
+- `--allow-hypothesis` registers without a PoC (status `hypothesis`) - for findings to be verified.
+- `--impact`/`--exploitability`/`--exposure` (1-4) and `--scope-reach` (A/B/C/D): the 4 axes of the Sec 7 model. Optional but recommended.
 - `--mitigation-developer`/`--mitigation-integrator`/`--mitigation-operator`: the 3 remediation layers. Only the provided layers are saved.
 - `--loot loot` alternative directory.
 
@@ -101,7 +101,7 @@ Target: [device/scenario]
 Description: what was found and why it matters
 Evidence:
   COMMAND: [exact tool + flags]
-  OUTPUT:  [snippet that confirms — AA, recovered key, 200 OK, etc.]
+  OUTPUT:  [snippet that confirms - AA, recovered key, 200 OK, etc.]
 Impact: what an attacker can do
 PoC: exact command to reproduce
 Remediation: layers (developer/integrator/operator)
@@ -109,29 +109,29 @@ References: [CVE / paper / tool + URL]
 CVSS 4.0: CVSS:4.0/AV:A/...  (score, severity)
 ```
 
-## 4. RFSAM severity rubric — what evidence each level requires
+## 4. RFSAM severity rubric - what evidence each level requires
 
 | Severity | You must have evidence of | Forbidden |
 |-----------|--------------------------|-----------|
 | **CRITICAL** | Takeover / key recovery / spoofing reproduced with captured PoC | "It is vulnerable" without PoC |
 | **HIGH** | Real cleartext data exposure, weak keys recovered, demonstrated hijack | Crypto hypothesis without capture |
-| **MEDIUM** | Weakness requiring specific conditions to exploit | Anything already exploitable → raise |
-| **LOW** | Hardening gap / info disclosure not directly exploitable | What can be exploited → raise |
-| **INFO** | Observational (capture feasibility, identifier exposure, identifier leakage) | — |
+| **MEDIUM** | Weakness requiring specific conditions to exploit | Anything already exploitable -> raise |
+| **LOW** | Hardening gap / info disclosure not directly exploitable | What can be exploited -> raise |
+| **INFO** | Observational (capture feasibility, identifier exposure, identifier leakage) | - |
 
 **Mental checklist before registering**:
 ```
-□ Do I have the exact capture/command output as evidence?
-□ Does the severity reflect what I ACHIEVED, not what I could achieve?
-□ Is the command reproducible (target, flags, parameters)?
-□ Did I cite the source (CVE/paper/tool) or flag the uncertainty?
-□ Did I map to an RFSAM-<PROTO>-<LAYER>-NN control?
-If any answer is NO → do not register yet. Get evidence.
+[ ] Do I have the exact capture/command output as evidence?
+[ ] Does the severity reflect what I ACHIEVED, not what I could achieve?
+[ ] Is the command reproducible (target, flags, parameters)?
+[ ] Did I cite the source (CVE/paper/tool) or flag the uncertainty?
+[ ] Did I map to an RFSAM-<PROTO>-<LAYER>-NN control?
+If any answer is NO -> do not register yet. Get evidence.
 ```
 
-## 5. CVSS 4.0 for RF — typical vectors
+## 5. CVSS 4.0 for RF - typical vectors
 
-**Key**: RF is almost always **`AV:A` (Adjacent)** — the attacker must be within radio range,
+**Key**: RF is almost always **`AV:A` (Adjacent)** - the attacker must be within radio range,
 not on the network (`AV:N`). Exception: rogue infrastructure that later exfiltrates over the network can escalate to
 cascading impact `AV:N`, but the initial RF vector remains `AV:A`.
 
@@ -150,42 +150,42 @@ Recommended base vector for most RF findings:
 | GNSS spoofing (conducted) | `CVSS:4.0/AV:A/AC:H/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N` | (context-dependent) |
 | WPS Pixie-Dust / PMKID | `CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N` | high |
 
-CVSS 4.0 metrics: `AV` Attack Vector (N/A/L/P) · `AC` Attack Complexity (L/H) · `AT` Attack
-Requirements (N/P) · `PR` Privileges Required (N/L/H) · `UI` User Interaction (N/P/A) ·
-`VC/VI/VA` Vulnerable System Confidentiality/Integrity/Availability · `SC/SI/SA` Subsequent System.
+CVSS 4.0 metrics: `AV` Attack Vector (N/A/L/P) - `AC` Attack Complexity (L/H) - `AT` Attack
+Requirements (N/P) - `PR` Privileges Required (N/L/H) - `UI` User Interaction (N/P/A) -
+`VC/VI/VA` Vulnerable System Confidentiality/Integrity/Availability - `SC/SI/SA` Subsequent System.
 
 ## 6. How to cite references
 
 Every non-trivial claim **is cited or flagged**:
-- **CVE**: `CVE-2019-9506 (KNOB) — https://nvd.nist.gov/vuln/detail/CVE-2019-9506`
-- **Paper**: `Ryan, "Bluetooth: With Low Energy Comes Low Security", USENIX WOOT 2013 — https://...`
-- **Tool**: `crackle (Mike Ryan) — https://github.com/mikeryan/crackle`
+- **CVE**: `CVE-2019-9506 (KNOB) - https://nvd.nist.gov/vuln/detail/CVE-2019-9506`
+- **Paper**: `Ryan, "Bluetooth: With Low Energy Comes Low Security", USENIX WOOT 2013 - https://...`
+- **Tool**: `crackle (Mike Ryan) - https://github.com/mikeryan/crackle`
 - **Spec/standard**: `Bluetooth Core Spec v5.4, Vol 6 Part B`
 
-If you cannot verify a source → flag inline:
+If you cannot verify a source -> flag inline:
 ```
-> [!FLAG] Claim X — need to verify specific source before reporting
+> [!FLAG] Claim X - need to verify specific source before reporting
 ```
 
 **Never claim what you cannot cite or demonstrate with evidence.** That is the foundational rule of RFSAM.
 
 ---
 
-## 7. `rf-severity` — 4-axis model for classifying RF findings
+## 7. `rf-severity` - 4-axis model for classifying RF findings
 
-§4 gives the **reactive** rubric (what evidence each level requires). This section gives the **predictive** model: before
+Sec 4 gives the **reactive** rubric (what evidence each level requires). This section gives the **predictive** model: before
 fixing the severity, the agent evaluates four axes specific to RF that do not appear in CVSS and that decide the level.
 
-> Origin: model defined in `§7` of this file. SKILL.md §SEVERITY AND CLASSIFICATION compresses this section to the
+> Origin: model defined in `Sec 7` of this file. SKILL.md Sec SEVERITY AND CLASSIFICATION compresses this section to the
 > 4-level table + the reference here; the full model lives in this section.
 
-### 7.1 — The four axes
+### 7.1 - The four axes
 
-Each axis is scored 1 (low) to 4 (high). The final severity **is not** a linear average — it is the **Impact** axis
+Each axis is scored 1 (low) to 4 (high). The final severity **is not** a linear average - it is the **Impact** axis
 (ceiling) modulated by the other three. The agent traverses them in order: Impact first (sets the ceiling), then
 Exploitability/Exposure/Scope lower or confirm it.
 
-#### Axis 1 — Impact (severity ceiling)
+#### Axis 1 - Impact (severity ceiling)
 
 | Score | What the attacker achieves | RF examples |
 |---------|--------------------------|-------------|
@@ -197,7 +197,7 @@ Exploitability/Exposure/Scope lower or confirm it.
 Impact sets the **ceiling**: 4 never drops below `high`; 3 sets ceiling at `high` (can drop to `medium`); 2 sets `medium`; 1 sets
 `low/info`.
 
-#### Axis 2 — Exploitability (friction to reproduce)
+#### Axis 2 - Exploitability (friction to reproduce)
 
 | Score | Friction | RF examples |
 |---------|----------|-------------|
@@ -206,11 +206,11 @@ Impact sets the **ceiling**: 4 never drops below `high`; 3 sets ceiling at `high
 | 2 | Medium: specialized hardware or active mode | Proxmark3 for MIFARE nested; btlejack (micro:bit); HackRF TX for sub-GHz replay; gps-sdr-sim |
 | 1 | High: mandatory containment + license + rare hardware | srsRAN+Open5GS rogue BTS (cage+SIM+license); UWB DW3000-class; bladeRF+GPSDO reliable LTE demod |
 
-Exploitability **raises** severity when it is 4 **and exposure is ≥3** (impact 3 + exploitability 4 + exposure ≥3 → `high`),
-and **lowers** it when it is 1 (impact 4 GNSS spoof in cage = `high`, not `critical` — demonstrated in
+Exploitability **raises** severity when it is 4 **and exposure is >=3** (impact 3 + exploitability 4 + exposure >=3 -> `high`),
+and **lowers** it when it is 1 (impact 4 GNSS spoof in cage = `high`, not `critical` - demonstrated in
 containment, not reproducible in the field).
 
-#### Axis 3 — Exposure (affected surface)
+#### Axis 3 - Exposure (affected surface)
 
 | Score | Surface | RF examples |
 |---------|------------|-------------|
@@ -222,79 +222,79 @@ containment, not reproducible in the field).
 Exposure **raises** severity: impact 3 (RFID relay) with exposure 4 raises to `high`. Impact 4 with exposure 1
 (one tag with unique non-recyclable keys) confirms `high` but not necessarily `critical`.
 
-#### Axis 4 — Scope (achieved vs possible) — discrete
+#### Axis 4 - Scope (achieved vs possible) - discrete
 
 | Value | What is reported | Rule |
 |-------|----------------|-------|
-| **A — Achieved** | Demonstrated in the current mode with sufficient evidence (§4 / SKILL.md §EVIDENCE). | Severity = the model's severity (axes 1–3). |
-| **B — Demonstrated in containment** | Demonstrated in Lab with cage/conducted, not reproducible in the field. | Model severity, labeled `contained` in the finding; `critical` drops to `high`. |
-| **C — Hypothetical (not achieved in this mode)** | Viable but not executed (observational, absent hardware, Route A). | **Maximum `medium`**, `status: hypothesis`, partial evidence. Never `high`/`critical` without PoC. |
-| **D — Defensive (detection, not exploitation)** | Defensive mode: a threat was detected, not exploited. | Severity = impact of the threat, but type `detection`; the report describes what was detected. |
+| **A - Achieved** | Demonstrated in the current mode with sufficient evidence (Sec 4 / SKILL.md Sec EVIDENCE). | Severity = the model's severity (axes 1-3). |
+| **B - Demonstrated in containment** | Demonstrated in Lab with cage/conducted, not reproducible in the field. | Model severity, labeled `contained` in the finding; `critical` drops to `high`. |
+| **C - Hypothetical (not achieved in this mode)** | Viable but not executed (observational, absent hardware, Route A). | **Maximum `medium`**, `status: hypothesis`, partial evidence. Never `high`/`critical` without PoC. |
+| **D - Defensive (detection, not exploitation)** | Defensive mode: a threat was detected, not exploited. | Severity = impact of the threat, but type `detection`; the report describes what was detected. |
 
 Scope **lowers** severity when it is C or D, and **labels** it when it is B. It never raises it. It formalizes the rule
-"severity reflects what I ACHIEVED" (SKILL.md §SEVERITY, checklist item 2).
+"severity reflects what I ACHIEVED" (SKILL.md Sec SEVERITY, checklist item 2).
 
-### 7.2 — Decision table (Impact × modulators → severity)
+### 7.2 - Decision table (Impact x modulators -> severity)
 
 Starts from Impact (ceiling) and applies Exploitability/Exposure as modulators, then Scope as final cap.
 Find your row by (Impact, Exploitability, Exposure) and read the column according to Scope.
 
 | Impact | Exploitability | Exposure | Base (A) | Contained (B) | Hypothesis (C) | Detection (D) |
 |---------|-----------------|------------|----------|----------------|----------------|----------------|
-| 4 | 3–4 | 2–4 | **critical** | **high** (contained) | **medium** (hypothesis) | medium (detection) |
-| 4 | 1–2 | 2–4 | **high** | **high** (contained) | **medium** (hypothesis) | medium (detection) |
-| 4 | 3–4 | 1 | **high** | high (contained) | medium (hypothesis) | low (detection) |
-| 3 | 3–4 | 3–4 | **high** | high (contained) | medium (hypothesis) | medium (detection) |
-| 3 | 1–2 | 3–4 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
-| 3 | 3–4 | 1–2 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
-| 3 | 1–2 | 1–2 | **medium/low** | low (contained) | low (hypothesis) | low (detection) |
-| 2 | 3–4 | 3–4 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
-| 2 | 1–2 | 1–4 | **low** | low (contained) | low (hypothesis) | low (detection) |
-| 1 | 1–4 | 1–4 | **info** | info (contained) | info (hypothesis) | info (detection) |
+| 4 | 3-4 | 2-4 | **critical** | **high** (contained) | **medium** (hypothesis) | medium (detection) |
+| 4 | 1-2 | 2-4 | **high** | **high** (contained) | **medium** (hypothesis) | medium (detection) |
+| 4 | 3-4 | 1 | **high** | high (contained) | medium (hypothesis) | low (detection) |
+| 3 | 3-4 | 3-4 | **high** | high (contained) | medium (hypothesis) | medium (detection) |
+| 3 | 1-2 | 3-4 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
+| 3 | 3-4 | 1-2 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
+| 3 | 1-2 | 1-2 | **medium/low** | low (contained) | low (hypothesis) | low (detection) |
+| 2 | 3-4 | 3-4 | **medium** | medium (contained) | low (hypothesis) | low (detection) |
+| 2 | 1-2 | 1-4 | **low** | low (contained) | low (hypothesis) | low (detection) |
+| 1 | 1-4 | 1-4 | **info** | info (contained) | info (hypothesis) | info (detection) |
 
-The "medium/low" cells require judgment: impact 3 with a low-sensitivity data leak → `low`; with a credential → `medium`.
+The "medium/low" cells require judgment: impact 3 with a low-sensitivity data leak -> `low`; with a credential -> `medium`.
 
-### 7.3 — Golden rules encoded by the table
+### 7.3 - Golden rules encoded by the table
 
 1. **Without a PoC (Scope C) the maximum is `medium`.** A hypothetical finding is never `high`/`critical` in the report,
    regardless of theoretical impact.
-2. **`critical` requires Impact 4 + Exploitability ≥3 + Exposure ≥2 + Scope A.** Confirmed takeover/key recovery
+2. **`critical` requires Impact 4 + Exploitability >=3 + Exposure >=2 + Scope A.** Confirmed takeover/key recovery
    in the field (not cage) with achievable hardware. The cage drops it to `high` (contained).
-3. **Public infrastructure (Exposure 4) raises one level if impact is 2–3.** GNSS jamming (impact 2, DoS) with
-   exposure 4 raises to `medium` even if exploitability is 1 (needs cage) — systemic risk matters even if
+3. **Public infrastructure (Exposure 4) raises one level if impact is 2-3.** GNSS jamming (impact 2, DoS) with
+   exposure 4 raises to `medium` even if exploitability is 1 (needs cage) - systemic risk matters even if
    the demo is contained. Only applies if Scope A or B; in hypothesis it stays `medium`.
 4. **Defensive mode (Scope D) never reports `critical`.** Detection is not exploitation. The `critical` of the detected
    threat is documented in `notes` (context for the client), not in `severity`.
 5. **`info` is observational only (Impact 1).** Any finding with impact 2+ cannot be `info`.
 
-### 7.4 — Integration with evidence sufficiency (§4 + SKILL.md §EVIDENCE)
+### 7.4 - Integration with evidence sufficiency (Sec 4 + SKILL.md Sec EVIDENCE)
 
-The §7.2 model produces the severity; §4 / SKILL.md §EVIDENCE verify that the evidence supports that severity.
+The Sec 7.2 model produces the severity; Sec 4 / SKILL.md Sec EVIDENCE verify that the evidence supports that severity.
 If it does not, they mandate a downgrade:
 
 ```
-finding → axes 1–4 → model severity → sufficient evidence?
-  ├─ yes → severity confirmed, status=confirmed
-  └─ no  → downgrade one level, evidence_status=partial
+finding -> axes 1-4 -> model severity -> sufficient evidence?
+  |-- yes -> severity confirmed, status=confirmed
+  `-- no  -> downgrade one level, evidence_status=partial
 ```
 
 No severity without evidence to back it.
 
-### 7.5 — Mapping to CVSS 4.0
+### 7.5 - Mapping to CVSS 4.0
 
-CVSS 4.0 (§5) remains the **external vector** of the finding (technical report, client). The 4-axis model is the
+CVSS 4.0 (Sec 5) remains the **external vector** of the finding (technical report, client). The 4-axis model is the
 **internal decision**. Mapping:
 
 | Model axis | CVSS 4.0 metric | Note |
 |----------------|------------------|------|
-| Impact | `VC`/`VI`/`VA` (Vulnerable) + `SC`/`SI`/`SA` (Subsequent) | Impact 4 → VC:H/VI:H; impact 2 (DoS) → VA:H |
-| Exploitability | `AC` (L/H) + `AT` (N/P) + `PR` | Exploitability 1 → AC:H/AT:P; exploitability 4 → AC:L/AT:N |
+| Impact | `VC`/`VI`/`VA` (Vulnerable) + `SC`/`SI`/`SA` (Subsequent) | Impact 4 -> VC:H/VI:H; impact 2 (DoS) -> VA:H |
+| Exploitability | `AC` (L/H) + `AT` (N/P) + `PR` | Exploitability 1 -> AC:H/AT:P; exploitability 4 -> AC:L/AT:N |
 | Exposure | (no direct metric) | CVSS does not capture how many devices are affected; the agent notes it in `notes` |
-| Scope | (no metric; reflects the mode) | Scope C → status=hypothesis, does not affect the vector; Scope B → `contained` note in `notes` |
+| Scope | (no metric; reflects the mode) | Scope C -> status=hypothesis, does not affect the vector; Scope B -> `contained` note in `notes` |
 
 The Exposure column is the key difference: CVSS does not capture it, the RF model does.
 
-### 7.6 — Worked examples
+### 7.6 - Worked examples
 
 | # | Finding | Impact | Exploitab. | Expos. | Scope | Severity | CVSS |
 |---|---------|---------|-----------|--------|---------|-----------|------|
@@ -312,17 +312,17 @@ The Exposure column is the key difference: CVSS does not capture it, the RF mode
 | E12 | Crocodile Hunter detects IMSI catcher in operator's environment | 3 (detected threat) | n/a | 4 | D | **medium** (detection) | n/a (detection) |
 | E13 | Old BLE firmware without confirmed CVE | 1 | 4 | 1 | A | **info** | n/a |
 
-### 7.7 — Prioritization for report and remediation
+### 7.7 - Prioritization for report and remediation
 
 The severity produced by the model is the prioritization: the technical report and the remediation list are ordered
-descending (critical → high → medium → low → info). Within the same level, Exposure breaks ties (larger surface
+descending (critical -> high -> medium -> low -> info). Within the same level, Exposure breaks ties (larger surface
 first) and then Exploitability (more reproducible first).
 
-**Operational exception — Defensive mode:** an **active detected threat** (Scope D) tops the report even if
-its technical severity is `medium` — the operational urgency (ongoing threat in the defended environment) supersedes
+**Operational exception - Defensive mode:** an **active detected threat** (Scope D) tops the report even if
+its technical severity is `medium` - the operational urgency (ongoing threat in the defended environment) supersedes
 technical severity when there is active intrusion. Confirmed offensive findings (`critical`/`high`) still
 top the report if they coexist with detections in the same report.
 
-**Remediation rule (see `references/03-finding-registration.md §7.7`):** `critical`/`high` require all 3 layers
+**Remediation rule (see `references/03-finding-registration.md Sec 7.7`):** `critical`/`high` require all 3 layers
 (Developer/Integrator/Operator); `medium` requires at least Integrator + Operator; `low`/`info` can close with
 Operator alone.

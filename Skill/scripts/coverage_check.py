@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""coverage_check.py — Compares registered findings against the RFSAM coverage-map.
+"""coverage_check.py - Compares registered findings against the RFSAM coverage-map.
 
 Reads `loot/rfsam_findings.jsonl`, groups the covered controls
 `RFSAM-<PROTO>-<LAYER>-NN` and compares them with the canonical coverage-map
 (all controls that RFSAM defines per protocol). Reports covered, pending and
 orphan controls (controls cited in findings that do not exist in the
-coverage-map — likely a typo).
+coverage-map - likely a typo).
 
 Usage:
   coverage_check.py                 # all protocols
@@ -17,9 +17,9 @@ import json
 import os
 import sys
 
-# ── Canonical RFSAM coverage-map ──
-# ⚠ SINGLE SOURCE: `src/data/coverage-map.js`. This table and
-# `references/00-taxonomy.md §6` must be kept in sync with that file. If you
+# -- Canonical RFSAM coverage-map --
+# [!] SINGLE SOURCE: `src/data/coverage-map.js`. This table and
+# `references/00-taxonomy.md Sec 6` must be kept in sync with that file. If you
 # add or change a control, update all three locations (or better, derive this
 # table from the JS in the future).
 # Each control: id, title, layer, status (existing/planned).
@@ -132,7 +132,7 @@ def main(argv=None) -> int:
     findings = load_findings(args.loot)
     proto_filter = args.protocol.upper() if args.protocol else None
 
-    # covered controls (with ≥1 finding) per protocol
+    # covered controls (with >=1 finding) per protocol
     covered: dict[str, set[str]] = {}
     cited: set[str] = set()
     for f in findings:
@@ -145,12 +145,12 @@ def main(argv=None) -> int:
 
     protocols = [proto_filter] if proto_filter else list(COVERAGE.keys())
     if proto_filter and proto_filter not in COVERAGE:
-        sys.stderr.write(f"✖ Unknown protocol: {proto_filter}. Valid: {sorted(COVERAGE)}\n")
+        sys.stderr.write(f" no Unknown protocol: {proto_filter}. Valid: {sorted(COVERAGE)}\n")
         return 1
 
     total_defined = total_covered = total_pending = 0
     orphans: list[str] = []
-    print(f"RFSAM COVERAGE — {len(findings)} finding(s) registered\n")
+    print(f"RFSAM COVERAGE - {len(findings)} finding(s) registered\n")
     for proto in protocols:
         controls = COVERAGE.get(proto, [])
         cov = covered.get(proto, set())
@@ -159,9 +159,9 @@ def main(argv=None) -> int:
         total_covered += len(controls) - len(pending)
         total_pending += len(pending)
         pct = (len(controls) - len(pending)) / len(controls) * 100 if controls else 0
-        print(f"== {proto} ({len(controls) - len(pending)}/{len(controls)} · {pct:.0f}%) ==")
+        print(f"== {proto} ({len(controls) - len(pending)}/{len(controls)} - {pct:.0f}%) ==")
         for cid, title, layer in controls:
-            mark = "✓" if cid in cov else "·"
+            mark = "[x]" if cid in cov else "-"
             print(f"  {mark} {cid:<22} [{layer}] {title}")
         print()
 
@@ -171,9 +171,9 @@ def main(argv=None) -> int:
         if c not in all_defined:
             orphans.append(c)
 
-    print(f"TOTAL: {total_covered}/{total_defined} controls covered · {total_pending} pending")
+    print(f"TOTAL: {total_covered}/{total_defined} controls covered - {total_pending} pending")
     if orphans:
-        print(f"\n⚠ Cited controls NOT recognized (typo?): {', '.join(orphans)}")
+        print(f"\n[!] Cited controls NOT recognized (typo?): {', '.join(orphans)}")
     if not findings:
         print("\n(no findings in loot/rfsam_findings.jsonl yet)")
     return 0

@@ -1,4 +1,4 @@
-# RFSAM Translation Glossary (ES → EN)
+# RFSAM Translation Glossary (ES -> EN)
 
 > Shared reference for all translators. Keep technical terms, commands, file paths,
 > code snippets, control IDs, and proper nouns in English (they already are).
@@ -8,14 +8,14 @@
 | Spanish | English |
 |---------|---------|
 | hallazgo | finding |
-| auditoría | audit |
+| auditoria | audit |
 | descenso | descent |
 | capa | layer |
 | protocolo | protocol |
 | control | control |
 | cobertura | coverage |
 | alcance | scope |
-| autorización | authorization |
+| autorizacion | authorization |
 | modo | mode |
 | observacional | observational |
 | activo | active |
@@ -23,52 +23,52 @@
 | defensivo | defensive |
 | evidencia | evidence |
 | severidad | severity |
-| remediación | remediation |
-| mitigación | mitigation |
+| remediacion | remediation |
+| mitigacion | mitigation |
 | desarrollador | developer |
 | integrador | integrator |
 | operador | operator |
 | reporte / informe | report |
 | objetivo | target |
 | dispositivo | device |
-| señal | signal |
+| senal | signal |
 | espectro | spectrum |
 | banda | band |
 | canal | channel |
 | antena | antenna |
 | frecuencia | frequency |
-| modulación | modulation |
+| modulacion | modulation |
 | cifrado / cifrada | encryption / encrypted |
 | claro / en claro | plaintext / in cleartext |
 | clave | key |
 | pareo / emparejamiento | pairing |
-| comisión | commissioning |
+| comision | commissioning |
 | captura | capture |
-| transmitir / transmisión | transmit / transmission |
-| recepción | reception |
-| radiar / radiación | radiate / radiation |
+| transmitir / transmision | transmit / transmission |
+| recepcion | reception |
+| radiar / radiacion | radiate / radiation |
 | jaula (de Faraday) | (Faraday) cage |
-| conducción (cableada) | conducted (wired) |
-| contención | containment |
-| inyección | injection |
-| reenvío | replay |
-| suplantación | spoofing |
+| conduccion (cableada) | conducted (wired) |
+| contencion | containment |
+| inyeccion | injection |
+| reenvio | replay |
+| suplantacion | spoofing |
 | vigilancia | surveillance |
-| interceptación | interception |
+| interceptacion | interception |
 | seguridad | security |
 | vulnerabilidad | vulnerability |
-| criptografía | cryptography |
+| criptografia | cryptography |
 | herramienta | tool |
 | entorno | environment |
 | credencial | credential |
 | identidad | identity |
 | identificador | identifier |
-| exposición | exposure |
+| exposicion | exposure |
 | explotabilidad | exploitability |
 | impacto | impact |
-| fricción | friction |
-| verificación | verification |
-| validación | validation |
+| friccion | friction |
+| verificacion | verification |
+| validacion | validation |
 | registro | registration / log |
 | documentar | document |
 | declarar | declare |
@@ -77,8 +77,8 @@
 | rotar | rotate |
 | endurecimiento | hardening |
 | purga | purge |
-| retención | retention |
-| minimización | minimization |
+| retencion | retention |
+| minimizacion | minimization |
 | licencia | license |
 | delito | crime / offense |
 | ilegal | illegal |
@@ -86,21 +86,21 @@
 | consentimiento | consent |
 | permiso | permission |
 | marco | framework |
-| jurisdicción | jurisdiction |
+| jurisdiccion | jurisdiction |
 | flujo maestro | master flow |
 | subflujo | subflow |
-| transición | transition |
+| transicion | transition |
 | criterio | criterion |
-| precondición | precondition |
+| precondicion | precondition |
 | verbatim | verbatim |
 | flaggear | flag |
 | hueco / brecha | gap |
-| límite | limit |
+| limite | limit |
 | superficie | surface |
 | matriz | matrix |
-| catálogo | catalog |
+| catalogo | catalog |
 | inventario | inventory |
-| enumeración | enumeration |
+| enumeracion | enumeration |
 | mapeo | mapping |
 | modelo | model |
 | eje | axis |
