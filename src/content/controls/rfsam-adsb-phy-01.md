@@ -246,10 +246,10 @@ Aguascalientes, the measured over-the-air metrics recorded 59 distinct aircraft 
 the baseline session using a generic DAB+FM+DVB-T tuner (tracks.all: 59), with a frame 
 parity pass fraction of 27.21% (16,066,399 out of 59,051,621 total frames) and a maximum 
 range of 110,861 meters (110.86 km). Upon upgrading the receiver to a NESDR SMArt v5.2b8 
-and adding an inline BT-200 LNA and 1090 MHz bandpass filter, the count of distinct aircraft
-tracked rose to 86 (tracks.all: 86), the parity pass fraction was maintained at 27.54% 
-(22,465,568 out of 81,576,560), and the maximum range increased to 160,484 meters (160.48 km),
-representing a net range gain of 49,623 meters (49.62 km).
+and adding an inline BT-200 LNA and 1090 MHz bandpass filter, the count of distinct 
+aircraft tracked rose to 86 (tracks.all: 86), the parity pass fraction was maintained at 
+27.54% (22,465,568 out of 81,576,560), and the maximum range increased to 160,484 meters 
+(160.48 km), representing a net range gain of 49,623 meters (49.62 km).
 
 ## Remediation
 
