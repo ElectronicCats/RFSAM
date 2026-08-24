@@ -11,15 +11,15 @@ applicability:
 deferred: false
 objective: >-
   Determine whether the target's ADS-B transmissions can be received and decoded
-  from the air with a low-cost SDR — recovering the 24-bit ICAO address, callsign,
-  CPR-encoded position and velocity from DF17/DF18 Extended Squitter frames — which
+  from the air with a low-cost SDR, recovering the 24-bit ICAO address, callsign,
+  CPR-encoded position and velocity from DF17/DF18 Extended Squitter frames, which
   establishes the capture baseline every downstream plausibility and spoofing
   assessment depends on.
 intro: >-
   ADS-B is a one-way, unencrypted, unauthenticated broadcast: there is nothing to
   decrypt, only a public waveform to receive and decode. This PHY control verifies
-  the capture baseline — demodulating the 1 Mbps pulse-position waveform and reading
-  out the 112-bit Extended Squitter — that the spectrum, attack and air-picture
+  the capture baseline, demodulating the 1 Mbps pulse-position waveform and reading
+  out the 112-bit Extended Squitter, that the spectrum, attack and air-picture
   controls all build on. It is observational; forging frames is assessed separately
   at the Attack layer.
 prerequisites:
@@ -39,7 +39,7 @@ attacks:
       - strohmeier2013survey
     impact: >-
       Full recovery of every transmitting aircraft's identity (ICAO address,
-      callsign), position and velocity in the clear — supports tracking, targeting
+      callsign), position and velocity in the clear, supports tracking, targeting
       and reconnaissance, and is the prerequisite observation step for any active
       spoofing.
     preconditions: A receive-capable SDR within radio range of the transmitter; no keys, no association.
@@ -53,7 +53,7 @@ attacks:
       - strohmeier2017perception
     impact: >-
       Injection of non-existent ('ghost') aircraft, modification of an existing
-      track, or flooding of the air picture — every receiver in range accepts a
+      track, or flooding of the air picture, every receiver in range accepts a
       well-formed 1090ES frame as a genuine aircraft.
     preconditions: >-
       A TX-capable SDR and the ability to emit a well-formed higher-power 1090ES
@@ -118,7 +118,7 @@ lastResearched: 2026-06-14
 ## Mechanism
 
 ADS-B 'out' is a periodic, one-way broadcast in which an aircraft reports its own
-state — identity, position, velocity — with no interrogation, no association, no
+state, identity, position, velocity, with no interrogation, no association, no
 encryption and no authentication [costin2012ghost][strohmeier2013survey]. Worldwide
 it rides the 1090 MHz Mode S Extended Squitter (1090ES); in the US, lower-altitude
 general aviation additionally uses a separate 978 MHz UAT link [strohmeier2017perception].
@@ -134,7 +134,7 @@ a 272-bit long message [sun2021riddle].
 The 112-bit frame begins with a 5-bit downlink format. ADS-B uses **DF17** for
 transponder-equipped aircraft and **DF18** for non-transponder / TIS-B transmitters;
 it then carries the 24-bit ICAO aircraft address and a 5-bit type code that selects
-the payload — aircraft identification (the 8-character callsign), airborne or surface
+the payload, aircraft identification (the 8-character callsign), airborne or surface
 position (latitude/longitude in Compact Position Reporting, CPR, encoding), or
 velocity [sun2021riddle]. A 24-bit parity field lets a receiver validate the frame.
 Crucially, **none of the identifiers is authenticated**: the ICAO address, callsign
@@ -142,7 +142,7 @@ and CPR position are broadcast in the clear with no signature and no integrity o
 the source, so a receiver cannot tell a genuine aircraft from a forged one
 [costin2012ghost][strohmeier2013survey].
 
-This control verifies only the **receive-and-decode** baseline — the passive
+This control verifies only the **receive-and-decode** baseline, the passive
 eavesdropping that the literature established is trivially feasible with a cheap SDR
 [costin2012ghost]. That same absent authentication is what makes the active attack
 families possible: experimental work has demonstrated message injection ('ghost
@@ -154,7 +154,7 @@ the Attack-layer control, not here; this PHY control stays receive-only.
 ## Procedure
 
 > Receive-only throughout. Capturing and decoding ADS-B is passive and generally
-> lawful, but transmitting on 1090/978 MHz is not — do not transmit at any step here.
+> lawful, but transmitting on 1090/978 MHz is not, do not transmit at any step here.
 
 1. Confirm the band is alive before committing a decoder. Tune an SDR to 1090 MHz in
    a waterfall viewer and watch for the short, bursty Extended-Squitter pulses (ADS-B
@@ -184,7 +184,7 @@ the Attack-layer control, not here; this PHY control stays receive-only.
    readsb --device-type rtlsdr --net --write-json /run/readsb
    ```
    Expected: readsb starts, tracks many aircraft at once, and serves a JSON
-   `aircraft.json` (consumed by a map such as tar1090) plus Beast/raw ports — the
+   `aircraft.json` (consumed by a map such as tar1090) plus Beast/raw ports, the
    handoff point to the Application-layer air-picture and plausibility controls.
 
 4. (US only) Add the 978 MHz UAT link. The 1090 decoders do not cover UAT; tune a
@@ -195,13 +195,13 @@ the Attack-layer control, not here; this PHY control stays receive-only.
    Expected: UAT downlink frames from lower-altitude general aviation, merged into the
    same aircraft picture.
 
-5. Verify decode correctness on individual frames with pyModeS — the decode you can
+5. Verify decode correctness on individual frames with pyModeS, the decode you can
    reason about by hand. Feed a hex frame to the CLI:
    ```bash
    modes decode 8D406B902015A678D4D220AA4BDA
    ```
    Expected: `df 17`, `icao 406B90`, `typecode 4` (identification), callsign
-   `EZY85MH` — confirming the demodulated bits decode to a sensible identity. This is
+   `EZY85MH`, confirming the demodulated bits decode to a sensible identity. This is
    the per-frame ground truth behind the live table.
 
 6. (Optional) Demodulate inside a flowgraph instead of a black-box decoder, when you
@@ -236,22 +236,22 @@ modes decode 8D40058B58C901375147EFD09357 --reference 49.0 6.0
 
 These are the canonical pyModeS test vectors, so the expected outputs are stable: a
 `40058B` position near the 49.0 N, 6.0 E reference and the `406B90` / `EZY85MH`
-identity. This is the verifiable, reproducible core of the field case — the decode
+identity. This is the verifiable, reproducible core of the field case, the decode
 chain confirmed against fixed, published frames, with no air capture or transmitter
 required.
 
-Illustrative walkthrough — substitute the values you capture: on a real over-the-air
+Illustrative walkthrough, substitute the values you capture: on a real over-the-air
 session you would replace these vectors with live frames from step 2/3 and record the
 receiver-side numbers for the local environment. No author-measured live ADS-B capture
-is recorded here; the representative over-the-air figures — distinct aircraft seen over
+is recorded here; the representative over-the-air figures, distinct aircraft seen over
 a session, fraction of frames passing parity, maximum range with/without a 1090 MHz
-LNA+filter — are [FILL: measured receiver statistics], to be filled from an authorised
+LNA+filter, are [FILL: measured receiver statistics], to be filled from an authorised
 on-site capture.
 
 ## Remediation
 
-ADS-B's exposure is architectural — the link is plaintext and unauthenticated by
-design [costin2012ghost][strohmeier2013survey] — so "remediation" at this layer is
+ADS-B's exposure is architectural, the link is plaintext and unauthenticated by
+design [costin2012ghost][strohmeier2013survey], so "remediation" at this layer is
 about not over-trusting the feed rather than securing the radio.
 
 - **Developer (avionics / receiver firmware):** do not treat a decoded DF17/DF18
@@ -264,12 +264,12 @@ about not over-trusting the feed rather than securing the radio.
 - **Integrator (tracking / display / fusion systems):** never rely on ADS-B as a sole
   source of truth. Fuse it with independent sensors (primary/secondary radar,
   multilateration that times the same frame at several stations to fix an aircraft
-  independently of what it claims) and run plausibility checks — impossible
+  independently of what it claims) and run plausibility checks, impossible
   kinematics, positions inconsistent across receivers, ICAO addresses that should not
   be airborne [schafer2013experimental][strohmeier2017perception]. These detections
   are implemented at the Application layer; this PHY capture is their input.
 
-- **Operator (researcher / SOC running a receiver):** keep receive-only — capturing
+- **Operator (researcher / SOC running a receiver):** keep receive-only, capturing
   and decoding ADS-B is passive and generally lawful, but transmitting on 1090/978 MHz
   is protected aviation safety spectrum and must never be radiated; any spoofing/
   injection assessment belongs to the Attack-layer control and is done only on

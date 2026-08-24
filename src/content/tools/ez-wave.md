@@ -13,7 +13,7 @@ note: >-
   interrogates a device (manufacturer/model, firmware version, supported command
   classes, configuration), and ezfingerprint identifies the Z-Wave module
   generation via a PHY preamble-length manipulation. Default config drives two
-  HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era — dated but still the
+  HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era, dated but still the
   canonical exploitation toolkit.
 ---
-The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era — dated but still the canonical exploitation toolkit.
+The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era, dated but still the canonical exploitation toolkit.

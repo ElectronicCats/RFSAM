@@ -10,8 +10,8 @@ applicability:
 deferred: false
 objective: >-
   Determine what network-identifying and commissioning-posture data a Thread mesh
-  leaks at the link layer to an unauthenticated 802.15.4 sniffer — PAN ID, Extended
-  PAN ID, Network Name, channel and steering/commissioning state — and whether the
+  leaks at the link layer to an unauthenticated 802.15.4 sniffer, PAN ID, Extended
+  PAN ID, Network Name, channel and steering/commissioning state, and whether the
   commissioning credential (PSKc/Joiner PSKd) or onboarding window is exposed,
   default, or guessable, without breaking the network key.
 intro: >-
@@ -28,7 +28,7 @@ prerequisites:
   software:
     - 'nRF Sniffer for 802.15.4 (Wireshark extcap), pyspinel sniffer.py, or Minino capture; Wireshark with its 802.15.4 / 6LoWPAN / MLE dissectors'
   signal:
-    freq: '2.405–2.480 GHz (16 channels, 11–26, 5 MHz spacing); one Thread network occupies a single channel'
+    freq: '2.405 to 2.480 GHz (16 channels, 11 to 26, 5 MHz spacing); one Thread network occupies a single channel'
     bandwidth: '~2 MHz occupied per channel (5 MHz channel spacing)'
     modulation: 'IEEE 802.15.4 O-QPSK (DSSS), 250 kbit/s'
   skill: intermediate
@@ -40,7 +40,7 @@ attacks:
     impact: >-
       An unauthenticated sniffer recovers the PAN ID, Extended PAN ID and
       human-readable Network Name, and can fingerprint the deployment and infer
-      mesh structure from MLE traffic — all without the network key.
+      mesh structure from MLE traffic, all without the network key.
     preconditions: An 802.15.4 sniffer parked on the target channel; an active mesh emitting beacons / MLE discovery responses.
     summary: >-
       Thread answers active scans with beacons carrying PAN ID, XPAN ID and Network
@@ -80,7 +80,7 @@ references:
     url: 'https://doi.org/10.1145/3507657.3528544'
     type: paper
   - key: ot-network-discovery
-    title: 'OpenThread Thread Primer — Network Discovery and Formation'
+    title: 'OpenThread Thread Primer: Network Discovery and Formation'
     venue: OpenThread (Google / Thread Group)
     year: 2024
     url: 'https://openthread.io/guides/thread-primer/network-discovery'
@@ -133,10 +133,10 @@ lastResearched: 2026-06-14
 
 ## Mechanism
 
-Thread is an IPv6 mesh over the IEEE 802.15.4 2.4 GHz O-QPSK PHY (16 channels, 11–26),
+Thread is an IPv6 mesh over the IEEE 802.15.4 2.4 GHz O-QPSK PHY (16 channels, 11 to 26),
 the same radio layer as Zigbee; a single network sits on one channel. The MAC payload
 is protected with AES-128-CCM* keyed by the Thread network key, so this is **not** a
-decryption control — it is an exposure inventory. The link layer still leaks identity:
+decryption control, it is an exposure inventory. The link layer still leaks identity:
 during an active scan, Routers and Router-Eligible End Devices answer a Beacon Request
 with a beacon that contains the network's **PAN ID, Extended PAN ID (XPAN ID) and
 human-readable Network Name** in the clear [ot-network-discovery]. Not all MLE
@@ -148,13 +148,13 @@ The real attack surface is **commissioning**, not the cipher. Thread admits new 
 via the Mesh Commissioning Protocol (MeshCoP): a Commissioner authenticates to a Border
 Agent over DTLS using the Pre-Shared Key for the Commissioner (**PSKc**), and a Joiner is
 admitted with its Joiner credential (**PSKd**), also over DTLS [akestoridis2022thread].
-The Border Agent is discoverable by DNS-SD — a co-located `_meshcop._udp` /
+The Border Agent is discoverable by DNS-SD, a co-located `_meshcop._udp` /
 `_meshcop-e._udp` service is the on-network signature of a reachable commissioning entry
 point. A symbolic (ProVerif) analysis of MeshCoP models its DTLS-based authentication and
 its security goals [upadhyay2023meshcop]. The practical link-layer weakness is posture,
 not protocol breakage: if the commissioner accepts new devices without pinning the
 joiner's 64-bit IEEE address, an attacker can issue **repeated online password guesses**
-during the join window — shown to be impractical for recovering a joiner credential but
+during the join window, shown to be impractical for recovering a joiner credential but
 usable as a **denial-of-service / energy-depletion** attack, optionally amplified by
 preventing the legitimate device from joining so the user restarts commissioning
 [akestoridis2022thread]. Open tooling for this analysis (Wireshark Thread dissectors plus
@@ -171,13 +171,13 @@ identity, topology and commissioning state the mesh discloses to a passive obser
 
 > Authorised testing only: capture passively on networks you own or are explicitly
 > permitted to assess. Any transmit step (active scan, join attempt) is an active control
-> — use your own equipment, test devices, and explicit written permission, ideally inside
+>, use your own equipment, test devices, and explicit written permission, ideally inside
 > RF shielding.
 
 1. **Find the channel.** If unknown, sweep the 2.4 GHz band to spot the active 802.15.4
    channel, then park a real radio on it. With a CatSniffer's channel monitor:
    ```bash
-   # CatSniffer / catnip — show live 802.15.4 channel activity (11–26)
+   # CatSniffer / catnip, show live 802.15.4 channel activity (11 to 26)
    catnip cativity
    ```
    Read off the channel with sustained traffic; that is the mesh's channel.
@@ -225,14 +225,14 @@ identity, topology and commissioning state the mesh discloses to a passive obser
 
 ## Field case
 
-Illustrative walkthrough — substitute the values your own capture records. On a lab bench
+Illustrative walkthrough, substitute the values your own capture records. On a lab bench
 (your own devices, shielded), a wideband sweep shows activity around channel 15; an
 nRF52840 RCP driven by `python sniffer.py -c 15 -u /dev/ttyACM0 --crc -b 460800` streams
 frames into Wireshark, and the filter `wpan.frame_type == 0x0 || mle` isolates the beacon
 and MLE discovery responses that disclose the network identifiers in the clear, with no key
 supplied. The identifiers below are not a live bench capture: they are taken from
-OpenThread's own published example Active Operational Dataset — the `kTlvBytes` test vector
-in `tests/unit/test_dataset.cpp` of openthread/openthread — which makes a concrete,
+OpenThread's own published example Active Operational Dataset, the `kTlvBytes` test vector
+in `tests/unit/test_dataset.cpp` of openthread/openthread, which makes a concrete,
 verifiable illustration of exactly the fields a beacon / discovery response leaks
 [ot-dataset-tlv-vector]. On your own bench, substitute the values your sniffer records:
 
@@ -244,8 +244,8 @@ verifiable illustration of exactly the fields a beacon / discovery response leak
 `avahi-browse -rt _meshcop._udp` on the same LAN returns a Border Agent entry when a
 commissioning path is reachable. MAC payloads remain AES-128-CCM* encrypted and are left
 undecrypted (no network key in scope), so the finding is strictly the
-**identifier and commissioning-posture exposure** — exactly the link-layer leak this
-control inventories — not message content.
+**identifier and commissioning-posture exposure**, exactly the link-layer leak this
+control inventories, not message content.
 
 ## Remediation
 
@@ -260,12 +260,12 @@ the CASE Sigma1-replay DoS (CVE-2024-3297) [cve-2024-3454][cve-2024-3297].
 **Integrator (product / commissioning workflow).** When commissioning, **pin the joiner's
 64-bit IEEE address** rather than accepting any device, which removes the
 multiple-guess / restart-trick amplification [akestoridis2022thread]. Use a strong,
-per-device PSKc/PSKd — never a shared default — and distribute the network key out of band.
+per-device PSKc/PSKd, never a shared default, and distribute the network key out of band.
 Keep the commissioning window as short as the workflow allows and close it promptly.
 
 **Operator (deployment).** Assume an attacker in RF range already knows the network name,
 PAN ID and channel; these are not secrets and should not gate trust. Open the commissioning
 window only when adding a device and confirm it closes afterwards. Periodically re-run this
 passive inventory to detect unexpected beaconing, a left-open Border Agent, or an
-unexpected onboarding window — and treat any of those as posture findings to fix, since the
+unexpected onboarding window, and treat any of those as posture findings to fix, since the
 strong link crypto means the exposure, not the cipher, is the way in.
