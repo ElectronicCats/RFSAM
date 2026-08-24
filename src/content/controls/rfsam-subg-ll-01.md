@@ -14,13 +14,13 @@ applicability:
 deferred: false
 objective: >-
   Determine whether a Sub-GHz device's frame structure and addressing can be
-  recovered from captured bursts — the preamble/sync word, the device address/ID,
-  the command/state fields, any counter, and the checksum/CRC — and whether that
+  recovered from captured bursts, the preamble/sync word, the device address/ID,
+  the command/state fields, any counter, and the checksum/CRC, and whether that
   address acts as authentication or merely as identification.
 intro: >-
   At the link layer a Sub-GHz burst is just an ID plus a few state bytes and a
   checksum. This control recovers that frame format and, critically, the device
-  address — the field a receiver uses to decide whose message it is. On most ISM
+  address, the field a receiver uses to decide whose message it is. On most ISM
   devices that address is a fixed, in-the-clear identifier, so recovering the
   frame is equivalent to recovering everything the receiver trusts.
 prerequisites:
@@ -40,7 +40,7 @@ attacks:
       - rtl433dataformat
     impact: >-
       A receiver that acts on any frame carrying a known device ID will act on a
-      replayed or forged frame bearing that same ID — the recovered address is
+      replayed or forged frame bearing that same ID, the recovered address is
       sufficient to be trusted.
     preconditions: The device address is a fixed, in-the-clear field with no rolling counter, MAC, or signature over the frame.
     summary: >-
@@ -53,7 +53,7 @@ attacks:
       - opensesame
       - hackaday-opensesame
     impact: >-
-      Where the address is set by 8–12 DIP switches the keyspace is 2^8–2^12, so
+      Where the address is set by 8 to 12 DIP switches the keyspace is 2^8 to 2^12, so
       the address can be enumerated rather than captured; a De Bruijn sequence
       collapses the brute-force time to seconds.
     preconditions: Fixed-code receiver with a short DIP-switch address space and no rate limiting; active transmission (assessed under RFSAM-SUBG-AT-01).
@@ -63,7 +63,7 @@ attacks:
       layer, but recovering the frame is what reveals the keyspace.
 references:
   - key: rtl433
-    title: 'rtl_433 — decode radio transmissions from devices on the ISM bands'
+    title: 'rtl_433: decode radio transmissions from devices on the ISM bands'
     authors: B. Larsson (merbanan) and contributors
     venue: GitHub
     year: 2026
@@ -76,7 +76,7 @@ references:
     url: 'https://triq.org/rtl_433/DATA_FORMAT.html'
     type: spec
   - key: rtl433tests-generic-remote
-    title: 'rtl_433_tests — generic_remote/01 sample capture (SC2260 fixed-code OOK remote): expected JSON decode and Readme.txt'
+    title: 'rtl_433_tests: generic_remote/01 sample capture (SC2260 fixed-code OOK remote): expected JSON decode and Readme.txt'
     authors: B. Larsson (merbanan) and contributors
     venue: GitHub
     year: 2026
@@ -104,13 +104,13 @@ references:
     url: 'https://archive.org/details/ossmann-rapid-radio-reversing-toorcon-2015'
     type: talk
   - key: ev1527
-    title: 'EV1527 OTP encoder — datasheet, pinout and frame (preamble + 20-bit address + 4-bit data)'
+    title: 'EV1527 OTP encoder: datasheet, pinout and frame (preamble + 20-bit address + 4-bit data)'
     venue: components101
     year: 2021
     url: 'https://components101.com/ics/ev1527-encoder-ic-pinout-datasheet-equivalent-circuit-specs'
     type: standard
   - key: opensesame
-    title: 'OpenSesame — open most fixed-code garages and gates in seconds using a Mattel toy'
+    title: 'OpenSesame: open most fixed-code garages and gates in seconds using a Mattel toy'
     authors: S. Kamkar
     venue: GitHub
     year: 2015
@@ -137,23 +137,23 @@ lastResearched: 2026-06-14
 ---
 ## Mechanism
 
-A Sub-GHz frame is small: a preamble/sync, a device address (ID), a few command or sensor bytes, and usually a checksum, sent in short bursts that often repeat several times per event for reliability. The link-layer question this control answers is **whose frame is it, and what does the receiver check** — which means recovering the frame structure and, above all, the address field.
+A Sub-GHz frame is small: a preamble/sync, a device address (ID), a few command or sensor bytes, and usually a checksum, sent in short bursts that often repeat several times per event for reliability. The link-layer question this control answers is **whose frame is it, and what does the receiver check**, which means recovering the frame structure and, above all, the address field.
 
-For the hundreds of recognised device classes, `rtl_433` demodulates and decodes the burst to named JSON fields in one pass, exposing the model, the device `id`, and the payload [rtl433]. The project's data-format documentation is explicit that the `id` field is "Device identification. Used to differentiate between devices of same model," and that depending on the device it "may be a non-volatile value programmed into the device, a volatile value that changes at each power on (or battery change), or a value configurable by user e.g. by switch or jumpers" [rtl433dataformat]. That single sentence is the crux of the layer: the address is *identification*, not *authentication* — the receiver uses it to decide a frame is "for me," but nothing in the frame proves the frame was produced by the legitimate transmitter.
+For the hundreds of recognised device classes, `rtl_433` demodulates and decodes the burst to named JSON fields in one pass, exposing the model, the device `id`, and the payload [rtl433]. The project's data-format documentation is explicit that the `id` field is "Device identification. Used to differentiate between devices of same model," and that depending on the device it "may be a non-volatile value programmed into the device, a volatile value that changes at each power on (or battery change), or a value configurable by user e.g. by switch or jumpers" [rtl433dataformat]. That single sentence is the crux of the layer: the address is *identification*, not *authentication*, the receiver uses it to decide a frame is "for me," but nothing in the frame proves the frame was produced by the legitimate transmitter.
 
-For an unrecognised or proprietary frame, Universal Radio Hacker is the reversing workbench: load the demodulated bitstream, then diff several captures of the same and different events to label the fields — the bytes that never change across presses are the address/preamble, the bytes that change with the button are the command, and a multi-byte field that increments every press is a rolling counter [urh]. Capturing two presses and seeing what changes is the fastest route from raw bits to a labelled frame. (URH's repository is archived but remains the de-facto unknown-signal tool [urh].)
+For an unrecognised or proprietary frame, Universal Radio Hacker is the reversing workbench: load the demodulated bitstream, then diff several captures of the same and different events to label the fields, the bytes that never change across presses are the address/preamble, the bytes that change with the button are the command, and a multi-byte field that increments every press is a rolling counter [urh]. Capturing two presses and seeing what changes is the fastest route from raw bits to a labelled frame. (URH's repository is archived but remains the de-facto unknown-signal tool [urh].)
 
-The canonical example of a fixed address is the EV1527/PT2262 OOK encoder family: the output frame is a preamble followed by a 20-bit address and 4 data bits, with the address one-time-programmed (or set by DIP switches on older PT2262/EV1527 boards) [ev1527]. Recovering this frame tells you immediately whether you face a fixed address (the same address every burst — replayable, addressed under RFSAM-SUBG-AT-01) or a rolling counter (assessed under RFSAM-SUBG-CR-01). Where the address is a short DIP-switch field — for example the 12 binary DIP switches of many older fixed-code garage remotes, a 2^12 = 4096 keyspace — the recovered frame also reveals that the address space is small enough to enumerate rather than capture; OpenSesame demonstrated reducing that brute force to seconds with a De Bruijn sequence [opensesame] [hackaday-opensesame] (the active transmission belongs to the Attack layer). The discover-demodulate-reverse workflow this control sits in was formalised by Ossmann as "Rapid Radio Reversing": use a wideband SDR to characterise the signal, then a CC1101-class radio to receive and work it [ossmann2015] [ossmann2015archive] (RFSAM-RES-15).
+The canonical example of a fixed address is the EV1527/PT2262 OOK encoder family: the output frame is a preamble followed by a 20-bit address and 4 data bits, with the address one-time-programmed (or set by DIP switches on older PT2262/EV1527 boards) [ev1527]. Recovering this frame tells you immediately whether you face a fixed address (the same address every burst, replayable, addressed under RFSAM-SUBG-AT-01) or a rolling counter (assessed under RFSAM-SUBG-CR-01). Where the address is a short DIP-switch field, for example the 12 binary DIP switches of many older fixed-code garage remotes, a 2^12 = 4096 keyspace, the recovered frame also reveals that the address space is small enough to enumerate rather than capture; OpenSesame demonstrated reducing that brute force to seconds with a De Bruijn sequence [opensesame] [hackaday-opensesame] (the active transmission belongs to the Attack layer). The discover-demodulate-reverse workflow this control sits in was formalised by Ossmann as "Rapid Radio Reversing": use a wideband SDR to characterise the signal, then a CC1101-class radio to receive and work it [ossmann2015] [ossmann2015archive] (RFSAM-RES-15).
 
 ## Procedure
 
-> Receive-only throughout — this control recovers structure from captured bursts and does not transmit. Capture only devices you own or are explicitly authorised to assess.
+> Receive-only throughout, this control recovers structure from captured bursts and does not transmit. Capture only devices you own or are explicitly authorised to assess.
 
 1. **Try the known-device path first.** Point `rtl_433` at the target band and trigger the device; if it is a recognised class it decodes straight to named fields including the address:
    ```bash
    rtl_433 -f 433.92M -F json
    ```
-   Expected: one JSON line per burst, e.g. `{"model":"...","id":12345,"channel":1,...}`. The `id` is the recovered link-layer address; `model` names the protocol/field layout for free [rtl433] [rtl433dataformat]. If nothing decodes, energy is present but the class is unknown — go to step 2.
+   Expected: one JSON line per burst, e.g. `{"model":"...","id":12345,"channel":1...}`. The `id` is the recovered link-layer address; `model` names the protocol/field layout for free [rtl433] [rtl433dataformat]. If nothing decodes, energy is present but the class is unknown, go to step 2.
 
 2. **Record raw bursts for an unknown frame.** Capture I/Q at the carrier and bandwidth found at the Spectrum/PHY steps (RFSAM-RES-15), triggering the device several times:
    ```bash
@@ -175,11 +175,11 @@ The canonical example of a fixed address is the EV1527/PT2262 OOK encoder family
    ```
    Expected: the same address/command bytes you labelled in step 3, confirming the frame map. A CC1101 Flipper Zero's Sub-GHz "Read RAW" captures the same burst standalone for field work [ossmann2015].
 
-5. **Classify the address.** Record whether the recovered address is fixed (same every burst — identification only), DIP-switch-set (small enumerable keyspace), volatile (changes at power-on), or accompanied by a rolling counter / MAC. This classification is the control's finding.
+5. **Classify the address.** Record whether the recovered address is fixed (same every burst, identification only), DIP-switch-set (small enumerable keyspace), volatile (changes at power-on), or accompanied by a rolling counter / MAC. This classification is the control's finding.
 
 ## Field case
 
-A documented public example makes the fixed-address pattern concrete. A sample capture set shipped with the rtl_433 test corpus (merbanan/rtl_433_tests, `tests/generic_remote/01/` — an SC2260 fixed-code OOK remote of the PT2262/EV1527 family) decodes via `rtl_433` to the project's recorded expected JSON [rtl433tests-generic-remote]:
+A documented public example makes the fixed-address pattern concrete. A sample capture set shipped with the rtl_433 test corpus (merbanan/rtl_433_tests, `tests/generic_remote/01/`, an SC2260 fixed-code OOK remote of the PT2262/EV1527 family) decodes via `rtl_433` to the project's recorded expected JSON [rtl433tests-generic-remote]:
 
 ```bash
 rtl_433 -f 433.92M -F json
@@ -192,10 +192,10 @@ Pressing "arm" yields a line naming the device and a stable identifier; pressing
 {"model":"Generic-Remote","id":5069,"cmd":12}
 ```
 
-The `id` is identical (`5069` = `0x13CD`) across both captures while `cmd` changes with the button (`192` for "arm", `12` for "disarm"), which is exactly the fixed-address / variable-command pattern — the `id` is the device address, not the command [rtl433dataformat] [rtl433tests-generic-remote]. The repo's `Readme.txt` documents the device and the per-file button mapping and reports the decode "ID 16bit = 0x13CD" (= 5069) [rtl433tests-generic-remote]. Loading the captures into URH and diffing them, the leading 16-bit field is constant (preamble + address), the command field changes only with the button, and no field increments between presses — the signature of a **fixed code: identification only, no counter, no checksum over a secret** [urh] [ev1527]. The security finding then writes itself: the receiver acts on any frame carrying that address, so the recovered frame is everything it trusts. Because this class's address is often a short DIP-switch or OTP field, the same recovery that reads the address also bounds the keyspace — the kind of small fixed-code space OpenSesame enumerated in seconds [opensesame] [hackaday-opensesame] — though the active replay and brute force themselves are assessed under RFSAM-SUBG-AT-01.
+The `id` is identical (`5069` = `0x13CD`) across both captures while `cmd` changes with the button (`192` for "arm", `12` for "disarm"), which is exactly the fixed-address / variable-command pattern, the `id` is the device address, not the command [rtl433dataformat] [rtl433tests-generic-remote]. The repo's `Readme.txt` documents the device and the per-file button mapping and reports the decode "ID 16bit = 0x13CD" (= 5069) [rtl433tests-generic-remote]. Loading the captures into URH and diffing them, the leading 16-bit field is constant (preamble + address), the command field changes only with the button, and no field increments between presses, the signature of a **fixed code: identification only, no counter, no checksum over a secret** [urh] [ev1527]. The security finding then writes itself: the receiver acts on any frame carrying that address, so the recovered frame is everything it trusts. Because this class's address is often a short DIP-switch or OTP field, the same recovery that reads the address also bounds the keyspace, the kind of small fixed-code space OpenSesame enumerated in seconds [opensesame] [hackaday-opensesame], though the active replay and brute force themselves are assessed under RFSAM-SUBG-AT-01.
 
 ## Remediation
 
-- **Developer (device/firmware):** Do not let the device address stand in for authentication. Add a per-message authenticator — a rolling counter at minimum (defeats naive replay; see RFSAM-SUBG-CR-01) and ideally a MAC/signature over the whole frame keyed to a per-device secret — so a recovered address cannot be reused or forged. Avoid encoders whose entire "security" is a fixed OTP/DIP-switch address in clear OOK [ev1527].
+- **Developer (device/firmware):** Do not let the device address stand in for authentication. Add a per-message authenticator, a rolling counter at minimum (defeats naive replay; see RFSAM-SUBG-CR-01) and ideally a MAC/signature over the whole frame keyed to a per-device secret, so a recovered address cannot be reused or forged. Avoid encoders whose entire "security" is a fixed OTP/DIP-switch address in clear OOK [ev1527].
 - **Integrator (product/installer):** Choose modules with adequately sized, factory-randomised addresses rather than installer-set DIP switches, and prefer rolling-/authenticated-code receivers over fixed-code ones for anything that grants physical access [opensesame]. Treat the printed FCC ID and any default address as known to an attacker.
 - **Operator (deployment):** Assume any fixed-code remote, sensor or fob transmitting in the clear is identifiable and replayable once its frame is recovered; reserve such devices for non-safety functions and add an independent supervision/authorisation layer (rate limiting, second factor, alarm supervision) where they gate access. Identification is not authentication.

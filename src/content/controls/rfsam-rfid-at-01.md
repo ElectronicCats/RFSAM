@@ -13,7 +13,7 @@ deferred: false
 objective: >-
   Determine whether a recovered RFID/NFC credential can be cloned to a blank or
   magic card, emulated by a programmable device, or relayed in real time between
-  a genuine card and a distant reader — establishing whether the reader trusts
+  a genuine card and a distant reader, establishing whether the reader trusts
   card data and proximity as proof of authenticity.
 intro: >-
   Once identity or sector keys are recovered (RFSAM-RFID-CR-01), the credential
@@ -30,7 +30,7 @@ prerequisites:
     - 'pm3-client (Iceman Proxmark3 firmware/client) for lf/hf search, clone, sim and the hf_reblay standalone relay; ChameleonUltra GUI; BomberCat RelayNFC/MagSpoof firmware'
   signal:
     freq: 'LF 125 / 134 kHz · HF 13.56 MHz (near-field, magnetically coupled)'
-    bandwidth: 'Near-field load modulation — no far-field channel; reads are centimetres by design'
+    bandwidth: 'Near-field load modulation, no far-field channel; reads are centimetres by design'
     modulation: 'LF ASK/OOK (EM4100, HID Prox); HF ISO 14443-A/B, ISO 15693 load modulation'
   skill: intermediate
 attacks:
@@ -41,8 +41,8 @@ attacks:
       A read-only or Crypto1-recovered credential is written to a blank (T5577)
       or a UID-writable magic card and presented to the reader as the original.
     preconditions: >-
-      The card data is recoverable — an LF ID with no crypto, or an HF card whose
-      keys were recovered (RFSAM-RFID-CR-01) — and the reader trusts that data
+      The card data is recoverable, an LF ID with no crypto, or an HF card whose
+      keys were recovered (RFSAM-RFID-CR-01), and the reader trusts that data
       (often the UID alone) as identity.
     summary: >-
       The baseline failure of non-cryptographic access control: UID-only and
@@ -60,7 +60,7 @@ attacks:
       card-authenticity checks the emulator cannot satisfy.
     summary: >-
       Proxmark (hf mf sim / lf … sim), ChameleonUltra or BomberCat present the
-      credential directly from stored data — for MIFARE Classic the ChameleonUltra
+      credential directly from stored data, for MIFARE Classic the ChameleonUltra
       emulates the full Crypto1 exchange.
   - name: NFC / proximity relay
     refs:
@@ -69,7 +69,7 @@ attacks:
       - mendoza2020reblay
     impact: >-
       The reader transacts with a genuine, remote card it believes is in front of
-      it — defeating physical proximity without the attacker holding the card's
+      it, defeating physical proximity without the attacker holding the card's
       keys.
     preconditions: >-
       A live card reachable at the 'mole' end and a target reader at the 'proxy'
@@ -92,7 +92,7 @@ attacks:
       magstripe (the legacy fallback on many payment/access terminals).
     summary: >-
       MagSpoof emits a magnetic field that emulates swiping a stripe card to a
-      standard reader without a physical card — the magstripe analogue of the
+      standard reader without a physical card, the magstripe analogue of the
       contactless attacks above.
 references:
   - key: francis2010relay
@@ -131,7 +131,7 @@ references:
     url: 'https://electroniccats.com/blog/bombercat-prepare-your-bank-terminal/'
     type: blog
   - key: magspoof
-    title: MagSpoof — wireless magnetic-stripe / credit-card emulation
+    title: MagSpoof, wireless magnetic-stripe / credit-card emulation
     authors: Samy Kamkar
     venue: 'samyk/magspoof (GitHub)'
     year: 2016
@@ -153,23 +153,23 @@ lastResearched: 2026-06-14
 
 Three escalations follow identity or key recovery, all exploiting the same root cause: the reader trusts card-supplied data, and often mere proximity, as proof of authenticity.
 
-**Cloning** writes recovered data onto a writable blank. An LF EM4100/HID Prox ID — read-only with no crypto — is copied straight to a T5577 ([pm3magic] documents the writable-tag families). An HF MIFARE Classic dump, once its sector keys are recovered (RFSAM-RFID-CR-01), is written to a *magic* card. Magic cards expose block 0, which holds the normally-immutable UID: Gen1a cards accept a Chinese "backdoor" command sequence to rewrite it, while Gen2 cards take a direct write to block 0 — so the clone reproduces the UID and all sector contents [pm3magic].
+**Cloning** writes recovered data onto a writable blank. An LF EM4100/HID Prox ID, read-only with no crypto, is copied straight to a T5577 ([pm3magic] documents the writable-tag families). An HF MIFARE Classic dump, once its sector keys are recovered (RFSAM-RFID-CR-01), is written to a *magic* card. Magic cards expose block 0, which holds the normally-immutable UID: Gen1a cards accept a Chinese "backdoor" command sequence to rewrite it, while Gen2 cards take a direct write to block 0, so the clone reproduces the UID and all sector contents [pm3magic].
 
-**Emulation** removes the blank entirely: a programmable device presents the credential from stored data. The Proxmark simulates a tag (`hf mf sim` / `lf … sim`), and the ChameleonUltra emulates a full MIFARE Classic including the Crypto1 challenge–response, so a reader that authenticates a sector still accepts the emulator [pm3magic].
+**Emulation** removes the blank entirely: a programmable device presents the credential from stored data. The Proxmark simulates a tag (`hf mf sim` / `lf … sim`), and the ChameleonUltra emulates a full MIFARE Classic including the Crypto1 challenge-response, so a reader that authenticates a sector still accepts the emulator [pm3magic].
 
-**Relay** is the strongest because it needs neither the card's keys nor the card's presence. Two ends forward the reader↔card exchange in real time: a "mole" near the genuine card and a "proxy" at the target reader, bridged over a low-latency link. The reader believes a card is in its field; in reality the card is arbitrarily far away. Francis, Hancke, Mayes and Markantonakis demonstrated this in practice with two off-the-shelf NFC mobile phones and no custom hardware [francis2010relay], extending Hancke's earlier result that an ISO 14443 proximity card could be relayed over roughly 50 m [hancke2005relay]. The Proxmark implements this as the `hf_reblay` standalone mode, which relays ISO 14443-A over Bluetooth — authored by Salvador Mendoza [mendoza2020reblay]. The BomberCat (PN7150) provides a host/client RelayNFC pairing intended for auditing NFC bank-card acceptance, where the host reads the card and the client emulates it at the terminal [bombercatblog]. Because relay forwards a genuine, fully-authenticated transaction, neither strong card crypto (DESFire AES) nor unknown sector keys stop it — only a reader-side timing bound or distance-bounding protocol does [hancke2005relay].
+**Relay** is the strongest because it needs neither the card's keys nor the card's presence. Two ends forward the reader↔card exchange in real time: a "mole" near the genuine card and a "proxy" at the target reader, bridged over a low-latency link. The reader believes a card is in its field; in reality the card is arbitrarily far away. Francis, Hancke, Mayes and Markantonakis demonstrated this in practice with two off-the-shelf NFC mobile phones and no custom hardware [francis2010relay], extending Hancke's earlier result that an ISO 14443 proximity card could be relayed over roughly 50 m [hancke2005relay]. The Proxmark implements this as the `hf_reblay` standalone mode, which relays ISO 14443-A over Bluetooth, authored by Salvador Mendoza [mendoza2020reblay]. The BomberCat (PN7150) provides a host/client RelayNFC pairing intended for auditing NFC bank-card acceptance, where the host reads the card and the client emulates it at the terminal [bombercatblog]. Because relay forwards a genuine, fully-authenticated transaction, neither strong card crypto (DESFire AES) nor unknown sector keys stop it, only a reader-side timing bound or distance-bounding protocol does [hancke2005relay].
 
 A fourth, parallel path extends impersonation to legacy infrastructure: **MagSpoof** emits a magnetic field emulating a stripe swipe to a standard magstripe reader, without a physical card [magspoof]; BomberCat ships a MagSpoof mode for the magstripe fallback that many payment/access terminals still accept.
 
-This control verifies *which* of clone / emulate / relay (and the magstripe fallback) the target reader is susceptible to — i.e. whether it trusts card data, and proximity, as identity.
+This control verifies *which* of clone / emulate / relay (and the magstripe fallback) the target reader is susceptible to, i.e. whether it trusts card data, and proximity, as identity.
 
-BomberCat / RelayNFC is documented by Electronic Cats as a tool for auditing bank-terminal NFC acceptance [bombercatblog]; its `RelayNFC` example has the host read a genuine card while the client emulates it at a terminal. Electronic Cats frame this as the tool's auditing purpose, not as a confirmed relay against an in-production bank terminal — and that framing is what is asserted here. The peer-reviewed practical demonstrations of contactless relay are Francis et al., who relayed an NFC transaction between two off-the-shelf mobile phones [francis2010relay], and Hancke, who relayed an ISO 14443 proximity card up to a distance of 50 m [hancke2005relay].
+BomberCat / RelayNFC is documented by Electronic Cats as a tool for auditing bank-terminal NFC acceptance [bombercatblog]; its `RelayNFC` example has the host read a genuine card while the client emulates it at a terminal. Electronic Cats frame this as the tool's auditing purpose, not as a confirmed relay against an in-production bank terminal, and that framing is what is asserted here. The peer-reviewed practical demonstrations of contactless relay are Francis et al., who relayed an NFC transaction between two off-the-shelf mobile phones [francis2010relay], and Hancke, who relayed an ISO 14443 proximity card up to a distance of 50 m [hancke2005relay].
 
 ## Procedure
 
-> All steps energise, write to, emulate or relay live credentials — do them only against your own cards/readers, with explicit written authorisation, ideally in an RF-shielded test setup.
+> All steps energise, write to, emulate or relay live credentials, do them only against your own cards/readers, with explicit written authorisation, ideally in an RF-shielded test setup.
 
-1. **Confirm what the reader actually checks.** Before cloning, establish whether the target reader trusts the UID alone, a full sector read, or an authenticated exchange — this decides whether a UID clone suffices or full key recovery is required. Identify the credential first:
+1. **Confirm what the reader actually checks.** Before cloning, establish whether the target reader trusts the UID alone, a full sector read, or an authenticated exchange, this decides whether a UID clone suffices or full key recovery is required. Identify the credential first:
    ```
    pm3 --> lf search
    pm3 --> hf search
@@ -183,7 +183,7 @@ BomberCat / RelayNFC is documented by Electronic Cats as a tool for auditing ban
    ```
    Expected: `Done`/`Cloned`. Re-run `lf search` on the cloned tag to confirm the ID matches, then test against the reader.
 
-3. **Clone an HF MIFARE Classic dump to a magic card.** Using the dump and keys from RFSAM-RFID-CR-01 (`hf mf autopwn` / `hf mf dump` produce `hf-mf-<UID>-dump.bin`), write the full dump — including block 0/UID — to a magic Gen1a/Gen2 card [pm3magic]:
+3. **Clone an HF MIFARE Classic dump to a magic card.** Using the dump and keys from RFSAM-RFID-CR-01 (`hf mf autopwn` / `hf mf dump` produce `hf-mf-<UID>-dump.bin`), write the full dump, including block 0/UID, to a magic Gen1a/Gen2 card [pm3magic]:
    ```
    pm3 --> hf mf restore --1k --uid 4A6CE843 -k hf-mf-A29558E4-key.bin -f hf-mf-A29558E4-dump.bin
    ```
@@ -196,7 +196,7 @@ BomberCat / RelayNFC is documented by Electronic Cats as a tool for auditing ban
    ```
    Expected: the Proxmark answers the reader as the card (`#db# Emulating MIFARE…`). Confirm the reader accepts the emulated credential, including a sector authentication for MIFARE Classic.
 
-5. **Relay a live card.** With two Proxmarks (or a BomberCat host/client pair), run the relay so a reader at the proxy end transacts with a card at the mole end [mendoza2020reblay][bombercatblog]. On the Proxmark, the `hf_reblay` standalone mode relays ISO 14443-A over Bluetooth. Expected: the reader completes a transaction with the remote card. **Measure the added latency** and check whether the reader still completes — this is the discriminating result.
+5. **Relay a live card.** With two Proxmarks (or a BomberCat host/client pair), run the relay so a reader at the proxy end transacts with a card at the mole end [mendoza2020reblay][bombercatblog]. On the Proxmark, the `hf_reblay` standalone mode relays ISO 14443-A over Bluetooth. Expected: the reader completes a transaction with the remote card. **Measure the added latency** and check whether the reader still completes, this is the discriminating result.
 
 6. **Test the magstripe fallback** (payment/legacy access only): with BomberCat MagSpoof / `samyk/magspoof`, emit captured track data to a magstripe reader [magspoof] and record whether the terminal accepts the swipe.
 
@@ -206,7 +206,7 @@ BomberCat / RelayNFC is documented by Electronic Cats as a tool for auditing ban
 
 A representative access-control assessment (authorised, own credentials):
 
-- An LF HID Prox badge fingerprinted with `lf search` exposed a Wiegand facility/card number; cloning it to a T5577 with `lf hid clone -w H10301 --fc <fc> --cn <cn>` produced a badge the door reader accepted as the original — the reader trusted the Wiegand number with no card authentication.
+- An LF HID Prox badge fingerprinted with `lf search` exposed a Wiegand facility/card number; cloning it to a T5577 with `lf hid clone -w H10301 --fc <fc> --cn <cn>` produced a badge the door reader accepted as the original, the reader trusted the Wiegand number with no card authentication.
 - An HF MIFARE Classic 1k staff card was dumped after key recovery (RFSAM-RFID-CR-01); writing the dump to a Gen2 magic card with `hf mf restore --1k --uid <uid> -k <keyfile> -f <dumpfile>` reproduced the UID and all sectors, and the turnstile accepted the clone.
 - The same dump loaded into a ChameleonUltra slot opened the turnstile with **no card at all**, confirming emulation as well as cloning.
 
@@ -224,6 +224,6 @@ Note: the clone/emulate observations above are a representative composite of wel
 
 Layered, in order of effectiveness against this control:
 
-- **Developer (credential / chip choice).** Do not authenticate on UID or on a Crypto1-protected secret — both clone trivially. Use credentials with strong, mutually-authenticated crypto (MIFARE DESFire EV2/EV3 with diversified AES keys, or equivalent) so a dump is not enough to impersonate, and so emulation must defeat real card crypto. This neutralises cloning and emulation [pm3magic], but **not relay**, which forwards a genuine authenticated exchange.
-- **Integrator (reader / protocol).** To stop relay, the reader side must bound the transaction in time or space: a tight round-trip timeout or, better, a distance-bounding protocol — the only mechanism that addresses relay's defeat of proximity [hancke2005relay][francis2010relay]. Disable the magnetic-stripe fallback wherever the deployment allows, since MagSpoof reinstates the weakest path [magspoof]. Require chip/contactless and reject magstripe for high-value transactions.
+- **Developer (credential / chip choice).** Do not authenticate on UID or on a Crypto1-protected secret, both clone trivially. Use credentials with strong, mutually-authenticated crypto (MIFARE DESFire EV2/EV3 with diversified AES keys, or equivalent) so a dump is not enough to impersonate, and so emulation must defeat real card crypto. This neutralises cloning and emulation [pm3magic], but **not relay**, which forwards a genuine authenticated exchange.
+- **Integrator (reader / protocol).** To stop relay, the reader side must bound the transaction in time or space: a tight round-trip timeout or, better, a distance-bounding protocol, the only mechanism that addresses relay's defeat of proximity [hancke2005relay][francis2010relay]. Disable the magnetic-stripe fallback wherever the deployment allows, since MagSpoof reinstates the weakest path [magspoof]. Require chip/contactless and reject magstripe for high-value transactions.
 - **Operator (deployment / monitoring).** Treat UID and magstripe data as non-secret identifiers, never as proof of presence. Add backend anti-passback, geo/velocity and anomaly detection so a cloned or relayed credential used in two places, or with anomalous timing, is flagged. Where migration off legacy credentials is impossible, assume the credential is cloneable and compensate at the backend.

@@ -7,14 +7,14 @@ criticality: critical
 applicability:
   - BLE
 objective: >-
-  Determine whether an established BLE connection can be followed and taken over —
-  by jam-and-hijack, packet injection, or reconnection spoofing — giving an
+  Determine whether an established BLE connection can be followed and taken over,
+  by jam-and-hijack, packet injection, or reconnection spoofing, giving an
   attacker control of the peripheral or a man-in-the-middle position.
 intro: >-
   An unencrypted BLE connection can be taken over: the attacker follows the
   connection's channel hopping, then transmits as the master, evicting the
   legitimate central and gaining full control of the peripheral. RFSAM owns the
-  PHY-layer prerequisite — following the hop sequence well enough to inject —
+  PHY-layer prerequisite, following the hop sequence well enough to inject,
   while the link-layer injection and forced-disconnection findings are assessed
   under BSAM (BSAM-AP-06, BSAM-AU-03, BSAM-EN-01).
 prerequisites:
@@ -23,7 +23,7 @@ prerequisites:
   software:
     - 'Btlejack, Sniffle, or the InjectaBLE firmware/tooling'
   signal:
-    freq: '2.402–2.480 GHz (40 channels, 2 MHz spacing)'
+    freq: '2.402 to 2.480 GHz (40 channels, 2 MHz spacing)'
     bandwidth: '2 MHz per channel'
     modulation: 'GFSK (LE 1M / 2M PHY)'
   skill: advanced
@@ -81,7 +81,7 @@ references:
     url: 'https://nvd.nist.gov/vuln/detail/CVE-2020-9770'
     type: cve
   - key: cauquil2018btlejack
-    title: Btlejack — BLE sniffing, jamming and hijacking tool
+    title: Btlejack, BLE sniffing, jamming and hijacking tool
     authors: D. Cauquil (virtualabs)
     venue: DEF CON 26
     year: 2018
@@ -116,8 +116,8 @@ Three families of takeover are documented in the literature. **Jam-and-hijack** 
 
 ## Field case
 
-Against the ELK-BLEDOM LED controller: sniffing the vendor app setting a colour revealed handle 0x000E with format 7e 07 05 RR GG BB 10 ef. After hijacking the live connection (DATA→CENTRAL), writing `w 0x000e 7e 07 05 03 ff 00 00 10 ef` drove the strip to the attacker's colour. The same technique applies unchanged to locks and medical devices — the LED strip is merely the harmless, vivid demonstration. A real implementation detail: the decoder's current Access Address must be set to the connection AA only after reaching CENTRAL (with a flush first), because advertisements seen during INITIATING reset it to the advertising AA and silently break data-PDU decoding.
+Against the ELK-BLEDOM LED controller: sniffing the vendor app setting a colour revealed handle 0x000E with format 7e 07 05 RR GG BB 10 ef. After hijacking the live connection (DATA→CENTRAL), writing `w 0x000e 7e 07 05 03 ff 00 00 10 ef` drove the strip to the attacker's colour. The same technique applies unchanged to locks and medical devices, the LED strip is merely the harmless, vivid demonstration. A real implementation detail: the decoder's current Access Address must be set to the connection AA only after reaching CENTRAL (with a flush first), because advertisements seen during INITIATING reset it to the advertising AA and silently break data-PDU decoding.
 
 ## Remediation
 
-Encrypt the link with LE Secure Connections — the InjectaBLE authors recommend exactly this as the primary countermeasure (LESC pairing with authentication and 128-bit keys), and it is the strongest single mitigation here. Note the precise effect: the timing-based injection itself is inherent to the BLE specification and is not stopped by encryption, but on an encrypted link any injected data PDU carries no valid MIC and is rejected by the peer, so forged commands and payloads do not take effect (cayre2021injectable). Add application-layer command authentication so a hijacked or injected link still cannot issue trusted commands. Enforce reconnection authentication to close the BLESA class (wu2020blesa). Treat the link as untrusted by default.
+Encrypt the link with LE Secure Connections, the InjectaBLE authors recommend exactly this as the primary countermeasure (LESC pairing with authentication and 128-bit keys), and it is the strongest single mitigation here. Note the precise effect: the timing-based injection itself is inherent to the BLE specification and is not stopped by encryption, but on an encrypted link any injected data PDU carries no valid MIC and is rejected by the peer, so forged commands and payloads do not take effect (cayre2021injectable). Add application-layer command authentication so a hijacked or injected link still cannot issue trusted commands. Enforce reconnection authentication to close the BLESA class (wu2020blesa). Treat the link as untrusted by default.
