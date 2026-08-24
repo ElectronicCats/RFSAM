@@ -1,0 +1,4 @@
+interface:
+  display_name: "RFSAM — RF Security Audit"
+  short_description: "Radio frequency security audit with the RFSAM methodology"
+  default_prompt: "Audit this RF target following RFSAM: identify the protocol, walk through the 7-layer descent (IG→SP→PHY→LL→CR→AT→AP) and register findings with evidence."
