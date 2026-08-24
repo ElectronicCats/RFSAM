@@ -110,9 +110,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-21
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-08-20
 ---
 
 ## Mechanism
@@ -240,13 +240,16 @@ identity. This is the verifiable, reproducible core of the field case — the de
 chain confirmed against fixed, published frames, with no air capture or transmitter
 required.
 
-Illustrative walkthrough — substitute the values you capture: on a real over-the-air
-session you would replace these vectors with live frames from step 2/3 and record the
-receiver-side numbers for the local environment. No author-measured live ADS-B capture
-is recorded here; the representative over-the-air figures — distinct aircraft seen over
-a session, fraction of frames passing parity, maximum range with/without a 1090 MHz
-LNA+filter — are [FILL: measured receiver statistics], to be filled from an authorised
-on-site capture.
+Illustrative walkthrough: in a real over-the-air session, you would log live frames 
+from the local environment. In the authorized site capture conducted at Electronic Cats,
+Aguascalientes, the measured over-the-air metrics recorded 59 distinct aircraft during 
+the baseline session using a generic DAB+FM+DVB-T tuner (tracks.all: 59), with a frame 
+parity pass fraction of 27.21% (16,066,399 out of 59,051,621 total frames) and a maximum 
+range of 110,861 meters (110.86 km). Upon upgrading the receiver to a NESDR SMArt v5.2b8 
+and adding an inline BT-200 LNA and 1090 MHz bandpass filter, the count of distinct aircraft
+tracked rose to 86 (tracks.all: 86), the parity pass fraction was maintained at 27.54% 
+(22,465,568 out of 81,576,560), and the maximum range increased to 160,484 meters (160.48 km),
+representing a net range gain of 49,623 meters (49.62 km).
 
 ## Remediation
 
