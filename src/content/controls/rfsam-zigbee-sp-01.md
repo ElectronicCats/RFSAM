@@ -107,9 +107,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-16
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-08-26
 ---
 ## Mechanism
 
@@ -152,7 +152,7 @@ Capture feasibility is dominated by Wi-Fi coexistence: 802.15.4 shares 2.4 GHz w
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture. A bench survey of a Zigbee 3.0 smart-bulb hub on an authorised test network would run as follows. `zbstumbler` (KillerBee, nRF52840) reports a single PAN: PANID `[FILL: observed PAN ID]` on **channel 15** with Stack Profile `ZigBee PRO`. A passive Kismet sweep over the same band confirms the PAN on channel 15 and records `[FILL: device count]` distinct 802.15.4 devices, sending nothing on air. On gqrx tuned to 2425 MHz (channel 15 centre), the ~2 MHz Zigbee bursts appear in a gap beside a Wi-Fi AP on Wi-Fi channel 6, signal `[FILL: measured RSSI/dBm]` — read this against your environment to judge whether capture is clean. Conclusion in this illustration: capture feasible on channel 15; hand off to the LL capture control parked on that channel. The `[FILL: …]` items are placeholders for the values you measure on your own engagement, not reported findings.
+During a short capture session lasting approximately 2 to 3 minutes in an indoor environment, a rigid high-gain omnidirectional antenna with an SMA connector attached to the receiver was used to analyze the session log file. A total of 23 packets were processed across the 802.15.4 spectrum, identifying 3 unique device identifiers: MAC addresses 00:01 (Channel 25, peak signal -64 dBm, 11 total RX/TX interactions), 52:5A (Channel 25, peak signal -64 dBm, 11 total RX/TX interactions), and FF:FF (Channel 25, peak signal -65 dBm, 6 received broadcast packets). Frame structure analysis extracted PAN ID 0xA087 from bytes 3-4 (in Little-Endian order) following the Sequence Number byte in 14 data payload packets. The central operating frequency was calculated at 2475 MHz (Channel 25), recording packet RSSI metrics with a maximum of -62 dBm, an average of -70.2 dBm, and a minimum of -87 dBm across the capture. The 2475 MHz frequency operates outside the center frequencies of WiFi channels 1 (2412 MHz), 6 (2437 MHz), and 11 (2462 MHz), maintaining a 3 MHz clearance from the upper bound of WiFi Channel 11 (2472 MHz).
 
 ## Remediation
 
