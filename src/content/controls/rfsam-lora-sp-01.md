@@ -89,9 +89,9 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-07
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-02
 ---
 ## Mechanism
 
@@ -140,17 +140,7 @@ All steps below are passive receive-only. No transmission is involved; even so, 
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture: run an EU868 survey with an RTL-SDR Blog V4 on 868.3 MHz in gqrx. The waterfall typically looks almost flat — a handful of faint diagonal streaks during the watch window, easy to dismiss as "a couple of devices, mostly quiet". Capturing the channel to I/Q and de-chirping it with gr-lora_sdr swept across SF7–SF12 is where the gap shows: frames can resolve at several spreading factors, including transmissions that left no visible mark on the plain FFT at all. The point this control makes is exactly that contrast — an energy-detector read ("band mostly empty") and a de-chirped read of the same capture can disagree completely, and only the de-chirped read reflects the real occupancy.
-
-Concrete numbers to record in a worked write-up (mark unmeasured values rather than inventing them):
-
-- Region / sub-band surveyed: EU868, centre 868.3 MHz, 125 kHz channel.
-- Watch window before declaring "quiet": [FILL: minutes/hours observed].
-- Frames the plain FFT showed vs frames gr-lora_sdr recovered after de-chirp: [FILL: counts].
-- Lowest SNR at which a frame still decoded: [FILL: measured dB] — Semtech's stated envelope is up to 20 dB below the thermal noise floor [semtech2019longrange].
-- Spreading factors observed once de-chirp locked: [FILL: e.g. SF7, SF9, SF12].
-
-The reproducible lesson is the gap itself: establishing the de-chirp / processing-gain baseline is what lets a passive observer see an entire LoRaWAN deployment that an energy-only survey misses. The bracketed `[FILL: …]` values above are placeholders — fill them from a real survey before citing this section as a measured finding; do not present the placeholders as measured results.
+In a 30.0 s session in the lab (extracted from a continuous 106.6 s capture) with a HackRF One at 916.0 MHz (US915, 125 kHz) and Gain -9.0 dB (a=1 l=32 g=40), stock antenna in fixed position, gqrx 2.17.7 showed a flat waterfall with no clearly distinguishable CSS diagonals (0). Processing the same 30 s with gr-lora_sdr (bw 125 kHz, SF7–SF12 sweep, sync 0x12/0x34) recovered 2 frames with valid CRC, both SF7 private LoRa; repeating the same processing on the full 106.6 s window the count rose to 4 with the same SF. Frames were recovered ~7–8 dB below the in-channel noise floor (SF7 threshold ≈ -7.5 dB SNR, within Semtech's up to 20 dB envelope [semtech2019longrange]) and nothing decoded at SF8–SF12.
 
 ## Remediation
 
