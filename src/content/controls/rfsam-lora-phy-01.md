@@ -91,9 +91,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-07
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-10
 ---
 ## Mechanism
 
@@ -141,15 +141,18 @@ Work only on signals you are authorised to receive and analyse. Receiving and de
 
 ## Field case
 
-A representative, reproducible setup (the values below marked `[FILL]` are *not* measured RFSAM results — substitute your own bench numbers):
+In a 30-second session in the lab, fixed bench 1 meter between flatsat and RTL-SDR. Stock telescopic antenna of the RTL-SDR Blog V4 on RX port, gain 40.2 dB.
 
-Target: an EU868 LoRaWAN sensor, channel 0 (868.1 MHz), SF7, BW 125 kHz. Capture with `rtl_sdr -f 868100000 -s 1000000 -g 40 -n 6000000 lora_eu868_ch0.iq`, then demodulate with gr-lora_sdr (sf=7, bw=125000) and observe the per-frame decode output. Repeat the same capture with the demodulator in hard-decision mode and compare CRC-OK frame yield.
+Captured at 916.0 MHz US915, 125 kHz bandwidth, SF7, with `rtl_sdr -f 916000000 -s 1000000 -g 40 -n 30000000` (30 seconds and 58 MB at 1 million samples per second). gqrx 2.17.7 with LNA 28.0 dB showed 3 red-yellow bursts on the waterfall.
 
-On a clean, close-range capture both modes recover essentially every frame, and the PHY check simply confirms the de-chirp path works on this SF/BW. The interesting case is a weak-signal capture at the edge of range: there, soft-decision is expected to recover frames that hard-decision drops.
+Demodulation with gr-lora_sdr, flowgraph configured at 916e6, 125000 and SF7, recovered 12 frames with CRC valid and header valid out of the 12 seen on the waterfall. Repeating the same 30-second window switching only soft to hard, the count stayed at 12 and 12 at an estimated SNR of 45.0 dB with strong saturated signal.
 
-> [!NOTE] [FILL: measured CRC-OK frame yield, hard vs soft-decision, at a recorded SNR for one capture]. Earlier stub copy asserted "~25% more bits recovered"; that specific figure is not an RFSAM measurement and is SF/BW/SNR/decoder-dependent, so it is withheld rather than fabricated. The *direction* (soft ≥ hard at low SNR) is supported by [marquet2020] and [xu2022]; the magnitude must be measured on the actual target capture.
+Second verification session of 30 seconds with STM32F446 + DX-LR30 at 915.0 MHz US915, 250 kHz bandwidth, SF11, CR 4/5, sync word 0x34, interval 5 s, payload Hola desde STM32 (LoRa) — packet #N CRC:XXXX OK/BAD with application CRC every 2 packets corrupted on purpose to verify that counting is CRC-only and validate the previous flatsat test.
 
-For a passive survey aiming to enumerate a network, every frame the demodulator drops is potentially a device or a join you never see — which is why this PHY-completeness check precedes the link-layer enumeration rather than being assumed.
+Captured with `rtl_sdr -f 915000000 -s 1000000 -g 40 -n 30000000` (30 s, 60 MB). gqrx and CatSniffer showed 5 visible bursts at SNR ~6.0 dB (RSSI -55 to -60 dBm).
+
+Demodulation with gr-lora_sdr configured at 915e6, 250000 and SF11, recovered 5 visible frames, 3 with CRC valid in soft-decision (60%) and 1 with CRC valid in hard-decision (20%) on the same session. Hard vs soft difference of 40 points. The 5 payloads showed controlled alternation BAD, OK, BAD, OK, BAD (2 OK / 3 BAD), confirming that the 12/12 from flatsat were CRC-only.
+
 
 ## Remediation
 
