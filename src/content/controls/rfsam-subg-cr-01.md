@@ -114,9 +114,9 @@ references:
   - key: indesteege2008keeloq
     title: 'A Practical Attack on KeeLoq'
     authors: 'S. Indesteege, N. Keller, O. Dunkelman, E. Biham, B. Preneel'
-    venue: EUROCRYPT 2008 (KU Leuven COSIC project page)
+    venue: EUROCRYPT 2008 (IACR archive)
     year: 2008
-    url: 'https://www.cosic.esat.kuleuven.be/keeloq/'
+    url: 'https://www.iacr.org/archive/eurocrypt2008/49650001/49650001.pdf'
     type: paper
   - key: benadjila2017hitag2
     title: 'One Car, Two Frames: Attacks on Hitag-2 Remote Keyless Entry Systems Revisited'

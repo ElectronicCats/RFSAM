@@ -6,7 +6,7 @@ type: hardware
 protocols:
   - 5G NR
 spec: 5G NR Sub-6 (FR1) module · Qualcomm Snapdragon X55 (SDX55) · NSA/SA
-homepage: 'https://www.quectel.com/product/5g-rm500q-gl/'
+homepage: 'https://web.archive.org/web/20220214114911/https://www.quectel.com/product/5g-rm500q-gl'
 software:
   - qcsuper
 note: >-

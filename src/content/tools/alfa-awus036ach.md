@@ -5,7 +5,7 @@ vendor: Alfa Network
 type: hardware
 protocols:
   - Wi-Fi
-homepage: 'https://alfa-network.com/products/awus036ach'
+homepage: 'https://www.alfa.com.tw/products/awus036ach_1'
 software:
   - aircrack-ng
   - bettercap

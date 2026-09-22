@@ -44,8 +44,8 @@ references:
   - key: radiotap
     title: 'Radiotap — the de facto standard header for 802.11 frame injection and reception'
     authors: D. Young et al.
-    venue: radiotap.org
-    url: 'https://www.radiotap.org/'
+    venue: Linux wireless documentation (kernel.org)
+    url: 'https://wireless.docs.kernel.org/en/latest/en/developers/documentation/radiotap.html'
     type: spec
   - key: wireshark-wlan
     title: 'CaptureSetup/WLAN — capturing 802.11 traffic and enabling monitor mode'
@@ -96,7 +96,7 @@ references:
     title: 'WPA3 Specification — 6 GHz band constraints (WPA3/OWE only, PMF mandatory, no transition mode)'
     authors: Wi-Fi Alliance
     venue: Wi-Fi Alliance
-    url: 'https://www.wi-fi.org/system/files/WPA3%20Specification%20v3.4.pdf'
+    url: 'https://www.wi-fi.org/file/wpa3-specification'
     type: spec
 tools:
   - kismet
