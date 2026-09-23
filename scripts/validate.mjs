@@ -83,6 +83,18 @@ export async function runValidation() {
     for (const s of data.software ?? []) {
       if (!reg.toolSlugs.has(s)) all.push(`tools/${f}: unknown software slug '${s}'`);
     }
+    if (data.successor && !reg.toolSlugs.has(data.successor)) {
+      all.push(`tools/${f}: unknown successor slug '${data.successor}'`);
+    }
+    if (data.status && data.status !== 'active' && !data.statusNote) {
+      all.push(`tools/${f}: status '${data.status}' needs a statusNote saying why`);
+    }
+    if (data.status && !data.statusChecked) {
+      all.push(`tools/${f}: status '${data.status}' needs a statusChecked date`);
+    }
+    if (data.successor && data.status !== 'eol') {
+      all.push(`tools/${f}: successor is only meaningful with status 'eol'`);
+    }
   }
   return all;
 }

@@ -6,6 +6,11 @@ type: software
 protocols:
   - GSM
 repo: 'https://github.com/steve-m/kalibrate-rtl'
+status: mature
+statusNote: >-
+  Single-purpose FCCH scanner packaged in Kali; the GSM physical layer did not
+  change.
+statusChecked: 2026-09-23
 note: >-
   GSM frequency scanner: sweeps a band (GSM850/900/1800/1900) for active
   base-station carriers by locking onto their FCCH/SCH bursts, reporting each

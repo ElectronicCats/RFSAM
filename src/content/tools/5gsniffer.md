@@ -6,6 +6,11 @@ type: software
 protocols:
   - 5G NR
 repo: 'https://github.com/spritelab/5GSniffer'
+status: research
+statusNote: >-
+  An IEEE S&P 2023 artefact: FDD only, and its own README recommends working
+  from a recorded file rather than live SDR.
+statusChecked: 2026-09-23
 note: >-
   Open-source 5G NR Physical Downlink Control Channel (PDCCH) blind decoder:
   passively recovers the Downlink Control Information (DCI) and the RNTIs active

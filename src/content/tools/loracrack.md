@@ -6,6 +6,11 @@ type: project
 protocols:
   - LoRa
 repo: 'https://github.com/applied-risk/Loracrack'
+status: stale
+statusNote: >-
+  Needs OpenSSL 1.0, end-of-life since 2019; it does not build against 1.1.1
+  or 3.x.
+statusChecked: 2026-09-23
 note: >-
   Proof-of-concept LoRaWAN session cracker that exploits weak or shared
   Application Keys: given a known/guessable AppKey it derives the session keys

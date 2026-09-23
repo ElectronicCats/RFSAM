@@ -7,6 +7,11 @@ protocols:
   - LTE
 repo: 'https://github.com/mobile-insight/mobileinsight-core'
 homepage: 'http://www.mobileinsight.net'
+status: eol
+statusNote: >-
+  No release or Android app since 2022 and installation is broken on current
+  distros; SCAT covers the same UE-side capture, though without its analysers.
+statusChecked: 2026-09-23
 note: >-
   Passive UE-side cellular analyzer: decodes the device's own LTE control-plane
   messages (RRC, NAS, paging, measurement reports) from a diagnostic feed, so

@@ -6,6 +6,11 @@ type: project
 protocols:
   - Wi-Fi
 repo: 'https://github.com/risinek/esp32-wifi-penetration-tool'
+status: mature
+statusNote: >-
+  The WPA2 target did not change and the prebuilt binaries work; building from
+  source needs patches for ESP-IDF 5.x.
+statusChecked: 2026-09-23
 note: >-
   Focused ESP-IDF framework for ESP32 Wi-Fi attacks (~2.9k stars, MIT, last push
   2024-02). Captures WPA/WPA2 PMKIDs and 4-way handshakes (passively, via a

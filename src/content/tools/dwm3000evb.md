@@ -13,6 +13,10 @@ spec: >-
 software:
   - seemoo-uwb-sniffer
   - dwm3000-dwt-driver
+status: active
+statusNote: >-
+  Still stocked and sold by Qorvo, with no end-of-life notice.
+statusChecked: 2026-09-23
 note: >-
   The reference DW3000-family UWB development shield: a DWM3000 module (DW3110
   second-generation impulse-radio transceiver) on an Arduino form factor.

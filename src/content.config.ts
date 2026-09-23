@@ -3,6 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import {
   LAYER_IDS, PROTOCOL_IDS, CRITICALITY_IDS, REVIEW_STATUSES, CONFIDENCE_LEVELS,
+  TOOL_STATUSES,
 } from './lib/taxonomy.js';
 
 const layer = z.enum(LAYER_IDS as [string, ...string[]]);
@@ -80,6 +81,12 @@ const tools = defineCollection({
     homepage: z.string().url().optional(),
     // Software/projects that pair with this hardware (slugs in this collection).
     software: z.array(z.string()).default([]),
+    // Lifecycle. Optional: an unset status means nobody has assessed this entry yet,
+    // which is honest — it does not assert the tool is current.
+    status: z.enum(TOOL_STATUSES as [string, ...string[]]).optional(),
+    statusNote: z.string().optional(),
+    statusChecked: z.coerce.date().optional(),
+    successor: z.string().optional(),   // slug in this collection
     ec: z.boolean().default(false),
   }),
 });

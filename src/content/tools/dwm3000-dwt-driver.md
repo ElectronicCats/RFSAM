@@ -6,6 +6,11 @@ type: project
 protocols:
   - UWB
 repo: 'https://github.com/foldedtoad/dwm3000'
+status: eol
+statusNote: >-
+  Pinned to Zephyr 3.6 while Zephyr is on 4.4.x, and its README admits
+  nRF52840 support is incomplete.
+statusChecked: 2026-09-23
 note: >-
   An open port of Qorvo/Decawave's DWM3000 driver and ranging examples (the
   dwt_uwb_driver API) to the DWS3000 Arduino shield, runnable under Zephyr. The

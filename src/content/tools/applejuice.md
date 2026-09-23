@@ -6,6 +6,12 @@ type: project
 protocols:
   - BLE
 repo: 'https://github.com/ECTO-1A/AppleJuice'
+status: mature
+statusNote: >-
+  The Apple advertising format did not change; iOS 17.2 removed the crash, so
+  the impact is now a persistent pairing prompt rather than a denial of
+  service.
+statusChecked: 2026-09-23
 note: >-
   The original Apple BLE proximity-pairing message-spoofing research/PoC (~1.9k
   stars, Apache-2.0, last push 2024-06) — the upstream source of the 'Apple BLE

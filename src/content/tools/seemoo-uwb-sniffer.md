@@ -6,6 +6,12 @@ type: software
 protocols:
   - UWB
 repo: 'https://github.com/seemoo-lab/uwb-sniffer'
+status: research
+statusNote: >-
+  The artefact behind Ghost Peak (USENIX Security 2022), not a push-button
+  capture tool. The Decawave SDK its README requires is no longer
+  downloadable.
+statusChecked: 2026-09-23
 note: >-
   The reference OPEN UWB sniffer: firmware for a Qorvo DWM3000EVB driven by a
   host (a NUCLEO-F429ZI in the reference build; an nRF52840 with code changes)

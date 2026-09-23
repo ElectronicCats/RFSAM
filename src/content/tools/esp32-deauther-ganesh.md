@@ -6,6 +6,12 @@ type: project
 protocols:
   - Wi-Fi
 repo: 'https://github.com/GANESH-ICMC/esp32-deauther'
+status: eol
+statusNote: >-
+  Does not build against current ESP-IDF and its effect is disputed; the
+  catalogue carries two maintained replacements.
+statusChecked: 2026-09-23
+successor: esp32-marauder
 note: >-
   An ESP-IDF port of the Spacehuhn deauther to the ESP32, built on the
   esp_wifi_80211_tx frame-injection function — the canonical bare-ESP32 deauth

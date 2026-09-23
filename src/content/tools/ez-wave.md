@@ -7,6 +7,11 @@ protocols:
   - Z-Wave
 repo: 'https://github.com/cureHsu/EZ-Wave'
 software: []
+status: stale
+statusNote: >-
+  The AFITWiSec organisation is gone entirely; what remains is a third-party
+  copy from 2016 on Python 2.7 and GNU Radio 3.7.
+statusChecked: 2026-09-23
 note: >-
   The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio):
   ezstumbler does passive discovery and active network enumeration, ezrecon

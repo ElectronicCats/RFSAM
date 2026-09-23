@@ -6,6 +6,11 @@ type: software
 protocols:
   - Bluetooth Classic
 repo: 'https://github.com/AntorFr/ClassicBTScan'
+status: eol
+statusNote: >-
+  Espressif ships BR/EDR discovery in arduino-esp32 with a maintained example;
+  this library has an unresolved link error open since 2019.
+statusChecked: 2026-09-23
 note: >-
   A small Arduino-ESP32 library that performs a true Bluetooth Classic (BR/EDR)
   inquiry scan via the Bluedroid GAP API — returning each discovered device's

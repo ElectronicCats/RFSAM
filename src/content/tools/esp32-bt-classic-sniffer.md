@@ -6,6 +6,11 @@ type: software
 protocols:
   - Bluetooth Classic
 repo: 'https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer'
+status: mature
+statusNote: >-
+  The only cheap open BR/EDR sniffer and the instrument behind BrakTooth. Its
+  ROM patch depends on the ESP32 silicon revision you are handed.
+statusChecked: 2026-09-23
 note: >-
   The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4–10; ~590
   stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband

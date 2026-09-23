@@ -7,6 +7,11 @@ protocols:
   - Z-Wave
 repo: 'https://github.com/BastilleResearch/scapy-radio'
 software: []
+status: stale
+statusNote: >-
+  Python 2 and the GNU Radio 3.7 API; no package and no successor covering
+  Z-Wave.
+statusChecked: 2026-09-23
 note: >-
   GNU Radio flowgraphs plus a patched Scapy that lets you sniff, dissect, craft
   and replay several sub-GHz/2.4 GHz protocols — including a Z-Wave layer —

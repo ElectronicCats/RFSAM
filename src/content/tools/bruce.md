@@ -10,6 +10,11 @@ protocols:
   - RFID
   - IR
 repo: 'https://github.com/pr3y/Bruce'
+status: active
+statusNote: >-
+  Active firmware; the canonical repository moved to the BruceDevices
+  organisation and the old path redirects.
+statusChecked: 2026-09-23
 note: >-
   Predatory ESP32 red-team multitool firmware (~5.9k stars, AGPL-3.0; the repo
   moved from pr3y/Bruce to the BruceDevices org, the old path redirects). Wi-Fi:

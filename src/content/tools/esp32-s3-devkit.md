@@ -15,6 +15,11 @@ software:
   - ghost-esp
   - esp32-sour-apple
   - esp32-airtag-scanner
+status: active
+statusNote: >-
+  Current Espressif board; the documentation moved from esp-idf to esp-dev-
+  kits and the old URL still redirects.
+statusChecked: 2026-09-23
 note: >-
   Espressif's ESP32-S3: LX7 dual-core with Bluetooth 5 (LE), native USB-OTG and
   more RAM than the original ESP32 — which is why most modern handheld pentest

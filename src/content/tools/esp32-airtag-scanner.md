@@ -6,6 +6,11 @@ type: project
 protocols:
   - BLE
 repo: 'https://github.com/MatthewKuKanich/ESP32-AirTag-Scanner'
+status: mature
+statusNote: >-
+  Detects Find My separated mode, which is unchanged. It misses the second-
+  generation AirTag's DULT payload when the tag is near its owner.
+statusChecked: 2026-09-23
 note: >-
   ESP32 firmware that scans for Apple AirTag / Find My MAC addresses and BLE
   payloads without an Android phone or nRF Connect (~110 stars, last push

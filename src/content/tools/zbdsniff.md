@@ -7,6 +7,12 @@ protocols:
   - Zigbee
 repo: 'https://github.com/riverloopsec/killerbee'
 software: []
+status: eol
+statusNote: >-
+  Wireshark recovers the network key from a join capture with the well-known
+  link key loaded, without the KillerBee install.
+statusChecked: 2026-09-23
+successor: wireshark
 note: >-
   KillerBee's key-extraction tool. Scans a capture for an over-the-air key
   transport (APS Transport-Key during a device join) and recovers the Zigbee
