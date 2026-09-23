@@ -38,7 +38,7 @@ src/lib/taxonomy.js      layer/protocol ids and the control-id rule
 reference/               provenance: the original corpus and prototype
 ```
 
-The site is built with [Astro](https://astro.build) and deployed to GitHub Pages at **rfsam.electroniccats.com**.
+The site is built with [Astro](https://astro.build) and deployed to GitHub Pages at **https://electroniccats.github.io/RFSAM/**.
 
 ## Running locally
 
