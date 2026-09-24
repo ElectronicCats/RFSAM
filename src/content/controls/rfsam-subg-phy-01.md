@@ -121,9 +121,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-15
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-21
 ---
 ## Mechanism
 
@@ -171,12 +171,7 @@ All steps below are passive receive-and-demodulate. They involve no transmission
 
 ## Field case
 
-Documented public walkthrough — substitute the values you capture. This is a worked example for the most common class on the band, an EV1527/PT2262-class OOK fixed-code remote (doorbell or socket remote), anchored to rtl_433's published decoder and shipped sample corpus for this exact device class rather than to a live capture of our own [rtl433ev1527]. The modulation family (OOK/ASK), the fixed-code outcome and the per-press repetition are the general, citable behaviour of this device class [rtl433primer][rtl433repo]; the concrete timings below are the ones rtl_433 documents for it, but for any specific unit they must still be re-measured.
-
-- The carrier sits at **433.92 MHz**; the waterfall shows short OOK bursts (blinking blocks, not two stacked FSK lines) each time the button is pressed.
-- rtl_433's decoder for this exact class — `Generic Remote SC226x EV1527` (`src/devices/generic_remote.c`) — characterises the burst as **OOK_PWM** with a short pulse of **464 µs** and a long pulse of **1404 µs** (tolerance 200 µs), i.e. a PWM bit period of roughly **1868 µs (~535 baud)** [rtl433ev1527]. The sibling in-repo EV1527 flex spec (`conf/EV1527-4Button-Universal-Remote.conf`, `m=OOK_PWM s=369 l=1072 g=1400 r=12840 bits>=24 repeats>=3`) records the same OOK_PWM family with comparable timings for a 4-button variant [rtl433ev1527].
-- Loaded into URH, autodetect labels the signal **ASK**, bit length `[FILL: samples-per-symbol]`, and resolves the frame to **25** bits per burst — 24 data bits plus a trailing always-1 stop bit, per the decoder's `bits != 25` / "Last bit (MSB here) is always 1" framing check [rtl433ev1527]. The 24-bit data word repeats several times per press: rtl_433's EV1527 family confirms a row by requiring it to recur **≥ 3** times per transmission (`bitbuffer_find_repeated_row(bitbuffer, 3, 24)`) [rtl433ev1527].
-- Two captures of the same button press demodulate to an **identical** bitstream — establishing this as a *fixed code* (the fixed-vs-rolling determination this PHY framing hands to the link/attack layers), so a plain capture-and-replay is the relevant downstream test rather than a RollJam-class technique. The rtl_433_tests corpus (`tests/generic_remote/01/`, with `gfile001.cu8` and its expected `gfile001.json`) ships exactly such a repeated fixed-code burst for this decoder [rtl433ev1527].
+In a 26-minute session in front of the Electronic Cats window, with an RTL-SDR whip antenna attached to the metal window frame and `--gain 40`, `rtl_433` hopping between **315 MHz** and **433.92 MHz** (`-f 315M -f 433.92M -H 10`) detected TPMS sensors from a Toyota (**ID d784124a, 34.75 PSI, 30 °C**), two Renaults (**1cd96e at 225 kPa / 35 °C** and **1cd963 at 223.5 kPa / 34 °C**) and two additional Toyotas (**d7874db3** and **d7840ef3** at **34.5 PSI**). At **433.92 MHz** the measured modulation was **FSK** (`Detected FSK package` in the analyzer and `URH Modulation: FSK`), with pulse widths of **332 µs [300;356]** and **132 µs [116;144]**, gap width **68 µs [64;72]** and period **376 µs [332;448]** (**~2660 baud**). In URH the line coding was determined as **FSK/NRZ** with **3 samples per symbol** (**Noise 0.01, Center -0.93**), yielding **~49** messages, **7** with stable **25**-bit frames. Repeatability was confirmed by receiving **ID d784124a** twice consecutively at **10:16:48** with identical telemetry in states **130** and **131**.
 
 ## Remediation
 
