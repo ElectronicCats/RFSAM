@@ -9,7 +9,7 @@ applicability:
 deferred: true
 objective: >-
   Determine whether a Bluetooth Classic (BR/EDR) link's confidentiality can be
-  broken or downgraded — recovering a legacy-PIN link key offline from a captured
+  broken or downgraded, recovering a legacy-PIN link key offline from a captured
   pairing, exploiting Secure Simple Pairing "Just Works" (no MITM protection), or
   forcing the negotiated encryption key down to brute-forceable entropy (KNOB) and
   impersonating a paired peer without the link key (BIAS).
@@ -18,11 +18,11 @@ intro: >-
   entropy of the negotiated encryption key. Legacy PIN pairing seeds the link key
   from a short/fixed PIN that falls to an offline brute force on a captured
   pairing; Secure Simple Pairing resists offline key recovery but its "Just Works"
-  model has no MITM protection; and two protocol-level flaws — KNOB
+  model has no MITM protection; and two protocol-level flaws, KNOB
   (encryption-key-entropy downgrade, CVE-2019-9506) and BIAS (impersonation of a
-  paired peer, CVE-2020-10135) — undercut even SSP links. RFSAM owns the
-  RF-capture prerequisite — getting the pairing/authentication exchange off the
-  air into a dissector — while the judgement on rejecting legacy pairing and
+  paired peer, CVE-2020-10135), undercut even SSP links. RFSAM owns the
+  RF-capture prerequisite, getting the pairing/authentication exchange off the
+  air into a dissector, while the judgement on rejecting legacy pairing and
   enforcing a minimum encryption key size is assessed under BSAM (BSAM-PA-04,
   BSAM-EN-03).
 prerequisites:
@@ -31,7 +31,7 @@ prerequisites:
   software:
     - 'BTSnifferBREDR.py host tool (Scapy/Wireshark output) for capture; Wireshark to dissect the LMP exchange; offline analysis for legacy-PIN link-key recovery (Shaked & Wool method) and KNOB/BIAS assessment of the negotiated key size and authentication flow'
   signal:
-    freq: '2.402–2.480 GHz (79 RF channels × 1 MHz, adaptive frequency hopping ~1600 hops/s)'
+    freq: '2.402 to 2.480 GHz (79 RF channels × 1 MHz, adaptive frequency hopping ~1600 hops/s)'
     bandwidth: '1 MHz per channel'
     modulation: 'GFSK 1 Mbps (Basic Rate); π/4-DQPSK 2 Mbps & 8DPSK 3 Mbps (EDR)'
   skill: advanced
@@ -63,11 +63,11 @@ attacks:
       decryption of the ciphertext and injection of valid encrypted frames.
     preconditions: >-
       An attacker in radio range during encryption setup; a flaw in the BR/EDR
-      specification (v1.0–5.1), so it is largely implementation-independent.
+      specification (v1.0 to 5.1), so it is largely implementation-independent.
       Devices that enforce a minimum key size reject the downgrade.
     summary: >-
       The BR/EDR encryption-key negotiation lets a man-in-the-middle lower the
-      key entropy to 1 byte without either victim noticing — a downgrade, not a
+      key entropy to 1 byte without either victim noticing, a downgrade, not a
       cryptographic break.
   - name: BIAS (Bluetooth Impersonation AttackS)
     cve:
@@ -122,7 +122,7 @@ references:
     url: 'https://nvd.nist.gov/vuln/detail/CVE-2020-10135'
     type: cve
   - key: knob-poc-internalblue
-    title: 'KNOB attack PoC (InternalBlue) — sample-nexmaster-galaxys9slave.pcapng'
+    title: 'KNOB attack PoC (InternalBlue), sample-nexmaster-galaxys9slave.pcapng'
     authors: D. Antonioli
     venue: 'francozappa/knob, poc-internalblue'
     url: 'https://github.com/francozappa/knob/blob/master/poc-internalblue/README.md'
@@ -144,21 +144,21 @@ lastResearched: 2026-06-14
 
 Bluetooth Classic confidentiality depends on two things: which association model derived the link key, and how much entropy the link encryption key carries. The KNOB authors frame both as protocol-level, not implementation-level, problems (antonioli2019knob).
 
-**Legacy PIN pairing.** In legacy pairing a PIN seeds the link key through the SAFER+ key derivation. Because the PIN is often short or fixed (`0000`, `1234`), a passive attacker who captures the pairing exchange (the `IN_RAND`, `COMB_KEY` and `AU_RAND`/`SRES` messages) can replay the derivation offline and brute-force the PIN — Shaked & Wool cracked a 4-digit PIN in well under a second on 2005-era hardware, recovering the link key and hence the session (shaked2005pin). This requires capturing the pairing, and modern devices rarely use legacy pairing.
+**Legacy PIN pairing.** In legacy pairing a PIN seeds the link key through the SAFER+ key derivation. Because the PIN is often short or fixed (`0000`, `1234`), a passive attacker who captures the pairing exchange (the `IN_RAND`, `COMB_KEY` and `AU_RAND`/`SRES` messages) can replay the derivation offline and brute-force the PIN, Shaked & Wool cracked a 4-digit PIN in well under a second on 2005-era hardware, recovering the link key and hence the session (shaked2005pin). This requires capturing the pairing, and modern devices rarely use legacy pairing.
 
-**Secure Simple Pairing (SSP).** SSP uses ECDH (P-192 in 2.1, P-256 in 4.1+) and resists offline key recovery. Its weak point is the **Just Works** association model, which has no MITM protection — an active man-in-the-middle problem rather than an offline crack. Establishing which SSP association model is in use (Just Works vs Passkey vs OOB) is the observable finding RFSAM contributes; the policy judgement is BSAM's (BSAM-PA-04).
+**Secure Simple Pairing (SSP).** SSP uses ECDH (P-192 in 2.1, P-256 in 4.1+) and resists offline key recovery. Its weak point is the **Just Works** association model, which has no MITM protection, an active man-in-the-middle problem rather than an offline crack. Establishing which SSP association model is in use (Just Works vs Passkey vs OOB) is the observable finding RFSAM contributes; the policy judgement is BSAM's (BSAM-PA-04).
 
 **KNOB (CVE-2019-9506).** Independent of pairing model, the BR/EDR encryption-key-size negotiation lets a man-in-the-middle force the entropy down to as little as 1 byte without either victim being alerted; the key is then brute-forced in real time, the ciphertext decrypted and valid encrypted frames injected. NVD records this as the spec (up to v5.1) permitting a low key length and not preventing an attacker from influencing the negotiation (antonioli2019knob, cve-2019-9506). The defence is a host-enforced minimum key size (BSAM-EN-03).
 
 **BIAS (CVE-2020-10135).** BIAS abuses the BR/EDR authentication procedure and a role switch to impersonate a previously-paired master or slave and complete authentication without the link key; it composes with KNOB to attack Secure Connections links as well (antonioli2020bias, cve-2020-10135).
 
-This CVE coverage is representative, not exhaustive — KNOB and BIAS are spec-level flaws demonstrated across many BR/EDR chips, but patch status varies by vendor and firmware. Confirm against current advisories and the device's BR/EDR controller firmware before asserting a given target is or is not affected.
+This CVE coverage is representative, not exhaustive, KNOB and BIAS are spec-level flaws demonstrated across many BR/EDR chips, but patch status varies by vendor and firmware. Confirm against current advisories and the device's BR/EDR controller firmware before asserting a given target is or is not affected.
 
-RFSAM's job at this floor is the RF-capture prerequisite — getting the LMP pairing/authentication exchange off the air and into a dissector — after which the pairing-policy and key-size verdicts are assessed under BSAM. There is no clean point-and-click ESP32 tool for the offline cracking step, so this floor is mostly analysis of the capture from the link layer plus the BSAM pairing controls.
+RFSAM's job at this floor is the RF-capture prerequisite, getting the LMP pairing/authentication exchange off the air and into a dissector, after which the pairing-policy and key-size verdicts are assessed under BSAM. There is no clean point-and-click ESP32 tool for the offline cracking step, so this floor is mostly analysis of the capture from the link layer plus the BSAM pairing controls.
 
 ## Procedure
 
-> All active capture and any decryption/downgrade steps below are authorised-testing only: run them against your own devices or a target you are explicitly contracted to assess, in an RF-shielded or controlled environment, with test devices and recorded permission. The ESP32 baseband sniffer actively connects to follow the target — it is not purely passive.
+> All active capture and any decryption/downgrade steps below are authorised-testing only: run them against your own devices or a target you are explicitly contracted to assess, in an RF-shielded or controlled environment, with test devices and recorded permission. The ESP32 baseband sniffer actively connects to follow the target, it is not purely passive.
 
 1. Confirm the target is Bluetooth Classic (BR/EDR), not BLE, and note its `BD_ADDR` and Class of Device from the inquiry-scan step (see the SP-layer enumeration; RFSAM-RES-27 sets up the same BR/EDR kit).
 
@@ -177,7 +177,7 @@ RFSAM's job at this floor is the RF-capture prerequisite — getting the LMP pai
    Read off the association model and key sizes:
    - Legacy PIN pairing shows `LMP_in_rand` / `LMP_comb_key` / `LMP_au_rand` / `LMP_sres`.
    - SSP shows the `LMP_encapsulated_*` / IO-capability exchange; identify Just Works vs Passkey vs OOB.
-   - The encryption-key-size negotiation is `LMP_encryption_key_size_req` — record the **negotiated key length in bytes**. A value driven to 1 byte is the KNOB signature.
+   - The encryption-key-size negotiation is `LMP_encryption_key_size_req`, record the **negotiated key length in bytes**. A value driven to 1 byte is the KNOB signature.
 
 4. Classify the finding:
    - **Negotiated key size < the device's policy minimum (e.g. forced to 1 byte):** KNOB-style downgrade is feasible (antonioli2019knob, cve-2019-9506). Defer the minimum-key-size verdict to BSAM-EN-03.
@@ -188,12 +188,12 @@ RFSAM's job at this floor is the RF-capture prerequisite — getting the LMP pai
 
 ## Field case
 
-The reference KNOB sample capture shipped by the attack's authors (francozappa/knob, `poc-internalblue/sample-nexmaster-galaxys9slave.pcapng` — a Nexus 5 master and a Galaxy S9 slave) shows exactly this signature, captured before any KNOB patch was released [knob-poc-internalblue]. Opening it in Wireshark and isolating the Link Manager exchange with the `btbrlmp` filter, the `LMP_encryption_key_size_req` negotiation in packets 121–127 settles on **1 byte** of entropy — 8 bits, the minimum the BR/EDR specification permits — with neither device objecting to the downgrade [knob-poc-internalblue]. The documented finding is the KNOB signature: *the encryption key size is negotiated down below any safe policy minimum*, after which the 1-byte key is brute-forced in real time and the session ciphertext decrypted (antonioli2019knob, cve-2019-9506). The exploitability verdict — that the host accepted an encryption key entropy far below policy — is exactly what RFSAM gets off the air here; enforcing a minimum encryption key size is deferred to BSAM-EN-03, and rejecting legacy pairing to BSAM-PA-04. The same `btbrlmp` read-off applies unchanged to any BR/EDR link, from car hands-free units to HID peripherals.
+The reference KNOB sample capture shipped by the attack's authors (francozappa/knob, `poc-internalblue/sample-nexmaster-galaxys9slave.pcapng`, a Nexus 5 master and a Galaxy S9 slave) shows exactly this signature, captured before any KNOB patch was released [knob-poc-internalblue]. Opening it in Wireshark and isolating the Link Manager exchange with the `btbrlmp` filter, the `LMP_encryption_key_size_req` negotiation in packets 121 to 127 settles on **1 byte** of entropy, 8 bits, the minimum the BR/EDR specification permits, with neither device objecting to the downgrade [knob-poc-internalblue]. The documented finding is the KNOB signature: *the encryption key size is negotiated down below any safe policy minimum*, after which the 1-byte key is brute-forced in real time and the session ciphertext decrypted (antonioli2019knob, cve-2019-9506). The exploitability verdict, that the host accepted an encryption key entropy far below policy, is exactly what RFSAM gets off the air here; enforcing a minimum encryption key size is deferred to BSAM-EN-03, and rejecting legacy pairing to BSAM-PA-04. The same `btbrlmp` read-off applies unchanged to any BR/EDR link, from car hands-free units to HID peripherals.
 
 ## Remediation
 
-**Developer / firmware:** Reject legacy PIN pairing entirely and require Secure Simple Pairing with an authenticated association model (Passkey or OOB), never Just Works, for anything trust-bearing (BSAM-PA-04). Enforce a host-side minimum encryption key size and refuse links that negotiate below it — this is the direct defence against KNOB (BSAM-EN-03, cve-2019-9506). Where the controller and host support it, require Secure Connections (P-256) and refuse fallback to legacy authentication, which closes the BIAS legacy path (antonioli2020bias).
+**Developer / firmware:** Reject legacy PIN pairing entirely and require Secure Simple Pairing with an authenticated association model (Passkey or OOB), never Just Works, for anything trust-bearing (BSAM-PA-04). Enforce a host-side minimum encryption key size and refuse links that negotiate below it, this is the direct defence against KNOB (BSAM-EN-03, cve-2019-9506). Where the controller and host support it, require Secure Connections (P-256) and refuse fallback to legacy authentication, which closes the BIAS legacy path (antonioli2020bias).
 
-**Integrator:** Select BR/EDR controllers whose firmware patches the KNOB and BIAS classes, and verify the minimum-key-size enforcement is actually applied at the host (BlueZ `min_key_size` / equivalent), not just declared. Treat the KNOB/BIAS CVE list as representative — check the device's controller firmware against current vendor advisories.
+**Integrator:** Select BR/EDR controllers whose firmware patches the KNOB and BIAS classes, and verify the minimum-key-size enforcement is actually applied at the host (BlueZ `min_key_size` / equivalent), not just declared. Treat the KNOB/BIAS CVE list as representative, check the device's controller firmware against current vendor advisories.
 
 **Operator:** Avoid pairing trust-bearing devices in untrusted RF environments; prefer OOB pairing where available; and where a device only offers legacy pairing or Just Works, treat its link as unauthenticated and do not place trust above it (BSAM-PA-04).

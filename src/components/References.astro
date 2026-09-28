@@ -7,7 +7,7 @@ const { references } = Astro.props;
       <li style="padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.55">
         <div class="mono" style="color:var(--mut2);font-size:10.5px;margin-bottom:3px">[{r.key}]</div>
         <a href={r.url} target="_blank" rel="noopener">{r.title}</a>
-        <span style="color:var(--mut)"> — {[r.authors, r.venue, r.year].filter(Boolean).join(', ')} <span class="mono" style="color:var(--mut2)">({r.type})</span></span>
+        <span style="color:var(--mut)">, {[r.authors, r.venue, r.year].filter(Boolean).join(', ')} <span class="mono" style="color:var(--mut2)">({r.type})</span></span>
       </li>
     ))}
   </ol>

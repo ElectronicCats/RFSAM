@@ -14,19 +14,19 @@ const techCount = Object.values(toolchains).filter((t) => t.status === 'complete
 const sections = [
   {
     href: '/RFSAM/wayfinder', tag: 'START HERE', name: 'Wayfinder', accent: true,
-    body: 'Have a device or an unknown signal and no idea where to begin? Pick a technology and walk the six-step descent — each step hands you the exact kit (hardware + software) for that move and the reason to pick it. An interactive map from “what is this?” to “take it over.”',
+    body: 'Have a device or an unknown signal and no idea where to begin? Pick a technology and walk the six-step descent, each step hands you the exact kit (hardware + software) for that move and the reason to pick it. An interactive map from “what is this?” to “take it over.”',
   },
   {
     href: '/RFSAM/controls', tag: 'THE REFERENCE', name: 'Controls',
-    body: 'The verification procedures. For each protocol and layer: what to check, a step-by-step method, a real field case, known attacks with references, and remediation — the entries you cite in an assessment.',
+    body: 'The verification procedures. For each protocol and layer: what to check, a step-by-step method, a real field case, known attacks with references, and remediation, the entries you cite in an assessment.',
   },
   {
     href: '/RFSAM/methodology', tag: 'THE MODEL', name: 'Methodology',
-    body: 'The layer descent — spectrum → signal → link → crypto → attack → application — and the prior work RFSAM stands on (OSSTMM, BSAM, the SDR-pentest lineage). Read this to understand how it is organised.',
+    body: 'The layer descent, spectrum → signal → link → crypto → attack → application, and the prior work RFSAM stands on (OSSTMM, BSAM, the SDR-pentest lineage). Read this to understand how it is organised.',
   },
   {
     href: '/RFSAM/tools', tag: 'THE KIT', name: 'Tools',
-    body: 'Every piece of hardware and software behind the wayfinder kits — filterable by technology and linked to its source.',
+    body: 'Every piece of hardware and software behind the wayfinder kits, filterable by technology and linked to its source.',
   },
 ];
 ---
@@ -34,8 +34,8 @@ const sections = [
   <div class="container">
     <div class="mono kicker">Open methodology · {meta.org}</div>
     <h1 class="hero">A <span style="color:var(--cyan)">north</span> for RF research and auditing.</h1>
-    <p class="fullname mono"><strong>RFSAM</strong> — {meta.subtitle}</p>
-    <p class="tagline">A field guide to RF security — <strong>pick a technology, get the kit and the method.</strong></p>
+    <p class="fullname mono"><strong>RFSAM</strong>, {meta.subtitle}</p>
+    <p class="tagline">A field guide to RF security, <strong>pick a technology, get the kit and the method.</strong></p>
     <p class="blurb">{meta.blurb}</p>
     <IqTrace />
 
@@ -51,7 +51,7 @@ const sections = [
     </div>
 
     <h2 class="mono section-h">THE DESCENT</h2>
-    <p class="lede">Every protocol is assessed by the same descent — six layers from the open air down to what the device trusts. The Wayfinder walks you down it; the Controls verify each floor.</p>
+    <p class="lede">Every protocol is assessed by the same descent, six layers from the open air down to what the device trusts. The Wayfinder walks you down it; the Controls verify each floor.</p>
     <LayerStrip />
 
     <h2 class="mono section-h">TECHNOLOGIES <span class="count">· {techCount} mapped in the Wayfinder</span></h2>

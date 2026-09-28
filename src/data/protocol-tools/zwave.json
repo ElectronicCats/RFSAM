@@ -16,7 +16,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/andersesbensen/rtl-zwave",
-    "note": "The original G.9959 (Z-Wave) demodulator for the RTL-SDR: pipe `rtl_sdr` samples into it and it prints decoded Z-Wave frames. Lightweight, receive-only, and the codebase Waving-Z grew out of — a minimal way to confirm Z-Wave traffic and read frame headers on a ~$30 dongle.",
+    "note": "The original G.9959 (Z-Wave) demodulator for the RTL-SDR: pipe `rtl_sdr` samples into it and it prints decoded Z-Wave frames. Lightweight, receive-only, and the codebase Waving-Z grew out of, a minimal way to confirm Z-Wave traffic and read frame headers on a ~$30 dongle.",
     "software": []
   },
   {
@@ -26,7 +26,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/cureHsu/EZ-Wave",
-    "note": "The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era — dated but still the canonical exploitation toolkit.",
+    "note": "The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era, dated but still the canonical exploitation toolkit.",
     "software": []
   },
   {
@@ -36,7 +36,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/BastilleResearch/scapy-radio",
-    "note": "GNU Radio flowgraphs plus a patched Scapy that lets you sniff, dissect, craft and replay several sub-GHz/2.4 GHz protocols — including a Z-Wave layer — straight from a Python/Scapy session over an SDR (HackRF). The radio/Scapy plumbing EZ-Wave builds on, and a standalone way to script Z-Wave frame capture and injection.",
+    "note": "GNU Radio flowgraphs plus a patched Scapy that lets you sniff, dissect, craft and replay several sub-GHz/2.4 GHz protocols, including a Z-Wave layer, straight from a Python/Scapy session over an SDR (HackRF). The radio/Scapy plumbing EZ-Wave builds on, and a standalone way to script Z-Wave frame capture and injection.",
     "software": []
   },
   {
@@ -56,7 +56,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "homepage": "https://docs.silabs.com/z-wave/1.0.1/z-wave-docs/zwave-tools",
-    "note": "Silicon Labs' official GUI tool (in Simplicity Studio) that captures RF communication on a Z-Wave network for debugging — the vendor sniffer. Decodes the full Z-Wave frame including command classes and shows security (S0/S2) handshakes. Needs a USB Z-Wave adapter flashed with Zniffer firmware (e.g. a UZB stick). The turnkey capture path when an SDR demod is too fiddly.",
+    "note": "Silicon Labs' official GUI tool (in Simplicity Studio) that captures RF communication on a Z-Wave network for debugging, the vendor sniffer. Decodes the full Z-Wave frame including command classes and shows security (S0/S2) handshakes. Needs a USB Z-Wave adapter flashed with Zniffer firmware (e.g. a UZB stick). The turnkey capture path when an SDR demod is too fiddly.",
     "software": []
   },
   {
@@ -66,7 +66,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "homepage": "https://docs.silabs.com/z-wave/1.0.1/z-wave-docs/zwave-tools",
-    "note": "Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them — driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.",
+    "note": "Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them, driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.",
     "software": []
   },
   {
@@ -78,6 +78,6 @@
     "spec": "EFR32ZG14 Z-Wave 700 SoC · Serial API over USB (CP2102N VCOM) · firmware-upgradeable",
     "homepage": "https://www.silabs.com/development-tools/wireless/z-wave/efr32zg14-usb-7-z-wave-700-stick-bridge-module",
     "software": ["zwave-pc-controller", "zwave-zniffer"],
-    "note": "Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host — the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21."
+    "note": "Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host, the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21."
   }
 ]

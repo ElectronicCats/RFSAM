@@ -8,7 +8,7 @@ protocols:
 repo: 'https://github.com/jopohl/urh'
 note: >-
   Integrated reversing workbench: auto-detect modulation/bitrate, extract
-  bitstreams, diff captures and replay — the fastest path from raw I/Q to a
+  bitstreams, diff captures and replay, the fastest path from raw I/Q to a
   labelled frame format.
 ---
-Integrated reversing workbench: auto-detect modulation/bitrate, extract bitstreams, diff captures and replay — the fastest path from raw I/Q to a labelled frame format.
+Integrated reversing workbench: auto-detect modulation/bitrate, extract bitstreams, diff captures and replay, the fastest path from raw I/Q to a labelled frame format.
