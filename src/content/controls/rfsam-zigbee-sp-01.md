@@ -152,7 +152,17 @@ Capture feasibility is dominated by Wi-Fi coexistence: 802.15.4 shares 2.4 GHz w
 
 ## Field case
 
-During a short capture session lasting approximately 2 to 3 minutes in an indoor environment, a rigid high-gain omnidirectional antenna with an SMA connector attached to the receiver was used to analyze the session log file. A total of 23 packets were processed across the 802.15.4 spectrum, identifying 3 unique device identifiers: MAC addresses 00:01 (Channel 25, peak signal -64 dBm, 11 total RX/TX interactions), 52:5A (Channel 25, peak signal -64 dBm, 11 total RX/TX interactions), and FF:FF (Channel 25, peak signal -65 dBm, 6 received broadcast packets). Frame structure analysis extracted PAN ID 0xA087 from bytes 3-4 (in Little-Endian order) following the Sequence Number byte in 14 data payload packets. The central operating frequency was calculated at 2475 MHz (Channel 25), recording packet RSSI metrics with a maximum of -62 dBm, an average of -70.2 dBm, and a minimum of -87 dBm across the capture. The 2475 MHz frequency operates outside the center frequencies of WiFi channels 1 (2412 MHz), 6 (2437 MHz), and 11 (2462 MHz), maintaining a 3 MHz clearance from the upper bound of WiFi Channel 11 (2472 MHz).
+Passive survey (step 2) run on 2026-08-26 in the Electronic Cats lab, indoors, using Kismet with a CatSniffer as the 802.15.4 datasource and a rigid omnidirectional antenna on its SMA port. Kismet logged the session to `Kismet-20260826-15-26-18-1.kismet`. The survey transmitted nothing.
+
+Over 167 s (15:26:34 to 15:29:21) Kismet recorded 23 frames, every one of them on channel 25 (2475 MHz, which matches `Fc = 2405 + 5(k - 11)` from step 4):
+
+- 14 frames carried addresses. They came from two nodes, listed by Kismet as `00:01` and `52:5A`: 8 frames exchanged between the two nodes (4 in each direction) and 6 frames sent to the broadcast address `FF:FF` (3 from each node).
+- 9 frames carried no address in the Kismet log: eight of 33 bytes and one of 239 bytes.
+- Per-frame signal ranged from -87 dBm to -62 dBm, with a mean of -70.2 dBm over the 23 frames. The per-node peak reported by Kismet was -64 dBm for both nodes.
+
+Kismet's device list shows three entries because it lists the broadcast address `FF:FF` as a device. The number of transmitting nodes observed is two.
+
+Feasibility record (step 5): the network is on channel 25 and both nodes were received at a -64 dBm peak throughout a 167 s window, so a capture radio parked on channel 25 is the hand-off to the LL capture control. Two items of the record were not measured in this session and stay open for this site: the PAN ID, and the Wi-Fi overlap (no SDR waterfall was taken, step 4).
 
 ## Remediation
 
