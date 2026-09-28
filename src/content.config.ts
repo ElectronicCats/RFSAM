@@ -82,9 +82,10 @@ const tools = defineCollection({
     // Software/projects that pair with this hardware (slugs in this collection).
     software: z.array(z.string()).default([]),
     // Lifecycle. Optional: an unset status means nobody has assessed this entry yet,
-    // which is honest — it does not assert the tool is current.
+    // which is honest: it does not assert the tool is current.
     status: z.enum(TOOL_STATUSES as [string, ...string[]]).optional(),
     statusNote: z.string().optional(),
+    statusSource: z.string().url().optional(),   // where the statusNote can be checked
     statusChecked: z.coerce.date().optional(),
     successor: z.string().optional(),   // slug in this collection
     ec: z.boolean().default(false),

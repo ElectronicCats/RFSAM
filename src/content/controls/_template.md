@@ -41,7 +41,7 @@ lastResearched: 2026-01-01
 How the RF/protocol works and why this control matters. Every nontrivial claim
 cites a `references[]` entry. Mark anything unverified with:
 
-> [!FLAG] claim — what still needs to be checked
+> [!FLAG] claim, what still needs to be checked
 
 ## Procedure
 

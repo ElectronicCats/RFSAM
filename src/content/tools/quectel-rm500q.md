@@ -6,18 +6,20 @@ type: hardware
 protocols:
   - 5G NR
 spec: 5G NR Sub-6 (FR1) module · Qualcomm Snapdragon X55 (SDX55) · NSA/SA
-homepage: 'https://www.quectel.com/product/5g-rm500q-gl/'
+homepage: >-
+  https://web.archive.org/web/20220214114911/https://www.quectel.com/product/5g-rm500q-gl
 software:
   - qcsuper
 status: eol
 statusNote: >-
-  Dropped from Quectel's 5G line-up and the product page now redirects to the
-  category. Still the best-documented module for NR RRC capture over DIAG.
-statusChecked: 2026-09-23
+  No longer listed on Quectel's 5G modules page, and the product URL redirects
+  (HTTP 301) to the category page. No formal Quectel EOL notice was found.
+statusSource: 'https://www.quectel.com/product/5g-rm500q-gl/'
+statusChecked: '2026-09-28'
 note: >-
   Commercial 5G NR Sub-6 (FR1) modem module built on the Qualcomm Snapdragon X55
   (SDX55). Being Qualcomm-based it exposes a DIAG interface, so QCSuper can pull
-  raw 5G/LTE signalling off it into Wireshark — a no-SDR route to 5G
+  raw 5G/LTE signalling off it into Wireshark, a no-SDR route to 5G
   control-plane frames (5G frame coverage is modem/firmware-dependent).
 ---
-Commercial 5G NR Sub-6 (FR1) modem module built on the Qualcomm Snapdragon X55 (SDX55). Being Qualcomm-based it exposes a DIAG interface, so QCSuper can pull raw 5G/LTE signalling off it into Wireshark — a no-SDR route to 5G control-plane frames (5G frame coverage is modem/firmware-dependent).
+Commercial 5G NR Sub-6 (FR1) modem module built on the Qualcomm Snapdragon X55 (SDX55). Being Qualcomm-based it exposes a DIAG interface, so QCSuper can pull raw 5G/LTE signalling off it into Wireshark, a no-SDR route to 5G control-plane frames (5G frame coverage is modem/firmware-dependent).

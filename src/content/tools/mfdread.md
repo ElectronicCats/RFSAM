@@ -6,15 +6,17 @@ type: software
 protocols:
   - NFC
   - RFID
-repo: 'https://github.com/zhovner/mfdread'
 status: mature
 statusNote: >-
-  A pure Python 3 parser over a dump format fixed by the hardware, with one
-  live dependency. The 2024 commit only added a licence file.
-statusChecked: 2026-09-23
+  Single-file Python parser whose only third-party dependency is bitstring
+  (4.4.0 released 2026-03-10). Last code change 2020-03-02; the 2024-10-15
+  commit only added a LICENSE file.
+statusSource: 'https://github.com/zhovner/mfdread/commits/master'
+statusChecked: '2026-09-28'
+repo: 'https://github.com/zhovner/mfdread'
 note: >-
-  Parses MIFARE Classic 1k/4k dumps into human-readable form — per-sector data,
-  keys A/B and access-condition bits — so a recovered dump becomes readable
+  Parses MIFARE Classic 1k/4k dumps into human-readable form, per-sector data,
+  keys A/B and access-condition bits, so a recovered dump becomes readable
   application data.
 ---
-Parses MIFARE Classic 1k/4k dumps into human-readable form — per-sector data, keys A/B and access-condition bits — so a recovered dump becomes readable application data.
+Parses MIFARE Classic 1k/4k dumps into human-readable form, per-sector data, keys A/B and access-condition bits, so a recovered dump becomes readable application data.

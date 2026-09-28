@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ToolCard.astro';
 import { toolchains } from '../data/toolchains.js';
+import { TOOL_STATUSES } from '../lib/taxonomy.js';
 
 const tools = await getCollection('tools');
 const hardware = tools.filter((t) => t.data.type === 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
@@ -13,7 +14,7 @@ const CHIP = {
   ZIGBEE: 'Zigbee', ZWAVE: 'Z-Wave', THREAD: 'Thread', GNSS: 'GNSS', ADSB: 'ADS-B',
   NR5G: '5G NR', GSM: 'GSM', UWB: 'UWB',
 };
-// Which technologies actually USE each tool — derived from the wayfinder toolchains
+// Which technologies actually USE each tool, derived from the wayfinder toolchains
 // (a tool's step + dep + decoder membership), NOT from blanket tags. So SDRs show
 // under BLE/LTE/Sub-GHz where they're used, but not under near-field RFID/NFC.
 const techByTool = {};
@@ -32,9 +33,8 @@ const dataTech = (slug) => [...(techByTool[slug] || [])].join(' ');
 
 // Lifecycle summary, computed at build time from the status field. Entries with no
 // status are counted as unassessed rather than assumed current.
-const STATUS_ORDER = ['active', 'mature', 'archived', 'research', 'eol', 'stale'];
 const pct = (n) => Math.round((n / tools.length) * 100);
-const statusCounts = STATUS_ORDER
+const statusCounts = TOOL_STATUSES
   .map((s) => ({ s, n: tools.filter((t) => t.data.status === s).length }))
   .filter((x) => x.n > 0);
 const unassessed = tools.filter((t) => !t.data.status).length;
@@ -44,13 +44,13 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
   <div class="container">
     <h1 style="font-size:34px">Tools</h1>
     <p style="color:var(--mut);margin-top:8px;max-width:64ch">
-      The hardware and software behind the wayfinder kits. Hardware first — open a device to see the software that
+      The hardware and software behind the wayfinder kits. Hardware first, open a device to see the software that
       pairs with it. Representative, not exhaustive; check current advisories. Repo links go to each project's source.
     </p>
 
     {statusCounts.length > 0 && (
       <div class="mono" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;font-size:11px;color:var(--mut2)">
-        <span>{tools.length} entries —</span>
+        <span>{tools.length} entries:</span>
         {statusCounts.map(({ s, n }) => (
           <span class={`tstatus ${s}`}>{s} {n} · {pct(n)}%</span>
         ))}

@@ -5,6 +5,10 @@
     "vendor": "steve-m (kalibrate fork)",
     "type": "software",
     "protocols": ["GSM"],
+    "status": "mature",
+    "statusNote": "Single-purpose GSM FCCH scanner, packaged in kali-rolling (0.4.1+git20191125-0kali2). Last upstream commit 2022-02-01, repo not archived.",
+    "statusSource": "https://pkg.kali.org/pkg/kalibrate-rtl",
+    "statusChecked": "2026-09-28",
     "note": "GSM frequency scanner: sweeps a band (GSM850/900/1800/1900) for active base-station carriers by locking onto their FCCH/SCH bursts, reporting each ARFCN, its power and the radio's clock-frequency offset (ppm). The kalibrate-rtl fork drives an RTL-SDR; sibling forks exist for HackRF and UHD. The first step before any capture: it tells you which ARFCNs have a live BTS.",
     "repo": "https://github.com/steve-m/kalibrate-rtl"
   },
@@ -14,6 +18,10 @@
     "vendor": "Piotr Krysik",
     "type": "software",
     "protocols": ["GSM"],
+    "status": "mature",
+    "statusNote": "Upstream master stopped on 2021-05-05, but Debian and Kali ship 1.0.0~20220727-3, taken from bkerler's maint-3.10_with_multiarfcn branch and built against GNU Radio 3.10.12.",
+    "statusSource": "https://sources.debian.org/src/gr-gsm/1.0.0~20220727-3/debian/changelog/",
+    "statusChecked": "2026-09-28",
     "note": "GNU Radio blocks and tools to receive and demodulate the GSM downlink from an SDR. grgsm_livemon tunes a found ARFCN, demodulates the GMSK bursts, decodes the control channels (BCCH/CCCH/SDCCH) and forwards the frames as GSMTAP over UDP to Wireshark. The de-facto open-source GSM receiver, successor to airprobe.",
     "repo": "https://github.com/ptrkrysik/gr-gsm"
   },
@@ -23,7 +31,7 @@
     "vendor": "Oros42",
     "type": "software",
     "protocols": ["GSM"],
-    "note": "Python tool that reads the GSMTAP stream produced by gr-gsm and pulls the IMSI / TMSI identities the network pages over the air, printing the cellphones it sees around you. A PASSIVE IMSI catcher — it harvests identities off the broadcast/control channels without transmitting anything (no rogue cell); the active catcher is a rogue BTS (osmo-bts / OpenBTS).",
+    "note": "Python tool that reads the GSMTAP stream produced by gr-gsm and pulls the IMSI / TMSI identities the network pages over the air, printing the cellphones it sees around you. A PASSIVE IMSI catcher, it harvests identities off the broadcast/control channels without transmitting anything (no rogue cell); the active catcher is a rogue BTS (osmo-bts / OpenBTS).",
     "repo": "https://github.com/Oros42/IMSI-catcher"
   },
   {
@@ -34,7 +42,7 @@
     "protocols": ["GSM"],
     "spec": "osmo-trx + osmo-bts + osmo-bsc + osmo-msc + osmo-hlr",
     "repo": "https://github.com/osmocom/osmo-bts",
-    "note": "The Osmocom open GSM network stack: osmo-trx drives the SDR, osmo-bts is the base station, with osmo-bsc / osmo-msc / osmo-hlr forming the core. Together they stand up a full 2G cell on an SDR — the reference open platform for a test/rogue BTS and active IMSI-catcher research. Actively maintained."
+    "note": "The Osmocom open GSM network stack: osmo-trx drives the SDR, osmo-bts is the base station, with osmo-bsc / osmo-msc / osmo-hlr forming the core. Together they stand up a full 2G cell on an SDR, the reference open platform for a test/rogue BTS and active IMSI-catcher research. Actively maintained."
   },
   {
     "slug": "openbts",
@@ -43,6 +51,11 @@
     "type": "software",
     "protocols": ["GSM"],
     "repo": "https://github.com/RangeNetworks/openbts",
+    "status": "stale",
+    "statusNote": "Last functional commit upstream is from March 2017, with only a copyright-year commit in 2021 and build-fix PRs left unmerged. Osmocom's osmo-bts is actively maintained (last commit August 2026).",
+    "statusSource": "https://github.com/RangeNetworks/openbts/commits/master",
+    "statusChecked": "2026-09-28",
+    "successor": "osmo-bts",
     "note": "The original 'GSM in a box': a single application that presents a GSM air interface on a USRP and routes calls/SMS over SIP/Asterisk, replacing the traditional RAN+core. A self-contained alternative to the Osmocom stack for fake-BTS / IMSI-catcher work; build via the RangeNetworks 'dev' environment."
   },
   {
@@ -51,7 +64,11 @@
     "vendor": "SRLabs / Joshua Wright fork",
     "type": "project",
     "protocols": ["GSM"],
-    "note": "GPU/CPU cracker that recovers an A5/1 session key from a captured keystream segment using the ~1.6–2 TB A5/1 rainbow tables (the Berlin A5/1 Security Project). Recovers Kc, which decrypts the rest of a captured call/SMS session. Old but the reference open A5/1 attack; requires the bulky precomputed tables and a known-keystream slice from the capture.",
+    "status": "mature",
+    "statusNote": "Frozen since 2014-10-22; the a5_ati backend needs the ATI CAL SDK (cal.h), so build with make noati and use a5_cpu. The tables are separate and need 1.7 to 2 TB of storage.",
+    "statusSource": "https://github.com/joswr1ght/kraken/issues/5",
+    "statusChecked": "2026-09-28",
+    "note": "GPU/CPU cracker that recovers an A5/1 session key from a captured keystream segment using the ~1.6 to 2 TB A5/1 rainbow tables (the Berlin A5/1 Security Project). Recovers Kc, which decrypts the rest of a captured call/SMS session. Old but the reference open A5/1 attack; requires the bulky precomputed tables and a known-keystream slice from the capture.",
     "repo": "https://github.com/joswr1ght/kraken"
   }
 ]

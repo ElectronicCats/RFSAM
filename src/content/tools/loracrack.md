@@ -5,12 +5,14 @@ vendor: Applied Risk (Sipke Mellema)
 type: project
 protocols:
   - LoRa
-repo: 'https://github.com/applied-risk/Loracrack'
 status: stale
 statusNote: >-
-  Needs OpenSSL 1.0, end-of-life since 2019; it does not build against 1.1.1
-  or 3.x.
-statusChecked: 2026-09-23
+  README and Makefile target OpenSSL 1.0.x (1.0.2 went end of life at the end of
+  2019) and the last commit is 2019-03-26. An open issue reports it does not
+  compile with libssl 1.1.1 because EVP_CIPHER_CTX is no longer exposed.
+statusSource: 'https://github.com/applied-risk/Loracrack/issues/3'
+statusChecked: '2026-09-28'
+repo: 'https://github.com/applied-risk/Loracrack'
 note: >-
   Proof-of-concept LoRaWAN session cracker that exploits weak or shared
   Application Keys: given a known/guessable AppKey it derives the session keys

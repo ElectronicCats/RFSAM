@@ -5,12 +5,14 @@ vendor: Piotr Krysik
 type: software
 protocols:
   - GSM
-repo: 'https://github.com/ptrkrysik/gr-gsm'
 status: mature
 statusNote: >-
-  Upstream frozen in 2021, but Debian and Kali package bkerler's maint-3.10
-  fork, which builds against current GNU Radio.
-statusChecked: 2026-09-23
+  Upstream master stopped on 2021-05-05, but Debian and Kali ship
+  1.0.0~20220727-3, taken from bkerler's maint-3.10_with_multiarfcn branch and
+  built against GNU Radio 3.10.12.
+statusSource: 'https://sources.debian.org/src/gr-gsm/1.0.0~20220727-3/debian/changelog/'
+statusChecked: '2026-09-28'
+repo: 'https://github.com/ptrkrysik/gr-gsm'
 note: >-
   GNU Radio blocks and tools to receive and demodulate the GSM downlink from an
   SDR. grgsm_livemon tunes a found ARFCN, demodulates the GMSK bursts, decodes

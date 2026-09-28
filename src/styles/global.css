@@ -40,7 +40,7 @@ h1,h2,h3 { font-family:var(--disp); letter-spacing:-.01em; }
 blockquote.flag { border-left:3px solid var(--amber); background:rgba(255,194,75,.07);
   padding:10px 14px; margin:14px 0; border-radius:6px; color:#E7DCC2; font-size:14px; }
 
-/* Tool lifecycle badge — same shape as .review, different vocabulary. */
+/* Tool lifecycle badge: same shape as .review, different vocabulary. */
 .tstatus { font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:3px; border:1px solid var(--line2); letter-spacing:.06em; }
 .tstatus.active { color:var(--green); border-color:var(--green); }
 .tstatus.mature { color:var(--cyan); border-color:var(--cyan); }

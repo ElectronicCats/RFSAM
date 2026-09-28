@@ -8,7 +8,11 @@
     "homepage": "https://www.qorvo.com/products/p/DWM3000EVB",
     "spec": "Arduino-shield eval board · DWM3000 module (DW3110 transceiver) · IEEE 802.15.4z BPRF · UWB ch 5 (6.5 GHz) / ch 9 (8 GHz) · FiRa PHY/MAC, Apple U1/U2 interop",
     "software": ["seemoo-uwb-sniffer", "dwm3000-dwt-driver"],
-    "note": "The reference DW3000-family UWB development shield: a DWM3000 module (DW3110 second-generation impulse-radio transceiver) on an Arduino form factor. Designed against the FiRa PHY/MAC and interoperable with Apple's U1 & U2 chips, on channels 5 (6.5 GHz) and 9 (8 GHz). Drive it from a host MCU (e.g. a NUCLEO-F429ZI or nRF52840) to range, log or — with the SEEMOO sniffer firmware — capture 802.15.4z frames. The same board (a ~$65 EVB + nRF52DK) was the attack platform in the Ghost Peak research."
+    "status": "active",
+    "statusNote": "Qorvo's own store lists the DWM3000EVB with status Standard and units in stock (6 in stock, factory stock 0, checked 2026-09-28).",
+    "statusSource": "https://store.qorvo.com/products/detail/dwm3000evb-qorvo/686020/",
+    "statusChecked": "2026-09-28",
+    "note": "The reference DW3000-family UWB development shield: a DWM3000 module (DW3110 second-generation impulse-radio transceiver) on an Arduino form factor. Designed against the FiRa PHY/MAC and interoperable with Apple's U1 & U2 chips, on channels 5 (6.5 GHz) and 9 (8 GHz). Drive it from a host MCU (e.g. a NUCLEO-F429ZI or nRF52840) to range, log or, with the SEEMOO sniffer firmware, capture 802.15.4z frames. The same board (a ~$65 EVB + nRF52DK) was the attack platform in the Ghost Peak research."
   },
   {
     "slug": "makerfabs-esp32-uwb-dw3000",
@@ -19,7 +23,7 @@
     "repo": "https://github.com/Makerfabs/Makerfabs-ESP32-UWB-DW3000",
     "spec": "ESP32 + Qorvo DW3000 (DW3110) · IEEE 802.15.4z BPRF · UWB ch 5 / ch 9 · Arduino/ESP-IDF",
     "software": ["dwm3000-dwt-driver"],
-    "note": "Low-cost open hobbyist board pairing an ESP32 with a Qorvo DW3000 (DW3110) UWB transceiver — the accessible way to bring up two-way ranging and tag/anchor positioning experiments in the Arduino/ESP-IDF ecosystem. Open example firmware and an Arduino DW3000 library ship in the Makerfabs GitHub repo. A development/ranging board, not a turnkey sniffer; use it to learn the radio, characterise a scheme's parameters, or build a controllable peer for authorised testing."
+    "note": "Low-cost open hobbyist board pairing an ESP32 with a Qorvo DW3000 (DW3110) UWB transceiver, the accessible way to bring up two-way ranging and tag/anchor positioning experiments in the Arduino/ESP-IDF ecosystem. Open example firmware and an Arduino DW3000 library ship in the Makerfabs GitHub repo. A development/ranging board, not a turnkey sniffer; use it to learn the radio, characterise a scheme's parameters, or build a controllable peer for authorised testing."
   },
   {
     "slug": "mdek1001",
@@ -29,7 +33,11 @@
     "protocols": ["UWB"],
     "homepage": "https://www.qorvo.com/products/p/MDEK1001",
     "spec": "12 × DWM1001-DEV boards (DW1000 transceiver) · nRF52832 host · RTLS anchor/tag/bridge · IEEE 802.15.4-2011 UWB",
-    "note": "The classic first-generation Decawave/Qorvo RTLS development kit: twelve enclosed DWM1001-DEV boards (each a DW1000 UWB transceiver plus an nRF52832 host), configurable as anchors, tags or bridge nodes to stand up a real-time location system out of the box. DW1000 is the older generation — it predates the 802.15.4z STS security enhancements that the DW3000 family adds — so it is ideal for learning UWB ranging mechanics, less so for assessing modern secure-ranging schemes. Note: end-of-life as of Dec 2025 (last orders mid-2026); Qorvo points new designs at the QM33-series kits."
+    "status": "eol",
+    "statusNote": "Qorvo PCN 25-0154 (2025-12-04) declares MDEK1001 end of life: last-time-buy 2026-06-15, last ship 2026-12-15, no alternate part named. The single DWM1001-DEV board is listed Active at DigiKey as of 2026-09-28.",
+    "statusSource": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/8458/PCN_25-0154.pdf",
+    "statusChecked": "2026-09-28",
+    "note": "The classic first-generation Decawave/Qorvo RTLS development kit: twelve enclosed DWM1001-DEV boards (each a DW1000 UWB transceiver plus an nRF52832 host), configurable as anchors, tags or bridge nodes to stand up a real-time location system out of the box. DW1000 is the older generation, it predates the 802.15.4z STS security enhancements that the DW3000 family adds, so it is ideal for learning UWB ranging mechanics, less so for assessing modern secure-ranging schemes. Note: end-of-life as of Dec 2025 (last orders mid-2026); Qorvo's notice names no alternate part."
   },
   {
     "slug": "murata-type2bp",
@@ -38,8 +46,8 @@
     "type": "hardware",
     "protocols": ["UWB"],
     "homepage": "https://www.murata.com/products/connectivitymodule/ultra-wide-band/nxp/type2bp",
-    "spec": "NXP Trimension SR150 chipset · FiRa Certified · UWB ch 5 / ch 9 (6.25–8.25 GHz) · two-way ranging + 2D/3D Angle-of-Arrival (up to 3 antennas) · SPI",
-    "note": "A compact production UWB module built on NXP's Trimension SR150 (not a DW3000) — included here because the NXP UWB silicon family is the other half of the deployed ecosystem (NXP chips feature in car digital-key and phone designs, and inter-operate with Apple U1 in the Ghost Peak results). FiRa Certified, supports two-way ranging and 2D/3D Angle-of-Arrival with up to three antennas. A module for building/representing an NXP-based ranging peer; identify it by its SR150 silicon rather than assuming every UWB target is a Qorvo DW3000."
+    "spec": "NXP Trimension SR150 chipset · FiRa Certified · UWB ch 5 / ch 9 (6.25 to 8.25 GHz) · two-way ranging + 2D/3D Angle-of-Arrival (up to 3 antennas) · SPI",
+    "note": "A compact production UWB module built on NXP's Trimension SR150 (not a DW3000), included here because the NXP UWB silicon family is the other half of the deployed ecosystem (NXP chips feature in car digital-key and phone designs, and inter-operate with Apple U1 in the Ghost Peak results). FiRa Certified, supports two-way ranging and 2D/3D Angle-of-Arrival with up to three antennas. A module for building/representing an NXP-based ranging peer; identify it by its SR150 silicon rather than assuming every UWB target is a Qorvo DW3000."
   },
   {
     "slug": "seemoo-uwb-sniffer",
@@ -48,7 +56,11 @@
     "type": "software",
     "protocols": ["UWB"],
     "repo": "https://github.com/seemoo-lab/uwb-sniffer",
-    "note": "The reference OPEN UWB sniffer: firmware for a Qorvo DWM3000EVB driven by a host (a NUCLEO-F429ZI in the reference build; an nRF52840 with code changes) that captures IEEE 802.15.4z UWB frames and forwards them to Wireshark over a sensniff named pipe, with timestamps at the DW3000's 15.65 ps accuracy. Comes out of the SEEMOO/ETH Ghost Peak line of research. Honest limits: UWB has many PHY parameters (channel, preamble code, data rate, STS mode and length) that must be known IN ADVANCE to lock onto a link, and it forwards malformed frames too — so it is a research instrument, not a push-button capture. It does NOT break the STS or recover keys; it captures the over-the-air frames you can already decode."
+    "status": "research",
+    "statusNote": "Matches the DWM3000EVB plus Nucleo-F429ZI sniffer described in the Ghost Peak paper (USENIX Security 2022); most UWB parameters must be known in advance and set in source. The SDK download link in its README now redirects to the Decawave home page; last commit 2022-03-02.",
+    "statusSource": "https://github.com/seemoo-lab/uwb-sniffer",
+    "statusChecked": "2026-09-28",
+    "note": "The reference OPEN UWB sniffer: firmware for a Qorvo DWM3000EVB driven by a host (a NUCLEO-F429ZI in the reference build; an nRF52840 with code changes) that captures IEEE 802.15.4z UWB frames and forwards them to Wireshark over a sensniff named pipe, with timestamps at the DW3000's 15.65 ps accuracy. Comes out of the SEEMOO/ETH Ghost Peak line of research. Honest limits: UWB has many PHY parameters (channel, preamble code, data rate, STS mode and length) that must be known IN ADVANCE to lock onto a link, and it forwards malformed frames too, so it is a research instrument, not a push-button capture. It does NOT break the STS or recover keys; it captures the over-the-air frames you can already decode."
   },
   {
     "slug": "dwm3000-dwt-driver",
@@ -57,7 +69,11 @@
     "type": "project",
     "protocols": ["UWB"],
     "repo": "https://github.com/foldedtoad/dwm3000",
-    "note": "An open port of Qorvo/Decawave's DWM3000 driver and ranging examples (the dwt_uwb_driver API) to the DWS3000 Arduino shield, runnable under Zephyr. The practical glue for bringing up a DW3000 board, configuring its 802.15.4z PHY parameters (channel, preamble, PRF, STS mode), and running two-way-ranging exchanges you can log — the dev-board path for capturing/characterising ranging behaviour. A development driver, not an attack tool."
+    "status": "stale",
+    "statusNote": "README requires Zephyr 3.6 (Zephyr stable is 4.4.2) and the last commit is 2024-05-13. README states the nRF52840 (PCA10056) + DWS3000 combination is not completely functional, while nRF52832 is fully functional.",
+    "statusSource": "https://github.com/foldedtoad/dwm3000/blob/master/README.md",
+    "statusChecked": "2026-09-28",
+    "note": "An open port of Qorvo/Decawave's DWM3000 driver and ranging examples (the dwt_uwb_driver API) to the DWS3000 Arduino shield, runnable under Zephyr. The practical glue for bringing up a DW3000 board, configuring its 802.15.4z PHY parameters (channel, preamble, PRF, STS mode), and running two-way-ranging exchanges you can log, the dev-board path for capturing/characterising ranging behaviour. A development driver, not an attack tool."
   },
   {
     "slug": "forthink-uwb-sniffer",
@@ -66,7 +82,7 @@
     "type": "software",
     "protocols": ["UWB"],
     "repo": "https://github.com/forthink-xyz/forthink_uwb_sniffer_tool",
-    "note": "Open-source host software and a Wireshark plugin (forthink-xyz/uwb-sniffer-wireshark) that monitor and decode CCC, FiRa and IEEE 802.15.4a/z UWB — including parameters for Apple Car-Key and AirTag/Nearby-Interaction (FiRa) traffic. Caveat: the software is open but it REQUIRES Forthink's COMMERCIAL UWB-Dongle-Sniffer hardware (an FT4222H-interfaced dongle) — the radio itself is a closed, purchased product, not open hardware. Listed for completeness as the most capable off-the-shelf UWB capture path; it observes frames, it does not defeat STS-protected ranging integrity."
+    "note": "Open-source host software and a Wireshark plugin (forthink-xyz/uwb-sniffer-wireshark) that monitor and decode CCC, FiRa and IEEE 802.15.4a/z UWB, including parameters for Apple Car-Key and AirTag/Nearby-Interaction (FiRa) traffic. Caveat: the software is open but it REQUIRES Forthink's COMMERCIAL UWB-Dongle-Sniffer hardware (an FT4222H-interfaced dongle), the radio itself is a closed, purchased product, not open hardware. Listed for completeness as the most capable off-the-shelf UWB capture path; it observes frames, it does not defeat STS-protected ranging integrity."
   },
   {
     "slug": "forthink-uwb-dongle",
@@ -77,6 +93,6 @@
     "spec": "Commercial UWB sniffer dongle · FT4222H USB interface · closed hardware",
     "homepage": "https://github.com/forthink-xyz/forthink_uwb_sniffer_tool",
     "software": ["forthink-uwb-sniffer"],
-    "note": "Forthink's commercial UWB-Dongle-Sniffer — a closed, purchased FT4222H-interfaced UWB capture dongle (not open hardware). It is the radio the open Forthink sniffer software and Wireshark plugin run against; the dongle must be bought from Forthink."
+    "note": "Forthink's commercial UWB-Dongle-Sniffer, a closed, purchased FT4222H-interfaced UWB capture dongle (not open hardware). It is the radio the open Forthink sniffer software and Wireshark plugin run against; the dongle must be bought from Forthink."
   }
 ]

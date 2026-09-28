@@ -6,6 +6,10 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/baol/waving-z",
+    "status": "mature",
+    "statusNote": "Small C++11 codebase whose only library dependency is Boost, with no GNU Radio or Python; last code change 2018-06-14 and a typo fix on 2022-04-03. G.9959 (01/2015) is still the edition in force.",
+    "statusSource": "https://github.com/baol/waving-z/blob/master/CMakeLists.txt",
+    "statusChecked": "2026-09-28",
     "note": "An ITU-T G.9959 (de)modulator for Z-Wave (started as a fork of andersesbensen/rtl-zwave). `wave-in` decodes Z-Wave frames from a raw I/Q stream piped in from an RTL-SDR (`rtl_sdr`) or HackRF; `wave-out` encodes frames and transmits them through `hackrf_transfer`. The rtl_433-style entry point for getting Z-Wave packets off a cheap SDR.",
     "software": []
   },
@@ -16,7 +20,11 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/andersesbensen/rtl-zwave",
-    "note": "The original G.9959 (Z-Wave) demodulator for the RTL-SDR: pipe `rtl_sdr` samples into it and it prints decoded Z-Wave frames. Lightweight, receive-only, and the codebase Waving-Z grew out of — a minimal way to confirm Z-Wave traffic and read frame headers on a ~$30 dongle.",
+    "status": "mature",
+    "statusNote": "Code unchanged since 2015-03-18; the only later commit (2023-09-17) added LICENSE.md. It demodulates the G.9959 FSK rates (9.6/40/100 kbps; G.9959 01/2015 is still the edition in force) and has no support for the DSSS-OQPSK Z-Wave Long Range PHY.",
+    "statusSource": "https://github.com/andersesbensen/rtl-zwave",
+    "statusChecked": "2026-09-28",
+    "note": "The original G.9959 (Z-Wave) demodulator for the RTL-SDR: pipe `rtl_sdr` samples into it and it prints decoded Z-Wave frames. Lightweight, receive-only, and the codebase Waving-Z grew out of, a minimal way to confirm Z-Wave traffic and read frame headers on a ~$30 dongle.",
     "software": []
   },
   {
@@ -26,7 +34,11 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/cureHsu/EZ-Wave",
-    "note": "The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era — dated but still the canonical exploitation toolkit.",
+    "status": "stale",
+    "statusNote": "The original AFITWiSec/EZ-Wave GitHub repository now returns 404; what remains is a copy under another account whose last commit is dated 2016-01-17. Its README requires Python 2.7 and GNU Radio 3.7+ and says it was tested on Ubuntu 14.04 only.",
+    "statusSource": "https://github.com/cureHsu/EZ-Wave",
+    "statusChecked": "2026-09-28",
+    "note": "The reference open Z-Wave assessment suite (GNU Radio + Scapy-radio): ezstumbler does passive discovery and active network enumeration, ezrecon interrogates a device (manufacturer/model, firmware version, supported command classes, configuration), and ezfingerprint identifies the Z-Wave module generation via a PHY preamble-length manipulation. Default config drives two HackRF One SDRs. Python 2.7 / GNU Radio 3.7 era, dated but still the canonical exploitation toolkit.",
     "software": []
   },
   {
@@ -36,7 +48,11 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/BastilleResearch/scapy-radio",
-    "note": "GNU Radio flowgraphs plus a patched Scapy that lets you sniff, dissect, craft and replay several sub-GHz/2.4 GHz protocols — including a Z-Wave layer — straight from a Python/Scapy session over an SDR (HackRF). The radio/Scapy plumbing EZ-Wave builds on, and a standalone way to script Z-Wave frame capture and injection.",
+    "status": "stale",
+    "statusNote": "Installs with python2 and requires GNU Radio 3.7 per its README and install.sh; last commit 2016-04-01. No package on PyPI or in Debian.",
+    "statusSource": "https://github.com/BastilleResearch/scapy-radio/blob/master/install.sh",
+    "statusChecked": "2026-09-28",
+    "note": "GNU Radio flowgraphs plus a patched Scapy that lets you sniff, dissect, craft and replay several sub-GHz/2.4 GHz protocols, including a Z-Wave layer, straight from a Python/Scapy session over an SDR (HackRF). The radio/Scapy plumbing EZ-Wave builds on, and a standalone way to script Z-Wave frame capture and injection.",
     "software": []
   },
   {
@@ -46,7 +62,11 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "repo": "https://github.com/cpoore1/gr-zwave_poore",
-    "note": "A GNU Radio out-of-tree module that transmits (and helps decode) Z-Wave signals, tested with a USRP B210; integrated into AINFOSEC's FISSURE RF framework. Branches for GNU Radio 3.7/3.8/3.10. A maintained GNU Radio block path for Z-Wave TX when you want a flowgraph rather than the Scapy-radio stack.",
+    "status": "mature",
+    "statusNote": "Upstream has had no commit since 2022-08-28, but FISSURE pulls it in as a git submodule and its installers build it on Ubuntu, Kali, DragonOS, Raspberry Pi OS, Parrot and BackBox. The default maint-3.10 branch is for GNU Radio 3.10 and later.",
+    "statusSource": "https://github.com/ainfosec/FISSURE/blob/Python3/.gitmodules",
+    "statusChecked": "2026-09-28",
+    "note": "A GNU Radio out-of-tree module that transmits (and helps decode) Z-Wave signals, tested with a USRP B210; integrated into AINFOSEC's FISSURE RF framework. Branches for GNU Radio 3.7/3.8/3.10. A GNU Radio block path for Z-Wave TX when you want a flowgraph rather than the Scapy-radio stack.",
     "software": []
   },
   {
@@ -56,7 +76,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "homepage": "https://docs.silabs.com/z-wave/1.0.1/z-wave-docs/zwave-tools",
-    "note": "Silicon Labs' official GUI tool (in Simplicity Studio) that captures RF communication on a Z-Wave network for debugging — the vendor sniffer. Decodes the full Z-Wave frame including command classes and shows security (S0/S2) handshakes. Needs a USB Z-Wave adapter flashed with Zniffer firmware (e.g. a UZB stick). The turnkey capture path when an SDR demod is too fiddly.",
+    "note": "Silicon Labs' official GUI tool (in Simplicity Studio) that captures RF communication on a Z-Wave network for debugging, the vendor sniffer. Decodes the full Z-Wave frame including command classes and shows security (S0/S2) handshakes. Needs a USB Z-Wave adapter flashed with Zniffer firmware (e.g. a UZB stick). The turnkey capture path when an SDR demod is too fiddly.",
     "software": []
   },
   {
@@ -66,7 +86,7 @@
     "type": "software",
     "protocols": ["Z-Wave"],
     "homepage": "https://docs.silabs.com/z-wave/1.0.1/z-wave-docs/zwave-tools",
-    "note": "Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them — driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.",
+    "note": "Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them, driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.",
     "software": []
   },
   {
@@ -78,6 +98,6 @@
     "spec": "EFR32ZG14 Z-Wave 700 SoC · Serial API over USB (CP2102N VCOM) · firmware-upgradeable",
     "homepage": "https://www.silabs.com/development-tools/wireless/z-wave/efr32zg14-usb-7-z-wave-700-stick-bridge-module",
     "software": ["zwave-pc-controller", "zwave-zniffer"],
-    "note": "Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host — the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21."
+    "note": "Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host, the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21."
   }
 ]

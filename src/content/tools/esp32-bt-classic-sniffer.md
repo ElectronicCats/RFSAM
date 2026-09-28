@@ -8,15 +8,18 @@ protocols:
 repo: 'https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer'
 status: mature
 statusNote: >-
-  The only cheap open BR/EDR sniffer and the instrument behind BrakTooth. Its
-  ROM patch depends on the ESP32 silicon revision you are handed.
-statusChecked: 2026-09-23
+  The active BR/EDR sniffer developed during the BrakTooth research, described
+  by its authors as the cheapest BR/EDR active sniffer they are aware of. Last
+  commit 2023-05-10; an open issue reports the prebuilt firmware not booting on
+  an ESP32-D0WD-V3 rev 3.1 board, cause unconfirmed.
+statusSource: 'https://asset-group.github.io/code.html'
+statusChecked: '2026-09-28'
 note: >-
-  The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4–10; ~590
-  stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband
-  packets — BT header, channel, device role, FHS, ACL and LMP — over USB serial
-  to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output. This is
-  Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the target, so
-  authorised testing only.
+  The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4 to 10;
+  ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump
+  baseband packets, BT header, channel, device role, FHS, ACL and LMP, over USB
+  serial to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output.
+  This is Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the
+  target, so authorised testing only.
 ---
-The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4–10; ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband packets — BT header, channel, device role, FHS, ACL and LMP — over USB serial to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output. This is Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the target, so authorised testing only.
+The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4 to 10; ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband packets, BT header, channel, device role, FHS, ACL and LMP, over USB serial to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output. This is Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the target, so authorised testing only.

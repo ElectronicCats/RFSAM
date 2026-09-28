@@ -93,7 +93,7 @@ const payload = JSON.stringify({
     // ---- pinned pipeline layout: step (spine) → software → hardware, plus a shared decoder ----
     const X1 = 86, NODE_VG = 28, MIN_SLOT = 92, STEP_PAD = 32, CHAR_W = 11, COL_GAP = 40;
     // Columns scale to the longest label so software roles can't overrun the hardware
-    // column — decoder at X1, software at swCol, hardware at hwCol.
+    // column, decoder at X1, software at swCol, hardware at hwCol.
     let maxDec = 0, maxSw = 0, anyDec = false;
     P.steps.forEach((s) => {
       if (s.decoder) { anyDec = true; maxDec = Math.max(maxDec, s.decoder.name.length); }
@@ -127,7 +127,7 @@ const payload = JSON.stringify({
         nodes.push({ id: decId, name: s.decoder.name, kind: s.decoder.type, stepKey: s.key, x: X1, y: cy, fx: X1, fy: cy, detail: { kind: 'tool', tool: { ...s.decoder, role: 'Decode', why: s.decoder.note, caveat: null, needs: null, deps: [] } } });
         links.push({ source: sid, target: decId }); // Capture step → Wireshark (the entry)
       }
-      // Key each tool node by its ENTRY index, not its slug — a step may list the
+      // Key each tool node by its ENTRY index, not its slug, a step may list the
       // same tool twice (e.g. Proxmark for two roles), and slug-keyed ids would
       // collide, leaving one bubble unlinked/floating. idForSlug resolves a
       // dep that points at another primary tool to that tool's first node.
@@ -137,7 +137,7 @@ const payload = JSON.stringify({
         const ty = cy + (j - (n1 - 1) / 2) * NODE_VG;
         const tid = sid + ':t:' + j;
         // label the node by its ROLE (the capability at this step) so the graph itself
-        // explains what you do — e.g. "Channel activity & topology (cativity)" rather
+        // explains what you do, e.g. "Channel activity & topology (cativity)" rather
         // than just "catnip"; fall back to the tool name when a tool has no role.
         const label = t.role || t.name;
         nodes.push({ id: tid, name: label, kind: t.type, stepKey: s.key, x: softwareX, y: ty, fx: softwareX, fy: ty, detail: { kind: 'tool', tool: t } });
@@ -233,9 +233,9 @@ const payload = JSON.stringify({
         ${planned ? `<p class="muted">${esc(P.protocol.name)}'s toolchain is still being filled in. The descent and controls are here; the kit lands when the tools are curated.</p>` : ''}
         ${P.protocol.reference ? `<div class="ref">${linkA(P.protocol.reference.url, 'Reference: ' + esc(P.protocol.reference.name) + ' ↗')}</div>` : ''}
         <div class="kit-h">Hardware tools<span>${hw.length}</span></div>
-        <div class="kit-list">${hw.map(kitRow).join('') || '<span class="muted">—</span>'}</div>
+        <div class="kit-list">${hw.map(kitRow).join('') || '<span class="muted">·</span>'}</div>
         <div class="kit-h">Software tools<span>${sw.length}</span></div>
-        <div class="kit-list">${sw.map(kitRow).join('') || '<span class="muted">—</span>'}</div>
+        <div class="kit-list">${sw.map(kitRow).join('') || '<span class="muted">·</span>'}</div>
         <p class="hint mono">Click a step, software or hardware node for the reasons and the detail.</p>`;
     }
 
@@ -269,7 +269,7 @@ const payload = JSON.stringify({
       }
       side.innerHTML = h;
       document.getElementById('wf-back').onclick = renderKit;
-      // On phones the panel sits BELOW the graph — bring it into view on a tap so
+      // On phones the panel sits BELOW the graph, bring it into view on a tap so
       // the detail you just asked for is actually on screen.
       if (window.matchMedia('(max-width: 760px)').matches) {
         document.getElementById('wf-side').scrollIntoView({ behavior: 'smooth', block: 'start' });
