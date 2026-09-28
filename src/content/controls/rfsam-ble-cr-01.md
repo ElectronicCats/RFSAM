@@ -96,7 +96,7 @@ references:
     authors: 'D. Antonioli, N. O. Tippenhauer, K. Rasmussen'
     venue: 'ACM Transactions on Privacy and Security (TOPS), Vol. 23, No. 3'
     year: 2020
-    url: 'https://francozappa.github.io/publication/knob-ble/paper.pdf'
+    url: 'https://francozappa.github.io/publication/2020/knob-ble/paper.pdf'
     type: paper
   - key: cve-2019-9506
     title: 'CVE-2019-9506: Bluetooth encryption key negotiation (KNOB)'
