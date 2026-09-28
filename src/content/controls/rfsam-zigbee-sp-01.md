@@ -107,9 +107,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-16
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-08-26
 ---
 ## Mechanism
 
@@ -152,7 +152,17 @@ Capture feasibility is dominated by Wi-Fi coexistence: 802.15.4 shares 2.4 GHz w
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture. A bench survey of a Zigbee 3.0 smart-bulb hub on an authorised test network would run as follows. `zbstumbler` (KillerBee, nRF52840) reports a single PAN: PANID `[FILL: observed PAN ID]` on **channel 15** with Stack Profile `ZigBee PRO`. A passive Kismet sweep over the same band confirms the PAN on channel 15 and records `[FILL: device count]` distinct 802.15.4 devices, sending nothing on air. On gqrx tuned to 2425 MHz (channel 15 centre), the ~2 MHz Zigbee bursts appear in a gap beside a Wi-Fi AP on Wi-Fi channel 6, signal `[FILL: measured RSSI/dBm]` — read this against your environment to judge whether capture is clean. Conclusion in this illustration: capture feasible on channel 15; hand off to the LL capture control parked on that channel. The `[FILL: …]` items are placeholders for the values you measure on your own engagement, not reported findings.
+Passive survey (step 2) run on 2026-08-26 in the Electronic Cats lab, indoors, using Kismet with a CatSniffer as the 802.15.4 datasource and a rigid omnidirectional antenna on its SMA port. Kismet logged the session to `Kismet-20260826-15-26-18-1.kismet`. The survey transmitted nothing.
+
+Over 167 s (15:26:34 to 15:29:21) Kismet recorded 23 frames, every one of them on channel 25 (2475 MHz, which matches `Fc = 2405 + 5(k - 11)` from step 4):
+
+- 14 frames carried addresses. They came from two nodes, listed by Kismet as `00:01` and `52:5A`: 8 frames exchanged between the two nodes (4 in each direction) and 6 frames sent to the broadcast address `FF:FF` (3 from each node).
+- 9 frames carried no address in the Kismet log: eight of 33 bytes and one of 239 bytes.
+- Per-frame signal ranged from -87 dBm to -62 dBm, with a mean of -70.2 dBm over the 23 frames. The per-node peak reported by Kismet was -64 dBm for both nodes.
+
+Kismet's device list shows three entries because it lists the broadcast address `FF:FF` as a device. The number of transmitting nodes observed is two.
+
+Feasibility record (step 5): the network is on channel 25 and both nodes were received at a -64 dBm peak throughout a 167 s window, so a capture radio parked on channel 25 is the hand-off to the LL capture control. Two items of the record were not measured in this session and stay open for this site: the PAN ID, and the Wi-Fi overlap (no SDR waterfall was taken, step 4).
 
 ## Remediation
 
