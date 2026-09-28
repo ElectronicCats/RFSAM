@@ -140,7 +140,19 @@ All steps below are passive receive-only. No transmission is involved; even so, 
 
 ## Field case
 
-In a 30.0 s session in the lab (extracted from a continuous 106.6 s capture) with a HackRF One at 916.0 MHz (US915, 125 kHz) and Gain -9.0 dB (a=1 l=32 g=40), stock antenna in fixed position, gqrx 2.17.7 showed a flat waterfall with no clearly distinguishable CSS diagonals (0). Processing the same 30 s with gr-lora_sdr (bw 125 kHz, SF7–SF12 sweep, sync 0x12/0x34) recovered 2 frames with valid CRC, both SF7 private LoRa; repeating the same processing on the full 106.6 s window the count rose to 4 with the same SF. Frames were recovered ~7–8 dB below the in-channel noise floor (SF7 threshold ≈ -7.5 dB SNR, within Semtech's up to 20 dB envelope [semtech2019longrange]) and nothing decoded at SF8–SF12.
+Survey run on 2026-09-01 in the Electronic Cats lab on US915, with a HackRF One and its stock telescopic antenna in a fixed position. Receive only.
+
+Capture (step 3), 106.6 s at 2 MS/s, int8 I/Q:
+
+```bash
+hackrf_transfer -f 916000000 -s 2000000 -a 1 -l 32 -g 32
+```
+
+- **Waterfall (step 2).** In gqrx 2.17.7, with the full span on screen, no diagonal chirp structure could be made out; the transmissions showed only as short marks at 916.0 MHz.
+- **Energy in the capture.** A plain power threshold over 10 ms windows finds the transmissions directly: in the first 30 s, 12 bursts of about 0.08 s each, arriving as six pairs roughly 5.2 s apart. The bursts reach full scale, with 1.16% of those samples clipped.
+- **De-chirp (step 4).** gr-lora_sdr at 125 kHz, swept over SF7 to SF12 with sync words `0x12` and `0x34`, returned 4 frames with a valid CRC at SF7 with sync word `0x12`, and none for any other combination.
+
+What this session does and does not show. The transmitter was close and strong enough to clip the receiver, so this is the strong-signal case: the bursts are found by a simple energy threshold, and the de-chirp identifies what the waterfall could not, namely the spreading factor (SF7) and the sync word (`0x12`, private network). It does not demonstrate reception below the noise floor, which is the case this control is ultimately about [semtech2019longrange]; that needs a repeat with the transmitter attenuated or at distance.
 
 ## Remediation
 
