@@ -13,7 +13,7 @@ software:
 note: >-
   RAKwireless multi-channel LoRaWAN gateway built on a Raspberry Pi CM4 with an
   SX1302/SX1303 concentrator. Receives every LoRaWAN channel at once and feeds
-  frames over the Semtech UDP packet forwarder, the gateway ChirpCat is
-  designed to run on for uplink/downlink capture.
+  frames over the Semtech UDP packet forwarder, the gateway ChirpCat is designed
+  to run on for uplink/downlink capture.
 ---
 RAKwireless multi-channel LoRaWAN gateway built on a Raspberry Pi CM4 with an SX1302/SX1303 concentrator. Receives every LoRaWAN channel at once and feeds frames over the Semtech UDP packet forwarder, the gateway ChirpCat is designed to run on for uplink/downlink capture.

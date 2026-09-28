@@ -5,7 +5,7 @@ vendor: Flipper Devices
 type: hardware
 protocols:
   - Wi-Fi
-spec: ESP32-S2-WROVER · 2.4 GHz Wi-Fi only, S2 has NO Bluetooth radio
+spec: 'ESP32-S2-WROVER · 2.4 GHz Wi-Fi only, S2 has NO Bluetooth radio'
 homepage: 'https://flipper.net/products/wifi-devboard'
 software:
   - esp32-marauder

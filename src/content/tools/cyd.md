@@ -1,6 +1,6 @@
 ---
 slug: cyd
-name: CYD, Cheap Yellow Display (ESP32-2432S028R)
+name: 'CYD, Cheap Yellow Display (ESP32-2432S028R)'
 vendor: community (Witnessmenow guide)
 type: hardware
 protocols:
