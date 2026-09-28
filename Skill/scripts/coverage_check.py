@@ -27,11 +27,13 @@ COVERAGE = {
     "BLE": [
         ("RFSAM-BLE-IG-01", "Known vulnerabilities of the SoC and host stack", "IG"),
         ("RFSAM-BLE-SP-01", "Channel map and capture feasibility", "SP"),
+        ("RFSAM-BLE-SP-02", "Detect and inventory BLE trackers (Find My / AirTag)", "SP"),
         ("RFSAM-BLE-PHY-01", "Demodulation and bit recovery", "PHY"),
         ("RFSAM-BLE-LL-01", "Advertising and identifier exposure", "LL"),
         ("RFSAM-BLE-LL-02", "Connection-data capture", "LL"),
         ("RFSAM-BLE-CR-01", "Pairing and encryption assessment", "CR"),
         ("RFSAM-BLE-AT-01", "Hijack a live BLE connection", "AT"),
+        ("RFSAM-BLE-AP-01", "GATT enumeration over the CatSniffer host controller", "AP"),
     ],
     "BTC": [
         ("RFSAM-BTC-IG-01", "Identify the device, BR/EDR mode and vulnerability corpus", "IG"),

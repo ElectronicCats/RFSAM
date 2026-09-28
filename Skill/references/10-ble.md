@@ -19,8 +19,9 @@
 - **Deference**: BSAM-IG-01/02/03/04. `deferred: true`.
 - **Cited attacks**: SweynTooth (CVE-2019-19194 Zero-LTK), KNOB (CVE-2019-9506), BLEEDINGBIT (CVE-2018-16986), BleedingTooth (CVE-2020-12351), BLESA.
 
-### SP — `RFSAM-BLE-SP-01` Channel map and capture feasibility
-- **Objective**: which channels can you observe simultaneously with your radio — feasibility of discovery/full-band/connection-following.
+### SP — `RFSAM-BLE-SP-01` Channel map and capture feasibility · `RFSAM-BLE-SP-02` Detect and inventory BLE trackers (Find My / AirTag)
+- **SP-01 Objective**: which channels can you observe simultaneously with your radio — feasibility of discovery/full-band/connection-following.
+- **SP-02 Objective**: are Find My / AirTag (or comparable) trackers transmitting in the surveyed space, and can each detection be classified? CatSniffer AirTag-scanner firmware as a standalone passive detector.
 - **Kit**: Gqrx (waterfall, ~20 MHz HackRF / 122.88 MHz bladeRF oversampling); ESP32 Marauder/Minino (scan advertising); ESP32 AirTag scanner.
 - **Caveat**: RTL-SDR cannot reach 2.4 GHz. HackRF sees a slice (1 of 3 advertising channels); bladeRF oversampling the entire band.
 - **Criticality**: `info` (auditor-capability baseline, not a device finding).
@@ -53,10 +54,10 @@
 - **Cited attacks**: InjectaBLE (Cayre DSN 2021), Btlejacking (Cauquil DEF CON 26), BLESA (CVE-2020-9770).
 - **Deference**: BSAM-AP-06/AU-03/EN-01. `deferred: true`. Criticality `critical`.
 
-### AP — Interact with GATT
-- **Objective**: what does the device trust over the link? GATT reachable without auth.
-- **Kit**: Bleak (script GATT), bettercap (enumerate), Bruce (Bad BLE HID).
-- **No dedicated control in the coverage-map** — BLE AP is exercised via GATT interaction after CR/AT.
+### AP — `RFSAM-BLE-AP-01` GATT enumeration over the CatSniffer host controller
+- **Objective**: what does the device trust over the link? Can GATT services and characteristics be enumerated, read or written without authentication?
+- **Kit**: CatSniffer as a Linux virtual HCI controller (catnip), Bleak (script GATT), bettercap (enumerate), Bruce (Bad BLE HID).
+- **Deference**: BSAM-SE-03, BSAM-DI-04 — `deferred: true`. The control covers the host-controller prerequisite that reaches where the BSAM service-access and data-exposure controls apply.
 
 ## Subflow (specialization of the master flow)
 
@@ -69,7 +70,7 @@ BLE-specific transitions; verbatim commands live in `Layer-by-layer descent` abo
 | PHY+LL (LL-01/02) | 🔗BSAM: stop descent at LL and defer to BSAM. Resume at CR **only if** BSAM returns a finding that requires it | 🔗BSAM |
 | CR → AT | Weak pairing confirmed (LE Legacy TK recoverable). LESC (ECDH) **not breakable** from capture → gap | — |
 | AT | ⚠TX re-check `loot/scope.txt`; active/lab only | ⚠TX |
-| AP (no control) | GATT/HID over what the device trusts; exercised after CR/AT | — |
+| AP (AP-01) | GATT/HID over what the device trusts; enumerate over the CatSniffer HCI | 🔗BSAM |
 
 **Defensive anomaly** (Defensive mode, RX-only): AirTag/Find My **not your own** in your environment = stalking. `minino`/`esp32-airtag-scanner` detects it. Register in `loot/notes/`; do **not** descend to AT.
 
