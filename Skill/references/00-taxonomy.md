@@ -94,8 +94,8 @@ Regex: `^RFSAM-(BLE|BTC|WIFI|LORA|LTE|RFID|SUBG|ZIGBEE|ZWAVE|THREAD|GNSS|ADSB|NR
 Map of all controls that RFSAM defines (one per relevant protocol×layer cell).
 `status: existing` = file exists; many are `stub`s to be deepened.
 
-**BLE**: IG-01 (SoC/host stack vulns) · SP-01 (channel map) · PHY-01 (demod/bit recovery) ·
-LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR-01 (pairing/encryption) · AT-01 (hijack live connection)
+**BLE**: IG-01 (SoC/host stack vulns) · SP-01 (channel map) · SP-02 (Find My/AirTag tracker sweep) · PHY-01 (demod/bit recovery) ·
+LL-01 (advertising/identifier exposure) · LL-02 (connection-data capture) · CR-01 (pairing/encryption) · AT-01 (hijack live connection) · AP-01 (GATT enumeration over the CatSniffer host controller)
 
 **BTC**: IG-01 (identify device/BR-EDR/vuln corpus) · SP-01 (inquiry-scan) · LL-01 (baseband capture) · CR-01 (pairing/key strength) · AT-01 (LMP resilience) · AP-01 (exposed profiles)
 

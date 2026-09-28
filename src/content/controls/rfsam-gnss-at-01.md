@@ -14,7 +14,7 @@ deferred: false
 objective: >-
   Determine whether a GNSS receiver can be made to report an attacker-chosen
   position or time by a counterfeit (spoofed) civilian signal, or be denied any
-  fix by in-band jamming — and whether it detects, alarms on, or rejects either
+  fix by in-band jamming, and whether it detects, alarms on, or rejects either
   condition. Authorised, RF-contained testing only.
 intro: >-
   Civilian GNSS signals (GPS L1 C/A, GLONASS, BeiDou B1, Galileo E1 OS) are
@@ -27,7 +27,7 @@ prerequisites:
   hardware:
     - 'A TX-capable SDR: HackRF One, bladeRF 2.0 micro, or USRP B210 (RTL-SDR is receive-only and cannot transmit)'
     - 'The target GNSS receiver (module, handset, or timing reference) under test'
-    - 'RF containment: a shielded enclosure or a cabled (conducted) path with attenuators — over-the-air GNSS TX is illegal in most jurisdictions'
+    - 'RF containment: a shielded enclosure or a cabled (conducted) path with attenuators, over-the-air GNSS TX is illegal in most jurisdictions'
     - 'Optionally a reference GNSS receiver (e.g. u-blox NEO) to observe satellite count and C/N0 during the test'
   software:
     - 'gps-sdr-sim (signal synthesis for the spoofing case)'
@@ -46,7 +46,7 @@ attacks:
       - utexas2013yacht
     impact: >-
       Receiver locks onto the counterfeit signal and reports an attacker-chosen
-      position and/or clock, with no alarm — downstream navigation, geofencing,
+      position and/or clock, with no alarm, downstream navigation, geofencing,
       timestamping or PPS timing follows the false fix.
     preconditions: >-
       A receiver tracking unauthenticated civilian signals; the spoofer must
@@ -85,7 +85,7 @@ references:
     url: 'https://doi.org/10.1109/JPROC.2016.2526658'
     type: paper
   - key: texbat
-    title: 'TEXBAT — Texas Spoofing Test Battery (civil GPS L1 C/A spoofing recordings)'
+    title: 'TEXBAT: Texas Spoofing Test Battery (civil GPS L1 C/A spoofing recordings)'
     authors: 'T. E. Humphreys, J. A. Bhatti, D. P. Shepard, K. D. Wesson (UT Austin Radionavigation Laboratory)'
     venue: UT Austin Radionavigation Laboratory
     year: 2012
@@ -106,7 +106,7 @@ references:
     url: 'https://www.gsc-europa.eu/sites/default/files/sites/all/files/Galileo_OSNMA_SIS_ICD_v1.1.pdf'
     type: standard
   - key: gps-sdr-sim
-    title: 'gps-sdr-sim — Software-Defined GPS Signal Simulator'
+    title: 'gps-sdr-sim, Software-Defined GPS Signal Simulator'
     authors: T. Ebinuma (osqzss)
     venue: GitHub
     year: 2024
@@ -129,13 +129,13 @@ lastResearched: 2026-06-14
 ---
 ## Mechanism
 
-A civilian GNSS receiver derives position and time entirely from signals it cannot authenticate. GPS L1 C/A is BPSK on a 1575.42 MHz carrier, spread by a public 1023-chip code at 1.023 Mcps repeating every 1 ms, carrying a 50 bps navigation message; the same applies to GLONASS, BeiDou B1 and Galileo E1 OS — the codes and message format are published, so any receiver decodes them and, equally, anyone can generate them [galileo-osnma]. The recovered signal sits roughly 30 dB below the noise floor and is pulled out only by correlating against the known code, which is exactly why a marginally stronger counterfeit can win the correlation and capture the receiver [psiaki2016survey].
+A civilian GNSS receiver derives position and time entirely from signals it cannot authenticate. GPS L1 C/A is BPSK on a 1575.42 MHz carrier, spread by a public 1023-chip code at 1.023 Mcps repeating every 1 ms, carrying a 50 bps navigation message; the same applies to GLONASS, BeiDou B1 and Galileo E1 OS, the codes and message format are published, so any receiver decodes them and, equally, anyone can generate them [galileo-osnma]. The recovered signal sits roughly 30 dB below the noise floor and is pulled out only by correlating against the known code, which is exactly why a marginally stronger counterfeit can win the correlation and capture the receiver [psiaki2016survey].
 
-Two attack families exploit this. **Spoofing** synthesises a valid-looking signal and transmits it at higher power than the live sky; once the receiver locks onto it, the attacker can drag the reported position or clock to chosen values. A portable software-defined civilian spoofer was first built and characterised by Humphreys et al., who showed a commodity receiver could be captured and walked away from truth without raising any alarm [humphreys2008spoof]. The technique was later demonstrated against a moving target — a superyacht at sea — where counterfeit signals slowly overpowered the authentic ones and steered the vessel's navigation off course while its display still showed a straight line [utexas2013yacht]. The Texas Spoofing Test Battery (TEXBAT) standardised a set of recorded L1 C/A spoofing scenarios (static and dynamic, with matched clean recordings) so that receiver/detector resilience can be evaluated against a common reference [texbat].
+Two attack families exploit this. **Spoofing** synthesises a valid-looking signal and transmits it at higher power than the live sky; once the receiver locks onto it, the attacker can drag the reported position or clock to chosen values. A portable software-defined civilian spoofer was first built and characterised by Humphreys et al., who showed a commodity receiver could be captured and walked away from truth without raising any alarm [humphreys2008spoof]. The technique was later demonstrated against a moving target, a superyacht at sea, where counterfeit signals slowly overpowered the authentic ones and steered the vessel's navigation off course while its display still showed a straight line [utexas2013yacht]. The Texas Spoofing Test Battery (TEXBAT) standardised a set of recorded L1 C/A spoofing scenarios (static and dynamic, with matched clean recordings) so that receiver/detector resilience can be evaluated against a common reference [texbat].
 
 **Jamming** is the blunt counterpart: raising the in-band noise or interference floor over the target band above the receiver's despreading margin denies any fix at all. Because the legitimate signal is so weak, modest in-band power is enough to deny it; the resilience question is whether the receiver flags the loss of integrity or silently coasts and accepts the first plausible fix it reacquires [psiaki2016survey].
 
-The defensive state of the art splits into cryptographic and non-cryptographic checks. Galileo OSNMA adds optional navigation-message authentication on E1-B using a TESLA-style scheme (digitally signing the Open Service I/NAV message), letting an OSNMA-aware receiver verify the message originated from the system; EUSPA declared the OSNMA Initial Service operational on 24 July 2025 [galileo-osnma]. Crediting a target with message-authentication resilience requires confirming the specific receiver under test actually validates OSNMA, not merely that the constellation broadcasts it. Receivers can also apply non-cryptographic consistency checks — power/distortion monitoring, RAIM, clock-jump and inertial cross-checks, angle-of-arrival with multiple antennas — surveyed in [psiaki2016survey]. Legacy GPS L1 C/A on its own offers none of these, which is what this control tests for.
+The defensive state of the art splits into cryptographic and non-cryptographic checks. Galileo OSNMA adds optional navigation-message authentication on E1-B using a TESLA-style scheme (digitally signing the Open Service I/NAV message), letting an OSNMA-aware receiver verify the message originated from the system; EUSPA declared the OSNMA Initial Service operational on 24 July 2025 [galileo-osnma]. Crediting a target with message-authentication resilience requires confirming the specific receiver under test actually validates OSNMA, not merely that the constellation broadcasts it. Receivers can also apply non-cryptographic consistency checks, power/distortion monitoring, RAIM, clock-jump and inertial cross-checks, angle-of-arrival with multiple antennas, surveyed in [psiaki2016survey]. Legacy GPS L1 C/A on its own offers none of these, which is what this control tests for.
 
 ## Procedure
 
@@ -145,37 +145,37 @@ All transmit steps are **authorised, RF-contained testing only**: your own equip
    ```bash
    gpsmon /dev/ttyACM0
    ```
-   Expected: GGA/RMC sentences with a valid 3D fix, GSV showing several satellites at healthy C/N0 (typically 35–50 dB-Hz). Record the true position and fix quality.
+   Expected: GGA/RMC sentences with a valid 3D fix, GSV showing several satellites at healthy C/N0 (typically 35 to 50 dB-Hz). Record the true position and fix quality.
 
-2. Jamming resilience — monitor the band. In the contained setup, tune gqrx to L1 and confirm a clean baseline, then introduce the jamming source (a TX-capable SDR driving a carrier or noise over L1) and watch the band fill.
+2. Jamming resilience, monitor the band. In the contained setup, tune gqrx to L1 and confirm a clean baseline, then introduce the jamming source (a TX-capable SDR driving a carrier or noise over L1) and watch the band fill.
    ```bash
    gqrx   # tune to 1575.42 MHz, observe the waterfall
    ```
    Expected: baseline shows a quiet band (the GNSS signal itself is below the noise floor and not visible); during jamming a strong carrier or wideband hump appears over L1. gqrx observes only; it does not transmit.
 
-3. Jamming resilience — observe the target. With the jammer active, watch the target receiver.
+3. Jamming resilience, observe the target. With the jammer active, watch the target receiver.
    ```bash
    cgps -s
    ```
-   Expected: satellite count drops, C/N0 collapses, the fix is lost. Record whether the receiver raises an integrity/loss alarm, coasts on its last fix, or silently goes stale — and how long it takes to reacquire after the jammer stops.
+   Expected: satellite count drops, C/N0 collapses, the fix is lost. Record whether the receiver raises an integrity/loss alarm, coasts on its last fix, or silently goes stale, and how long it takes to reacquire after the jammer stops.
 
-4. Spoofing — synthesise the counterfeit signal. Fetch a current RINEX broadcast ephemeris (`brdc` file) and generate an L1 C/A baseband for a chosen static position. The `-b 8` option emits 8-bit signed I/Q for HackRF.
+4. Spoofing, synthesise the counterfeit signal. Fetch a current RINEX broadcast ephemeris (`brdc` file) and generate an L1 C/A baseband for a chosen static position. The `-b 8` option emits 8-bit signed I/Q for HackRF.
    ```bash
    gps-sdr-sim -e brdc0010.22n -l 30.286502,120.032669,100 -b 8
    ```
    Expected: a `gpssim.bin` baseband file for the chosen latitude,longitude,height. Use the matching sample rate/format for your radio (HackRF/bladeRF accept the 2.6 MHz default; USRP requires 2.5 MHz). A moving track can be supplied instead with `-u`/`-x`/`-g`.
 
-5. Spoofing — transmit into the contained setup (authorised only). For HackRF the file must be 8-bit signed I/Q:
+5. Spoofing, transmit into the contained setup (authorised only). For HackRF the file must be 8-bit signed I/Q:
    ```bash
    hackrf_transfer -t gpssim.bin -f 1575420000 -s 2600000 -a 1 -x 0
    ```
    Expected: the synthesised signal is radiated into the shielded/cabled path. Start at low gain and raise it until the target prefers the counterfeit. (bladeRF replays via `bladeRF-cli`; USRP via `gps-sdr-sim-uhd.py` or `tx_samples_from_file --freq 1575420000`.)
 
-6. Spoofing — confirm capture. Watch the target output while the counterfeit is live.
+6. Spoofing, confirm capture. Watch the target output while the counterfeit is live.
    ```bash
    cgps -s
    ```
-   Expected: a resilient receiver rejects the spoof, flags an integrity fault, or refuses to move; a vulnerable one walks its reported position toward the synthesised coordinates (`30.286502,120.032669` in the example) and/or steps its clock — with no alarm. Record the transition and whether any anti-spoof flag was raised.
+   Expected: a resilient receiver rejects the spoof, flags an integrity fault, or refuses to move; a vulnerable one walks its reported position toward the synthesised coordinates (`30.286502,120.032669` in the example) and/or steps its clock, with no alarm. Record the transition and whether any anti-spoof flag was raised.
 
 7. Reproducible offline variant. Where transmitting is not permitted at all, validate detector behaviour against the recorded TEXBAT scenarios (each spoofed set has a matched clean recording) by feeding them to a software receiver rather than radiating [texbat].
 
@@ -195,14 +195,14 @@ and replayed into the enclosure with
 hackrf_transfer -t gpssim.bin -f 1575420000 -s 2600000 -a 1 -x 0
 ```
 
-raising `-a`/gain stepwise. Observed outcome: [FILL: at what relative power / after how many seconds] the module's reported position migrates from its true location toward `30.286502, 120.032669` and the fix follows the decoy, with [FILL: alarm raised? yes/no — record any integrity/anti-spoof flag]. Jamming run: a carrier at 1575.42 MHz is introduced; the module loses lock and [FILL: coasts / alarms / goes stale — record behaviour] and reacquires after [FILL: measured reacquisition time] once removed.
+raising `-a`/gain stepwise. Observed outcome: [FILL: at what relative power / after how many seconds] the module's reported position migrates from its true location toward `30.286502, 120.032669` and the fix follows the decoy, with [FILL: alarm raised? yes/no, record any integrity/anti-spoof flag]. Jamming run: a carrier at 1575.42 MHz is introduced; the module loses lock and [FILL: coasts / alarms / goes stale, record behaviour] and reacquires after [FILL: measured reacquisition time] once removed.
 
-This mirrors the public demonstrations — a portable spoofer capturing a commodity receiver [humphreys2008spoof] and the same class of attack steering a superyacht's navigation while its display showed no anomaly [utexas2013yacht] — at bench scale and under RF containment. No first-party measurements were taken for this control: every `[FILL: …]` marker (satellite count, C/N0, capture power/time, alarm behaviour, reacquisition time) is an unmeasured placeholder for the operator to complete from an actual contained run on their own hardware. They are method scaffolding, not asserted findings.
+This mirrors the public demonstrations, a portable spoofer capturing a commodity receiver [humphreys2008spoof] and the same class of attack steering a superyacht's navigation while its display showed no anomaly [utexas2013yacht], at bench scale and under RF containment. No first-party measurements were taken for this control: every `[FILL: …]` marker (satellite count, C/N0, capture power/time, alarm behaviour, reacquisition time) is an unmeasured placeholder for the operator to complete from an actual contained run on their own hardware. They are method scaffolding, not asserted findings.
 
 ## Remediation
 
 Layered, because no single check is sufficient against both spoofing and jamming [psiaki2016survey]:
 
 - **Developer (receiver/firmware).** Implement consistency checks that legacy C/A omits: power/distortion (C/N0 and correlation-peak) monitoring, RAIM/integrity across satellites, clock-jump and position-jump sanity limits, and rejection of physically impossible velocity/altitude. Where the chipset supports it, enable Galileo OSNMA so the navigation message is cryptographically authenticated and a counterfeit E1 message is detected [galileo-osnma]. Validate the implementation against a standard spoofing test set such as TEXBAT [texbat].
-- **Integrator (device/system).** Cross-check GNSS-derived position and time against independent sources — inertial navigation, wheel/odometry, a holdover oscillator for timing, multi-antenna angle-of-arrival, or a second constellation/band. Make loss of GNSS integrity an explicit, alarmed state rather than a silent coast; do not let the system accept the first plausible reacquired fix without re-validation.
+- **Integrator (device/system).** Cross-check GNSS-derived position and time against independent sources, inertial navigation, wheel/odometry, a holdover oscillator for timing, multi-antenna angle-of-arrival, or a second constellation/band. Make loss of GNSS integrity an explicit, alarmed state rather than a silent coast; do not let the system accept the first plausible reacquired fix without re-validation.
 - **Operator.** Treat continuous, unmonitored GNSS as untrusted for safety- or security-critical decisions. Monitor for jamming/interference (a sustained L1 carrier or noise floor is the tell), define a degraded-mode procedure for loss of fix, and prefer authenticated or multi-constellation/multi-band receivers where the application warrants it. Conduct any spoofing/jamming testing only under authorisation and RF containment.

@@ -6,7 +6,7 @@
     "type": "software",
     "protocols": ["Sub-GHz"],
     "repo": "https://github.com/merbanan/rtl_433",
-    "note": "Generic ISM-band receiver and decoder for 315 / 433.92 / 868 / 915 MHz devices. Out of the box it recognises 320+ device protocols — weather and soil/temperature sensors, TPMS tyre-pressure monitors, energy/water meters, doorbells, contact sensors and many remotes — and demodulates both OOK/ASK and FSK, printing each decoded device as a line of JSON (also CSV, MQTT, InfluxDB, syslog). It is itself the decoder: where Wi-Fi or BLE hand a PCAP to Wireshark, rtl_433 turns raw I/Q straight into named, fielded device events. Runs on RTL-SDR natively and on HackRF / other radios via SoapySDR."
+    "note": "Generic ISM-band receiver and decoder for 315 / 433.92 / 868 / 915 MHz devices. Out of the box it recognises 320+ device protocols, weather and soil/temperature sensors, TPMS tyre-pressure monitors, energy/water meters, doorbells, contact sensors and many remotes, and demodulates both OOK/ASK and FSK, printing each decoded device as a line of JSON (also CSV, MQTT, InfluxDB, syslog). It is itself the decoder: where Wi-Fi or BLE hand a PCAP to Wireshark, rtl_433 turns raw I/Q straight into named, fielded device events. Runs on RTL-SDR natively and on HackRF / other radios via SoapySDR."
   },
   {
     "slug": "flipper-zero",
@@ -14,10 +14,10 @@
     "vendor": "Flipper Devices",
     "type": "hardware",
     "protocols": ["Sub-GHz", "RFID", "NFC", "Infrared"],
-    "spec": "CC1101 transceiver · RX/TX 300–348, 387–464 & 779–928 MHz · OOK/ASK + (G)FSK · handheld",
+    "spec": "CC1101 transceiver · RX/TX 300 to 348, 387 to 464 & 779 to 928 MHz · OOK/ASK + (G)FSK · handheld",
     "homepage": "https://flipper.net/",
     "software": ["flipperzero-firmware"],
-    "note": "Handheld multitool whose built-in CC1101 transceiver receives and transmits across the 300–348, 387–464 and 779–928 MHz sub-GHz bands — the everyday field radio for reading, saving and replaying garage/gate/doorbell remotes and other fixed-code devices, with no laptop or SDR. OOK/ASK and (G)FSK; its Read mode decodes known protocols and Read RAW captures unknown ones for later replay."
+    "note": "Handheld multitool whose built-in CC1101 transceiver receives and transmits across the 300 to 348, 387 to 464 and 779 to 928 MHz sub-GHz bands, the everyday field radio for reading, saving and replaying garage/gate/doorbell remotes and other fixed-code devices, with no laptop or SDR. OOK/ASK and (G)FSK; its Read mode decodes known protocols and Read RAW captures unknown ones for later replay."
   },
   {
     "slug": "flipperzero-firmware",
@@ -26,6 +26,6 @@
     "type": "software",
     "protocols": ["Sub-GHz"],
     "repo": "https://github.com/flipperdevices/flipperzero-firmware",
-    "note": "The open-source firmware that runs the Flipper Zero's Sub-GHz app: Read (decode a known protocol), Read RAW (capture an unknown signal as raw timings), Save and Send (replay/emulate a saved signal), and a manual virtual-remote builder. The official firmware deliberately refuses to save or replay rolling-code signals (e.g. KeeLoq) as a built-in safety limit — capture-and-replay works on fixed-code devices, not rolling-code ones, on stock firmware."
+    "note": "The open-source firmware that runs the Flipper Zero's Sub-GHz app: Read (decode a known protocol), Read RAW (capture an unknown signal as raw timings), Save and Send (replay/emulate a saved signal), and a manual virtual-remote builder. The official firmware deliberately refuses to save or replay rolling-code signals (e.g. KeeLoq) as a built-in safety limit, capture-and-replay works on fixed-code devices, not rolling-code ones, on stock firmware."
   }
 ]

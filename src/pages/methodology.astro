@@ -10,7 +10,7 @@ const rubric = {
   low: 'A minor exposure or a hardening gap.',
   medium: 'A meaningful weakness that needs specific conditions to exploit.',
   high: 'A readily exploitable weakness with significant impact.',
-  critical: 'Full compromise — takeover, key recovery, impersonation — with practical preconditions.',
+  critical: 'Full compromise, takeover, key recovery, impersonation, with practical preconditions.',
 };
 const ig = layers.find((l) => l.id === 'IG');
 const descent = layers.filter((l) => l.id !== 'IG');
@@ -20,7 +20,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
     <h1>Methodology</h1>
     <p class="lead">
       RFSAM organises RF security on two axes. Every check is a <strong>control</strong>, indexed by the
-      <strong>protocol</strong> it applies to and by the <strong>layer</strong> of the assessment it belongs to — so,
+      <strong>protocol</strong> it applies to and by the <strong>layer</strong> of the assessment it belongs to, so,
       facing an unknown signal or device, you always have a place to start and a way to know what you've covered.
       It's a <span class="cyan">north</span>, not a new attack: it ties OSSTMM, BSAM and the SDR-pentest lineage
       into one navigable reference across {protocols.length} technologies.
@@ -28,7 +28,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
 
     <h2 class="sect">THE DESCENT</h2>
     <p class="note">
-      An assessment runs top-down through six layers — from the open air to what the device trusts — preceded by a
+      An assessment runs top-down through six layers, from the open air to what the device trusts, preceded by a
       pre-descent information-gathering pass. The <a href="/RFSAM/wayfinder">Wayfinder</a> walks you down it per technology;
       the <a href="/RFSAM/controls">controls</a> verify each floor.
     </p>
@@ -52,7 +52,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
     <h2 class="sect">HOW A CONTROL IS BUILT</h2>
     <p class="note">
       Each control is identified as <span class="mono">RFSAM-&lt;PROTOCOL&gt;-&lt;LAYER&gt;-NN</span>
-      (e.g. <span class="mono">RFSAM-BLE-AT-01</span>) — its protocol × layer coordinates — and follows a fixed shape:
+      (e.g. <span class="mono">RFSAM-BLE-AT-01</span>), its protocol × layer coordinates, and follows a fixed shape:
       an <strong>objective</strong> (the one thing it verifies), a numbered <strong>procedure</strong> with real
       commands, a <strong>field case</strong> with real data, the <strong>known attacks</strong> with citations, and
       layered <strong>remediation</strong>. Every nontrivial claim carries a resolvable source; anything unverified is
@@ -73,12 +73,12 @@ const descent = layers.filter((l) => l.id !== 'IG');
       <a href="/RFSAM/wayfinder" class="way">
         <div class="wt">Wayfinder <span class="arr">→</span></div>
         <p>Have a device and don't know where to start? Pick a technology and get the exact hardware + software kit
-        for each step of the descent — an action-first interactive map.</p>
+        for each step of the descent, an action-first interactive map.</p>
       </a>
       <a href="/RFSAM/controls" class="way">
         <div class="wt">Controls <span class="arr">→</span></div>
-        <p>The reference body: the numbered, cited verification procedures — objective, method, field case, known
-        attacks, remediation — you run during, and cite in, an assessment.</p>
+        <p>The reference body: the numbered, cited verification procedures, objective, method, field case, known
+        attacks, remediation, you run during, and cite in, an assessment.</p>
       </a>
     </div>
 
@@ -96,7 +96,7 @@ const descent = layers.filter((l) => l.id !== 'IG');
       ))}
     </div>
     <p class="note">
-      <a href={bsamRelation.url} target="_blank" rel="noopener">Tarlogic BSAM ↗</a> — where BSAM owns a layer
+      <a href={bsamRelation.url} target="_blank" rel="noopener">Tarlogic BSAM ↗</a>, where BSAM owns a layer
       (Bluetooth, link-and-above), the BLE controls defer to it and add only the RF-capture prerequisite, citing the
       specific BSAM control they hand off to.
     </p>
