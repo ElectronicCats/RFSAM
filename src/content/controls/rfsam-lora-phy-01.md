@@ -141,21 +141,34 @@ Work only on signals you are authorised to receive and analyse. Receiving and de
 
 ## Field case
 
-In a 30-second baseline session in the lab, a fixed bench with 1 meter spacing between FlatSat and RTL-SDR was set up. Stock telescopic antenna of the RTL-SDR Blog V4 on the RX port, gain set to 40.2 dB.
+Two bench sessions in the Electronic Cats lab, both receive-only on the SDR side, against the lab's own transmitters at 1 m line of sight. Receiver: RTL-SDR with its stock telescopic antenna. Each capture is 30 s at 1 MS/s.
 
-Captured at 916.0 MHz (US915), 125 kHz bandwidth, SF7, with `rtl_sdr -f 916000000 -s 1000000 -g 40 -n 30000000` (30 seconds and 58 MB at 1 MSps). Gqrx 2.17.7 with LNA set to 28.0 dB displayed 3 representative red-yellow bursts in the active waterfall window.
+**Session 1: SF7, 125 kHz, 916.0 MHz.** Transmitter: the laboratory FlatSat.
 
-Demodulation using the GNU Radio Companion flowgraph (`lora_RX_916.grc`) configured at 916 MHz, 125 kHz bandwidth, and SF7 recovered 12 frames with valid CRC out of the 12 total frames captured. Evaluating soft-decision versus hard-decision processing on this 30-second capture yielded 12/12 (100%) CRC-OK frames in both modes at an estimated SNR of 45.0 dB due to the strong signal.
+```bash
+rtl_sdr -f 916000000 -s 1000000 -g 40 -n 30000000
+```
 
-To validate that packet accounting was strictly CRC-based and to evaluate demodulation performance under near-sensitivity conditions, a second 30-second verification session was conducted using an STM32F446 + DX-LR30 transceiver. Configured at 915.0 MHz (US915), 250 kHz bandwidth, SF11, CR 4/5, sync word `0x34`, transmission interval 5 s, and payload `"Hola desde STM32 (LoRa) — paquete #N CRC:XXXX OK/BAD"`. The application CRC was intentionally corrupted every 2 packets.
+Demodulated with the gr-lora_sdr receiver flowgraph set to 916 MHz, 125 kHz, SF7, once with `soft_decoding` on and once off. The operator recorded 12 frames with a valid CRC out of 12 in both modes, so on this capture the two modes gave the same yield. The decoder logs of this session were not kept.
 
-Captured with `rtl_sdr -f 915000000 -s 1000000 -g 40 -n 30000000` (30 s, 60 MB). Gqrx showed 5 visible bursts at a weaker SNR of ~6.0 dB (RSSI -55 to -60 dBm).
+**Session 2: SF11, 250 kHz, 915.0 MHz.** Transmitter: an STM32F446 with a DX-LR30 transceiver, CR 4/5, sync word `0x34`, one packet every 5 s, numbered payloads.
 
-Offline Python decoding of this second capture at 915 MHz, 250 kHz bandwidth, and SF11 recovered the 5 visible frames with clear performance separation:
-- **Soft-decision:** 3 frames with valid CRC (60% yield).
-- **Hard-decision:** 1 frame with valid CRC (20% yield).
+```bash
+rtl_sdr -f 915000000 -s 1000000 -g 40 -n 30000000
+```
 
-This confirms a 40-percentage-point performance advantage for soft-decision demodulation in low-SNR scenarios. The decoded payloads confirmed the controlled alternation (`BAD`, `OK`, `BAD`, `OK`, `BAD`), verifying that frame filtering operates strictly on valid CRC checks and validating the 100% baseline yield obtained in the FlatSat test.
+The capture holds 5 frames (packets #314 to #318). Both modes found all 5 and validated all 5 headers. The payload CRC is where they differ:
+
+| Mode | Headers valid | Payload CRC valid |
+|---|---|---|
+| Soft-decision | 5 of 5 | 3 of 5 |
+| Hard-decision | 5 of 5 | 1 of 5 |
+
+The counts are from the decoder output of each run. Packet #315 is the clearest single example: soft-decision returned it with a valid CRC, hard-decision returned the same packet with one payload character missing and an invalid CRC.
+
+How far this goes. The direction agrees with the literature: soft-decision recovers frames that hard-decision drops [marquet2020] [xu2022]. The size of the gap here comes from 5 frames in one capture, so it is a single observation and not a yield figure to generalise. Signal-to-noise ratio was not measured in either session.
+
+For a passive survey aiming to enumerate a network, every frame the demodulator drops is potentially a device or a join you never see, which is why this PHY-completeness check precedes the link-layer enumeration rather than being assumed.
 
 ## Remediation
 
