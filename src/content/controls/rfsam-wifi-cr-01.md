@@ -11,8 +11,8 @@ applicability:
   - WPS
 deferred: false
 objective: >-
-  Determine whether a network's pre-shared key can be recovered offline — from a
-  captured 4-way handshake or a clientless RSN PMKID — or whether an enabled WPS
+  Determine whether a network's pre-shared key can be recovered offline, from a
+  captured 4-way handshake or a clientless RSN PMKID, or whether an enabled WPS
   PIN gives a faster online path to the PSK; and whether a WPA3 deployment is
   actually exposed to a WPA2 downgrade.
 intro: >-
@@ -20,7 +20,7 @@ intro: >-
   either the 4-way handshake or, since 2018, the RSN PMKID straight from the access
   point with no client present. WPS PIN and WPA3 transitional mode add further
   recovery paths. This control captures the relevant material and assesses
-  key-recovery feasibility — perform every active step only against networks you
+  key-recovery feasibility, perform every active step only against networks you
   are explicitly authorised to test.
 prerequisites:
   hardware:
@@ -29,7 +29,7 @@ prerequisites:
   software:
     - 'hcxdumptool (PMKID / EAPOL capture), hcxtools (pcapng → hc22000 conversion), hashcat (offline crack), aircrack-ng (capture + CPU crack), reaver / pixiewps (WPS PIN and Pixie-Dust).'
   signal:
-    freq: '2.4 GHz (2.400–2.4835 GHz) · 5 GHz (UNII, ~5.15–5.85 GHz) · 6 GHz (5.925–7.125 GHz, Wi-Fi 6E/7)'
+    freq: '2.4 GHz (2.400 to 2.4835 GHz) · 5 GHz (UNII, ~5.15 to 5.85 GHz) · 6 GHz (5.925 to 7.125 GHz, Wi-Fi 6E/7)'
     bandwidth: '20/40/80/160 MHz channels (320 MHz in Wi-Fi 7)'
     modulation: 'OFDM (802.11a/g/n/ac/ax/be) / DSSS (legacy 802.11b)'
   skill: intermediate
@@ -38,7 +38,7 @@ attacks:
     refs:
       - steube2018pmkid
     impact: >-
-      Recovers the material needed to crack the PSK offline from the AP alone — no
+      Recovers the material needed to crack the PSK offline from the AP alone, no
       associated client and no deauthentication required.
     preconditions: >-
       An AP whose first EAPOL/RSN frame carries a PMKID (many WPA2-PSK APs do);
@@ -108,7 +108,7 @@ attacks:
     preconditions: An unpatched client (or AP) that reinstalls an already-installed key during the handshake.
     summary: >-
       Replaying handshake message 3 forces the victim to reinstall the PTK,
-      resetting the nonce/replay counter and enabling decryption of traffic —
+      resetting the nonce/replay counter and enabling decryption of traffic,
       independent of passphrase strength.
   - name: Kr00k
     cve:
@@ -169,7 +169,7 @@ references:
     url: 'https://nvd.nist.gov/vuln/detail/CVE-2019-9494'
     type: cve
   - key: cve-2019-15126
-    title: 'CVE-2019-15126: Kr00k — all-zero-key encryption of buffered frames'
+    title: 'CVE-2019-15126: Kr00k: all-zero-key encryption of buffered frames'
     venue: NVD
     year: 2019
     url: 'https://nvd.nist.gov/vuln/detail/CVE-2019-15126'
@@ -189,17 +189,17 @@ lastResearched: 2026-06-14
 ---
 ## Mechanism
 
-WPA2-Personal authenticates with a Pre-Shared Key: both sides derive a Pairwise Master Key (PMK) from the passphrase and run an EAPOL **4-way handshake** to prove possession and derive session keys. Anyone who captures that handshake holds enough PMK-derived material to test passphrase guesses offline — so WPA2-PSK confidentiality reduces to passphrase strength, not to anything that happens on the air.
+WPA2-Personal authenticates with a Pre-Shared Key: both sides derive a Pairwise Master Key (PMK) from the passphrase and run an EAPOL **4-way handshake** to prove possession and derive session keys. Anyone who captures that handshake holds enough PMK-derived material to test passphrase guesses offline, so WPA2-PSK confidentiality reduces to passphrase strength, not to anything that happens on the air.
 
-Since 2018 the auditor often does not even need a client. The AP's first EAPOL frame can carry an **RSN PMKID**, computed as `HMAC-SHA1-128(PMK, "PMK Name" | MAC_AP | MAC_STA)` [steube2018pmkid]. Because the PMKID is a function of the PMK and the two MAC addresses, capturing it from the AP alone — no associated station, no deauthentication noise — yields the same offline-crackable target as a full handshake [steube2018pmkid]. Both paths converge on hashcat's unified WPA hash mode 22000 (the PMKID attack originally landed as mode 16800) [steube2018pmkid].
+Since 2018 the auditor often does not even need a client. The AP's first EAPOL frame can carry an **RSN PMKID**, computed as `HMAC-SHA1-128(PMK, "PMK Name" | MAC_AP | MAC_STA)` [steube2018pmkid]. Because the PMKID is a function of the PMK and the two MAC addresses, capturing it from the AP alone, no associated station, no deauthentication noise, yields the same offline-crackable target as a full handshake [steube2018pmkid]. Both paths converge on hashcat's unified WPA hash mode 22000 (the PMKID attack originally landed as mode 16800) [steube2018pmkid].
 
-**WPS** is a parallel weakness that sidesteps the passphrase entirely. The 8-digit PIN is validated in two halves with the last digit a checksum, and the AP's response reveals which half is wrong — collapsing brute force from 10^8 to roughly 11,000 attempts where the AP applies no lockout [viehbock2011wps]. Worse, the **Pixie-Dust** attack recovers the PIN *offline* from a single exchange on chipsets whose Registrar generates the E-S1/E-S2 nonces with weak or zero entropy (Ralink nonces fixed at zero; weak Broadcom PRNG) [bongard2014pixie]. A recovered PIN yields the PSK directly, regardless of passphrase strength.
+**WPS** is a parallel weakness that sidesteps the passphrase entirely. The 8-digit PIN is validated in two halves with the last digit a checksum, and the AP's response reveals which half is wrong, collapsing brute force from 10^8 to roughly 11,000 attempts where the AP applies no lockout [viehbock2011wps]. Worse, the **Pixie-Dust** attack recovers the PIN *offline* from a single exchange on chipsets whose Registrar generates the E-S1/E-S2 nonces with weak or zero entropy (Ralink nonces fixed at zero; weak Broadcom PRNG) [bongard2014pixie]. A recovered PIN yields the PSK directly, regardless of passphrase strength.
 
-**WPA3-SAE** is designed to resist offline dictionary attacks — the Dragonfly handshake never exposes a passphrase-derived hash to a passive observer. **Dragonblood** showed this is not the whole story: SAE implementations in hostapd/wpa_supplicant leaked password information through timing and cache side-channels, and the protocol permits group-downgrade and transition-mode downgrade [vanhoef2020dragonblood][cve-2019-9494]. A WPA3 network running **transitional (mixed) mode** still advertises WPA2-PSK to legacy clients, so the WPA2 capture-and-crack surface above remains fully available. This control's WPA3 step is therefore mainly a check for transitional mode and management-frame protection, not an offline crack of SAE itself.
+**WPA3-SAE** is designed to resist offline dictionary attacks, the Dragonfly handshake never exposes a passphrase-derived hash to a passive observer. **Dragonblood** showed this is not the whole story: SAE implementations in hostapd/wpa_supplicant leaked password information through timing and cache side-channels, and the protocol permits group-downgrade and transition-mode downgrade [vanhoef2020dragonblood][cve-2019-9494]. A WPA3 network running **transitional (mixed) mode** still advertises WPA2-PSK to legacy clients, so the WPA2 capture-and-crack surface above remains fully available. This control's WPA3 step is therefore mainly a check for transitional mode and management-frame protection, not an offline crack of SAE itself.
 
 Two confidentiality breaks recover *plaintext* without recovering the PSK, and are worth noting when scoping: **KRACK** forces reinstallation of the PTK during the handshake, resetting the nonce/replay counter and enabling decryption on unpatched endpoints [vanhoef2017krack][cve-2017-13077]; **Kr00k** causes affected Broadcom/Cypress chips to encrypt frames buffered across a disassociation with an all-zero key [cve-2019-15126]. Both are implementation/patch-state findings rather than passphrase-strength findings.
 
-This corpus is representative, not exhaustive — Wi-Fi attack surface and patch state move quickly, so check current vendor advisories for the specific chipset and firmware.
+This corpus is representative, not exhaustive, Wi-Fi attack surface and patch state move quickly, so check current vendor advisories for the specific chipset and firmware.
 
 ## Procedure
 
@@ -237,7 +237,7 @@ This corpus is representative, not exhaustive — Wi-Fi attack surface and patch
    hashcat -m 22000 target.hc22000 wordlist.txt
    # or aircrack-ng -w wordlist.txt -b <BSSID> hs-01.cap   (CPU, handshake only)
    ```
-   A `Status: Cracked` line with the recovered passphrase means the PSK is weak. Exhausting a reasonable wordlist/mask without a hit is itself a finding — the passphrase resisted the tested effort.
+   A `Status: Cracked` line with the recovered passphrase means the PSK is weak. Exhausting a reasonable wordlist/mask without a hit is itself a finding, the passphrase resisted the tested effort.
 
 6. **Where WPS is enabled, test the PIN paths.** Pixie-Dust first (offline, near-instant on vulnerable chipsets), then a rate-limited online PIN attempt only if Pixie-Dust fails and the AP has no lockout.
    ```bash
@@ -245,19 +245,19 @@ This corpus is representative, not exhaustive — Wi-Fi attack surface and patch
    ```
    On success reaver prints the recovered `WPS PIN` and the `WPA PSK`. A returned PSK here means the network is compromised regardless of passphrase length.
 
-7. **For a network advertising WPA3, do not attempt an offline SAE crack — assess exposure instead.** Confirm whether it runs transitional (mixed WPA2/WPA3) mode and whether PMF is required, since transitional mode re-exposes the WPA2 paths above.
+7. **For a network advertising WPA3, do not attempt an offline SAE crack, assess exposure instead.** Confirm whether it runs transitional (mixed WPA2/WPA3) mode and whether PMF is required, since transitional mode re-exposes the WPA2 paths above.
    ```bash
    sudo airodump-ng --bssid <BSSID> -c <CH> wlan0mon
    ```
-   In the `AUTH` field, `SAE` alone with `MFP required` indicates WPA3-only; `PSK SAE` (or a parallel WPA2 BSSID/IE) indicates transitional mode — record it as downgrade exposure rather than a crackable finding.
+   In the `AUTH` field, `SAE` alone with `MFP required` indicates WPA3-only; `PSK SAE` (or a parallel WPA2 BSSID/IE) indicates transitional mode, record it as downgrade exposure rather than a crackable finding.
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture. This is a representative example of the two key-recovery paths against an authorised WPA2-PSK test AP (a consumer router in an RF-isolated lab, test passphrase, no production clients), not a logged engagement; treat the steps as the expected shape of the result and fill in the placeholders with your own measurements.
+Illustrative walkthrough, substitute the values you capture. This is a representative example of the two key-recovery paths against an authorised WPA2-PSK test AP (a consumer router in an RF-isolated lab, test passphrase, no production clients), not a logged engagement; treat the steps as the expected shape of the result and fill in the placeholders with your own measurements.
 
-A clientless PMKID grab in step 2 produces a PMKID for the target BSSID shortly after `hcxdumptool` starts — no client need ever associate and no deauth is sent. `hcxpcapngtool -o target.hc22000 pmkid.pcapng` writes a single PMKID hash. Running `hashcat -m 22000 target.hc22000 rockyou.txt` recovers the lab passphrase, confirming the offline path end to end.
+A clientless PMKID grab in step 2 produces a PMKID for the target BSSID shortly after `hcxdumptool` starts, no client need ever associate and no deauth is sent. `hcxpcapngtool -o target.hc22000 pmkid.pcapng` writes a single PMKID hash. Running `hashcat -m 22000 target.hc22000 rockyou.txt` recovers the lab passphrase, confirming the offline path end to end.
 
-Where the same AP has WPS left enabled (the factory default on many consumer models), `reaver -i wlan0mon -b <BSSID> -c <CH> -K 1 -vv` completes the Pixie-Dust attack and returns the WPS PIN and the WPA PSK directly — the passphrase length is irrelevant once the PIN falls.
+Where the same AP has WPS left enabled (the factory default on many consumer models), `reaver -i wlan0mon -b <BSSID> -c <CH> -K 1 -vv` completes the Pixie-Dust attack and returns the WPS PIN and the WPA PSK directly, the passphrase length is irrelevant once the PIN falls.
 
 The numbers below are placeholders for whoever runs this against a real target; do not treat them as measured.
 
@@ -269,6 +269,6 @@ The numbers below are placeholders for whoever runs this against a real target; 
 
 **Developer / vendor.** Ship WPS PIN disabled by default, or remove the external-Registrar PIN method entirely; where it must exist, use a CSPRNG for the E-S1/E-S2 nonces and enforce a hard lockout after a few failed attempts to close the Pixie-Dust and two-half brute-force classes [bongard2014pixie][viehbock2011wps]. Patch SAE implementations against the Dragonblood side-channels (constant-time hash-to-curve; hostapd/wpa_supplicant > 2.7) [vanhoef2020dragonblood][cve-2019-9494], and ship the KRACK and Kr00k fixes in client and AP firmware [vanhoef2017krack][cve-2019-15126].
 
-**Integrator.** Provision a long, high-entropy passphrase (random, not a memorable phrase) so the offline PMKID/handshake crack is computationally infeasible — this is the single most effective control for WPA2-PSK. Disable WPS entirely. Where the threat model warrants it, move sensitive networks to WPA2/WPA3-Enterprise (802.1X/EAP) so there is no shared offline-crackable secret at all.
+**Integrator.** Provision a long, high-entropy passphrase (random, not a memorable phrase) so the offline PMKID/handshake crack is computationally infeasible, this is the single most effective control for WPA2-PSK. Disable WPS entirely. Where the threat model warrants it, move sensitive networks to WPA2/WPA3-Enterprise (802.1X/EAP) so there is no shared offline-crackable secret at all.
 
-**Operator.** Deploy WPA3-SAE in **non-transitional** mode with Protected Management Frames (PMF/802.11w) required — this removes the WPA2 downgrade surface and blunts the deauth used to force handshakes. Keep AP and client firmware current against KRACK/Kr00k/FragAttacks-class advisories, and re-survey periodically: treat the tool and CVE corpus above as representative and check current advisories for your specific hardware.
+**Operator.** Deploy WPA3-SAE in **non-transitional** mode with Protected Management Frames (PMF/802.11w) required, this removes the WPA2 downgrade surface and blunts the deauth used to force handshakes. Keep AP and client firmware current against KRACK/Kr00k/FragAttacks-class advisories, and re-survey periodically: treat the tool and CVE corpus above as representative and check current advisories for your specific hardware.

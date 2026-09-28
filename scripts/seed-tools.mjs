@@ -9,36 +9,36 @@ const tools = [
   // ---- hardware ----
   {
     slug: 'hackrf-one', name: 'HackRF One', vendor: 'Great Scott Gadgets', type: 'hardware',
-    protocols: ['Wide-band SDR'], spec: '~20 MHz IBW · 1 MHz–6 GHz · half-duplex',
+    protocols: ['Wide-band SDR'], spec: '~20 MHz IBW · 1 MHz to 6 GHz · half-duplex',
     repo: 'https://github.com/greatscottgadgets/hackrf',
     software: ['universal-radio-hacker', 'ice9-bluetooth-sniffer'],
-    note: "1 MHz–6 GHz half-duplex SDR — the discovery radio for 'Rapid Radio Reversing': find and characterise an unknown signal before working it with a narrowband tool.",
+    note: "1 MHz to 6 GHz half-duplex SDR, the discovery radio for 'Rapid Radio Reversing': find and characterise an unknown signal before working it with a narrowband tool.",
   },
   {
     slug: 'bladerf-2-micro', name: 'bladeRF 2.0 micro xA9', vendor: 'Nuand', type: 'hardware',
-    protocols: ['Wide-band SDR'], spec: '56 MHz IBW · up to 122.88 MHz oversampled (8-bit) · 47 MHz–6 GHz',
+    protocols: ['Wide-band SDR'], spec: '56 MHz IBW · up to 122.88 MHz oversampled (8-bit) · 47 MHz to 6 GHz',
     homepage: 'https://www.nuand.com/2023-02-release-122-88mhz-bandwidth/',
     software: ['ice9-bluetooth-sniffer'],
-    note: 'Wideband full-duplex SDR (AD9361). ~56 MHz standard, and since the 2023.02 release an oversampling mode reaches 122.88 MHz instantaneous bandwidth (at 8-bit depth over USB 3.0) — enough to cover the entire 80 MHz BLE band in a single pass.',
+    note: 'Wideband full-duplex SDR (AD9361). ~56 MHz standard, and since the 2023.02 release an oversampling mode reaches 122.88 MHz instantaneous bandwidth (at 8-bit depth over USB 3.0), enough to cover the entire 80 MHz BLE band in a single pass.',
   },
   {
     slug: 'usrp-b210', name: 'USRP B210', vendor: 'Ettus Research (NI)', type: 'hardware',
-    protocols: ['Wide-band SDR'], spec: '~56 MHz IBW (30.72 MHz in 2×2) · 70 MHz–6 GHz',
+    protocols: ['Wide-band SDR'], spec: '~56 MHz IBW (30.72 MHz in 2×2) · 70 MHz to 6 GHz',
     homepage: 'https://www.ettus.com/all-products/ub210-kit/',
     software: ['ice9-bluetooth-sniffer'],
     note: 'Lab-grade full-duplex SDR (AD9361) with a disciplined clock option. Up to ~56 MHz real-time bandwidth (halved to ~30.72 MHz in 2×2 MIMO). A common ice9 target for BLE/BT capture.',
   },
   {
     slug: 'signalsdr-pro', name: 'SignalSDR Pro', vendor: 'Signalens', type: 'hardware',
-    protocols: ['Wide-band SDR'], spec: '61.44 MHz BW · 70 MHz–6 GHz · 2TX/2RX',
+    protocols: ['Wide-band SDR'], spec: '61.44 MHz BW · 70 MHz to 6 GHz · 2TX/2RX',
     homepage: 'https://www.rtl-sdr.com/signalsdr-pro-an-upcoming-sdr-with-70-mhz-to-6-ghz-12-bit-adc-61-44-mhz-bandwidth-and-2tx-2rx-channels/',
-    note: 'AD9361-based SDR in a Raspberry-Pi form factor (Zynq 7020); the widest instantaneous bandwidth in this list at 61.44 MHz, and it can emulate a USRP B210 / ADALM-Pluto. Newer/emerging product — verify ice9 support and availability before relying on it.',
+    note: 'AD9361-based SDR in a Raspberry-Pi form factor (Zynq 7020); the widest instantaneous bandwidth in this list at 61.44 MHz, and it can emulate a USRP B210 / ADALM-Pluto. Newer/emerging product, verify ice9 support and availability before relying on it.',
   },
   {
     slug: 'rtl-sdr-v4', name: 'RTL-SDR Blog V4', vendor: 'RTL-SDR Blog', type: 'hardware',
-    protocols: ['RX-only SDR'], spec: '~2.4 MHz BW · 0.5 kHz–1.766 GHz · RX only',
+    protocols: ['RX-only SDR'], spec: '~2.4 MHz BW · 0.5 kHz to 1.766 GHz · RX only',
     homepage: 'https://www.rtl-sdr.com/v4/',
-    note: 'Budget RX-only dongle. Does NOT reach 2.4 GHz, so it cannot receive BLE, Wi-Fi or Zigbee — but it is a fine cheap receiver for sub-GHz, LoRa and ADS-B (1090 MHz).',
+    note: 'Budget RX-only dongle. Does NOT reach 2.4 GHz, so it cannot receive BLE, Wi-Fi or Zigbee, but it is a fine cheap receiver for sub-GHz, LoRa and ADS-B (1090 MHz).',
   },
   {
     slug: 'ubertooth-one', name: 'Ubertooth One', vendor: 'Great Scott Gadgets', type: 'hardware',
@@ -56,7 +56,7 @@ const tools = [
     slug: 'yard-stick-one', name: 'YARD Stick One', vendor: 'Great Scott Gadgets', type: 'hardware',
     protocols: ['Sub-GHz'], homepage: 'https://greatscottgadgets.com/yardstickone/',
     software: ['rfcat', 'universal-radio-hacker'],
-    note: 'CC1111 sub-GHz transceiver (300–928 MHz) driven by rfcat — receive, replay and transmit OOK/ASK/FSK from a Python shell. The reference cheap Sub-GHz work tool, paired with a HackRF for discovery.',
+    note: 'CC1111 sub-GHz transceiver (300 to 928 MHz) driven by rfcat, receive, replay and transmit OOK/ASK/FSK from a Python shell. The reference cheap Sub-GHz work tool, paired with a HackRF for discovery.',
   },
   {
     slug: 'proxmark3', name: 'Proxmark3', vendor: 'RFID Research Group (Iceman fork)', type: 'hardware',
@@ -70,9 +70,9 @@ const tools = [
   },
   {
     slug: 'alfa-awus036ach', name: 'ALFA AWUS036ACH', vendor: 'Alfa Network', type: 'hardware',
-    protocols: ['Wi-Fi'], homepage: 'https://alfa-network.com/products/awus036ach',
+    protocols: ['Wi-Fi'], homepage: 'https://www.alfa.com.tw/products/awus036ach_1',
     software: ['aircrack-ng', 'bettercap', 'wireshark'],
-    note: 'RTL8812AU dual-band Wi-Fi adapter with monitor mode and injection — the workhorse 802.11 capture/injection radio for surveys and handshake capture.',
+    note: 'RTL8812AU dual-band Wi-Fi adapter with monitor mode and injection, the workhorse 802.11 capture/injection radio for surveys and handshake capture.',
   },
   {
     slug: 'wifi-pineapple', name: 'WiFi Pineapple', vendor: 'Hak5', type: 'hardware',
@@ -87,7 +87,7 @@ const tools = [
   {
     slug: 'minino', name: 'Minino', vendor: 'Electronic Cats', type: 'hardware', ec: true,
     protocols: ['Wi-Fi', 'BLE', 'Zigbee', 'Thread'], repo: 'https://github.com/ElectronicCats/Minino',
-    note: 'ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi deauthentication detection. It also has a native BLE suite — an advertising scanner, tracker/AirTag detection, BLE notification spam and BLE HID — plus 802.15.4 (Zigbee/Thread) field recon.',
+    note: 'ESP32-C6 pocket multitool (GPS, microSD, OLED). For Wi-Fi (2.4 GHz only) it does wardriving, an AP/SSID sniffer with Wireshark-compatible output, a deauther and console-driven DoS, an analyzer, SSID spammer, and Wi-Fi deauthentication detection. It also has a native BLE suite, an advertising scanner, tracker/AirTag detection, BLE notification spam and BLE HID, plus 802.15.4 (Zigbee/Thread) field recon.',
   },
   {
     slug: 'nrf52840-dongle', name: 'nRF52840 Dongle', vendor: 'Nordic Semiconductor', type: 'hardware',
@@ -97,7 +97,7 @@ const tools = [
   {
     slug: 'bbc-microbit', name: 'BBC micro:bit', vendor: 'Micro:bit Educational Foundation', type: 'hardware',
     protocols: ['BLE'], homepage: 'https://microbit.org', software: ['btlejack'],
-    note: 'A ~$15 nRF51822 board — the reference cheap radio for running Btlejack to sniff, jam and hijack BLE connections.',
+    note: 'A ~$15 nRF51822 board, the reference cheap radio for running Btlejack to sniff, jam and hijack BLE connections.',
   },
 
   {
@@ -105,24 +105,24 @@ const tools = [
     protocols: ['LoRa', 'Sub-GHz'], spec: 'STM32WL SoC · integrated sub-GHz LoRa/(G)FSK radio',
     homepage: 'https://github.com/whad-team/stm32wlxx-firmware',
     software: ['whad'],
-    note: "Any STM32WLxx-based board (e.g. Nucleo-WL55JC, Seeed LoRa-E5) — an Arm Cortex-M4 with an integrated sub-GHz radio. Flashed with WHAD's stm32wlxx-firmware it becomes a WHAD-driven LoRa/LoRaWAN sniff-and-inject radio.",
+    note: "Any STM32WLxx-based board (e.g. Nucleo-WL55JC, Seeed LoRa-E5), an Arm Cortex-M4 with an integrated sub-GHz radio. Flashed with WHAD's stm32wlxx-firmware it becomes a WHAD-driven LoRa/LoRaWAN sniff-and-inject radio.",
   },
   // ---- software / projects ----
   {
     slug: 'whad', name: 'WHAD', vendor: 'WHAD Team', type: 'software',
     protocols: ['BLE', 'Zigbee', 'Thread', '802.15.4', 'LoRaWAN', 'ESB'],
     repo: 'https://github.com/whad-team/whad-client',
-    note: "Wireless Hacking Devices — a unified Python framework and host protocol that drives many radios to sniff and inject across wireless stacks: BLE, IEEE 802.15.4 / Zigbee / RF4CE, Enhanced ShockBurst, Logitech Unifying, LoRaWAN and a generic PHY layer. Backends include the nRF52840 'Butterfly' firmware, an STM32WLxx (LoRa) firmware, ESP32, Ubertooth, APIMote, RZUSBstick, RFStorm/nRF24 and Yard Stick One, plus host HCI — one toolchain and PCAP/Scapy interface across protocols.",
+    note: "Wireless Hacking Devices, a unified Python framework and host protocol that drives many radios to sniff and inject across wireless stacks: BLE, IEEE 802.15.4 / Zigbee / RF4CE, Enhanced ShockBurst, Logitech Unifying, LoRaWAN and a generic PHY layer. Backends include the nRF52840 'Butterfly' firmware, an STM32WLxx (LoRa) firmware, ESP32, Ubertooth, APIMote, RZUSBstick, RFStorm/nRF24 and Yard Stick One, plus host HCI, one toolchain and PCAP/Scapy interface across protocols.",
   },
   {
     slug: 'sniffle', name: 'Sniffle', vendor: 'NCC Group', type: 'software',
     protocols: ['BLE'], repo: 'https://github.com/nccgroup/Sniffle',
-    note: 'The reference modern open-source sniffer for Bluetooth 5 and 4.x LE on TI CC1352/CC26x2 (and CatSniffer). Python host, all BT5 PHYs, extended advertising, follows connections — the default LL-layer capture choice today.',
+    note: 'The reference modern open-source sniffer for Bluetooth 5 and 4.x LE on TI CC1352/CC26x2 (and CatSniffer). Python host, all BT5 PHYs, extended advertising, follows connections, the default LL-layer capture choice today.',
   },
   {
     slug: 'ice9-bluetooth-sniffer', name: 'ice9-bluetooth-sniffer', vendor: 'ICE9 Consulting (Mike Ryan)', type: 'software',
     protocols: ['BLE', 'Bluetooth'], repo: 'https://github.com/mikeryan/ice9-bluetooth-sniffer',
-    note: 'SDR-based, Wireshark-compatible all-channel sniffer (HackRF / bladeRF / USRP). Unlike most sniffers it can sniff connections that are already established — invaluable when you cannot catch the connection request. Needs an SDR and GPU/CPU for channelisation.',
+    note: 'SDR-based, Wireshark-compatible all-channel sniffer (HackRF / bladeRF / USRP). Unlike most sniffers it can sniff connections that are already established, invaluable when you cannot catch the connection request. Needs an SDR and GPU/CPU for channelisation.',
   },
   {
     slug: 'crackle', name: 'crackle', vendor: 'Mike Ryan', type: 'software',
@@ -162,12 +162,12 @@ const tools = [
   {
     slug: 'universal-radio-hacker', name: 'Universal Radio Hacker', vendor: 'open source', type: 'software',
     protocols: ['any SDR'], repo: 'https://github.com/jopohl/urh',
-    note: 'Integrated reversing workbench: auto-detect modulation/bitrate, extract bitstreams, diff captures and replay — the fastest path from raw I/Q to a labelled frame format.',
+    note: 'Integrated reversing workbench: auto-detect modulation/bitrate, extract bitstreams, diff captures and replay, the fastest path from raw I/Q to a labelled frame format.',
   },
   {
     slug: 'wireshark', name: 'Wireshark', vendor: 'open source', type: 'software',
     protocols: ['any'], homepage: 'https://www.wireshark.org',
-    note: 'The universal packet dissector. Capture tools across these protocols export to PCAP, and Wireshark dissects, decodes and lets you filter the frames here — supplying a network/link key where one is needed to decrypt in place.',
+    note: 'The universal packet dissector. Capture tools across these protocols export to PCAP, and Wireshark dissects, decodes and lets you filter the frames here, supplying a network/link key where one is needed to decrypt in place.',
   },
   {
     slug: 'aircrack-ng', name: 'aircrack-ng', vendor: 'open source', type: 'software',
@@ -187,7 +187,7 @@ const tools = [
   {
     slug: 'gqrx', name: 'Gqrx SDR', vendor: 'open source', type: 'software',
     protocols: ['any SDR'], repo: 'https://github.com/gqrx-sdr/gqrx',
-    note: 'Live spectrum + waterfall SDR receiver (HackRF, bladeRF, USRP…) — the quickest way to see what is transmitting and where, and to judge how much of the band a given radio covers.',
+    note: 'Live spectrum + waterfall SDR receiver (HackRF, bladeRF, USRP…), the quickest way to see what is transmitting and where, and to judge how much of the band a given radio covers.',
   },
   {
     slug: 'ubertooth-tools', name: 'Ubertooth host tools', vendor: 'Great Scott Gadgets', type: 'software',
@@ -204,17 +204,17 @@ const tools = [
   {
     slug: 'hcxtools', name: 'hcxtools', vendor: 'ZerBea', type: 'software',
     protocols: ['Wi-Fi'], repo: 'https://github.com/ZerBea/hcxtools',
-    note: 'Companion converters for hcxdumptool captures. hcxpcapngtool turns a captured pcapng into the hashcat/John .hc22000 hash format — the bridge from a raw capture to an offline crack.',
+    note: 'Companion converters for hcxdumptool captures. hcxpcapngtool turns a captured pcapng into the hashcat/John .hc22000 hash format, the bridge from a raw capture to an offline crack.',
   },
   {
     slug: 'hashcat', name: 'hashcat', vendor: 'hashcat', type: 'software',
     protocols: ['Wi-Fi'], repo: 'https://github.com/hashcat/hashcat',
-    note: 'GPU-accelerated password recovery. For Wi-Fi, mode 22000 cracks both WPA/WPA2 4-way handshakes and PMKIDs from a .hc22000 hash using dictionary, rule and mask attacks — the fastest offline WPA cracker.',
+    note: 'GPU-accelerated password recovery. For Wi-Fi, mode 22000 cracks both WPA/WPA2 4-way handshakes and PMKIDs from a .hc22000 hash using dictionary, rule and mask attacks, the fastest offline WPA cracker.',
   },
   {
     slug: 'kismet', name: 'Kismet', vendor: 'Kismet Wireless', type: 'software',
     protocols: ['Wi-Fi', 'Zigbee', '802.15.4'], repo: 'https://github.com/kismetwireless/kismet',
-    note: 'Passive wireless detector, sniffer and wardriving tool. Channel-hops to log every AP, client and SSID (with GPS) and captures to pcapng without ever transmitting — the reference quiet survey/capture tool. Beyond Wi-Fi it has the widest 802.15.4/Zigbee datasource support of any tool here: a dedicated CatSniffer v3 Zigbee source (channels 12–26) plus nRF52840, CC2531, RZUSBstick, nRF51822 and NXP KW41Z (Kismet git / 2025-10+ releases).',
+    note: 'Passive wireless detector, sniffer and wardriving tool. Channel-hops to log every AP, client and SSID (with GPS) and captures to pcapng without ever transmitting, the reference quiet survey/capture tool. Beyond Wi-Fi it has the widest 802.15.4/Zigbee datasource support of any tool here: a dedicated CatSniffer v3 Zigbee source (channels 12 to 26) plus nRF52840, CC2531, RZUSBstick, nRF51822 and NXP KW41Z (Kismet git / 2025-10+ releases).',
   },
   {
     slug: 'reaver', name: 'Reaver (t6x fork)', vendor: 't6x', type: 'software',
@@ -224,7 +224,7 @@ const tools = [
   {
     slug: 'mdk4', name: 'MDK4', vendor: 'aircrack-ng', type: 'software',
     protocols: ['Wi-Fi'], repo: 'https://github.com/aircrack-ng/mdk4',
-    note: '802.11 stress-testing and DoS toolkit: deauthentication floods, beacon floods (fake SSIDs), authentication floods, probe and other attacks — for testing how an AP and clients hold up under adversarial traffic.',
+    note: '802.11 stress-testing and DoS toolkit: deauthentication floods, beacon floods (fake SSIDs), authentication floods, probe and other attacks, for testing how an AP and clients hold up under adversarial traffic.',
   },
   {
     slug: 'wifiphisher', name: 'Wifiphisher', vendor: 'Wifiphisher project', type: 'software',
@@ -239,7 +239,7 @@ const tools = [
   {
     slug: 'hostapd-mana', name: 'hostapd-mana', vendor: 'SensePost', type: 'software',
     protocols: ['Wi-Fi'], repo: 'https://github.com/sensepost/hostapd-mana',
-    note: "SensePost's modified hostapd for Wi-Fi attacks — the 'MANA' rogue AP that lures clients using their probe history and captures Enterprise/EAP credentials. The engine underneath EAPHammer.",
+    note: "SensePost's modified hostapd for Wi-Fi attacks, the 'MANA' rogue AP that lures clients using their probe history and captures Enterprise/EAP credentials. The engine underneath EAPHammer.",
   },
 ];
 

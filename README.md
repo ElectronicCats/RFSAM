@@ -1,14 +1,14 @@
-# RFSAM — Radio Frequency Security Assessment Methodology
+# RFSAM: Radio Frequency Security Assessment Methodology
 
 An open, structured methodology for RF research and auditing, by [Electronic Cats](https://electroniccats.com) and [PWNLabs](https://pwnlab.mx).
 
-RFSAM is meant to be **a north** for RF work: faced with an unknown signal or device, where do you start — and how do you know what you've missed? It walks you from the spectrum up through the signal, link, crypto, attack and application layers, per protocol, with a verification procedure and a real worked example at each step.
+RFSAM is meant to be **a north** for RF work: faced with an unknown signal or device, where do you start, and how do you know what you've missed? It walks you from the spectrum up through the signal, link, crypto, attack and application layers, per protocol, with a verification procedure and a real worked example at each step.
 
 It does **not** claim to invent RF security. OSSTMM, BSAM, the SDR‑pentest lineage and a deep body of research came first; RFSAM organises that landscape into something you can navigate by. For Bluetooth at the link layer and above it defers to [Tarlogic's BSAM](https://www.tarlogic.com/bsam/) rather than duplicating it.
 
 ## The model
 
-Controls are indexed on two axes — **protocol** and **layer**. The layer axis is a descent from spectrum down to application:
+Controls are indexed on two axes: **protocol** and **layer**. The layer axis is a descent from spectrum down to application:
 
 | | layer | what it asks |
 |---|---|---|
@@ -20,7 +20,7 @@ Controls are indexed on two axes — **protocol** and **layer**. The layer axis 
 | `AT` | Attack | injection, replay, hijack, rogue infrastructure |
 | `AP` | Application | what the device trusts above the link |
 
-Control IDs follow `RFSAM-<PROTOCOL>-<LAYER>-<NN>` (e.g. `RFSAM-BLE-AT-01`). The protocol and layer segments must match the control's fields — this is enforced in validation.
+Control IDs follow `RFSAM-<PROTOCOL>-<LAYER>-<NN>` (e.g. `RFSAM-BLE-AT-01`). The protocol and layer segments must match the control's fields; this is enforced in validation.
 
 Each control carries a `reviewStatus`: **stub** (migrated outline), **draft** (researched and cited, awaiting review), or **verified** (checked). Every nontrivial claim cites a source; uncertain claims are flagged inline for review.
 
@@ -38,7 +38,7 @@ src/lib/taxonomy.js      layer/protocol ids and the control-id rule
 reference/               provenance: the original corpus and prototype
 ```
 
-The site is built with [Astro](https://astro.build) and deployed to GitHub Pages at **rfsam.electroniccats.com**.
+The site is built with [Astro](https://astro.build) and deployed to GitHub Pages at **https://electroniccats.github.io/RFSAM/**.
 
 ## Running locally
 
@@ -56,4 +56,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the control schema, the ID/layer rule
 
 ## License
 
-The methodology content is licensed **CC BY‑SA 4.0** — see [LICENSE](LICENSE). Reuse and adapt it with attribution to Electronic Cats, sharing derivatives under the same license.
+The methodology content is licensed **CC BY‑SA 4.0**, see [LICENSE](LICENSE). Reuse and adapt it with attribution to Electronic Cats, sharing derivatives under the same license.

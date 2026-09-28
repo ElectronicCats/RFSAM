@@ -2,7 +2,7 @@
 import { bsam } from '../data/bsam.js';
 const { ids, deferred } = Astro.props;
 const note = deferred
-  ? 'This layer is covered by BSAM. RFSAM does not duplicate it — run these BSAM controls and carry the result into the RF assessment flow.'
+  ? 'This layer is covered by BSAM. RFSAM does not duplicate it, run these BSAM controls and carry the result into the RF assessment flow.'
   : 'For the link-layer judgement, RFSAM defers to these BSAM controls. RFSAM’s role here is the RF capture that gets you to the point where they apply.';
 ---
 {ids?.length > 0 && (

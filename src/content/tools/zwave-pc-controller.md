@@ -11,7 +11,7 @@ note: >-
   Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave
   controller node over the Serial API of a UZB USB adapter, so you can
   include/exclude nodes, browse the device's supported command classes and send
-  them — driving a Z-Wave network legitimately from a PC. The application-layer
+  them, driving a Z-Wave network legitimately from a PC. The application-layer
   counterpart to the Zniffer's capture.
 ---
-Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them — driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.
+Silicon Labs' official GUI controller (Simplicity Studio): implements a Z-Wave controller node over the Serial API of a UZB USB adapter, so you can include/exclude nodes, browse the device's supported command classes and send them, driving a Z-Wave network legitimately from a PC. The application-layer counterpart to the Zniffer's capture.

@@ -5,7 +5,7 @@ vendor: Ettus Research (NI)
 type: hardware
 protocols:
   - Wide-band SDR
-spec: ~56 MHz IBW (30.72 MHz in 2×2) · 70 MHz–6 GHz
+spec: ~56 MHz IBW (30.72 MHz in 2×2) · 70 MHz to 6 GHz
 homepage: 'https://www.ettus.com/all-products/ub210-kit/'
 software:
   - ice9-bluetooth-sniffer

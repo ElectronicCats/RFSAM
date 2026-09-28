@@ -17,7 +17,7 @@ const nav = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title ? `${title} — RFSAM` : 'RFSAM'}</title>
+    <title>{title ? `${title}, RFSAM` : 'RFSAM'}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -31,7 +31,7 @@ const nav = [
     </nav>
     <slot />
     <footer style="border-top:1px solid var(--line);padding:24px;color:var(--mut2);font-size:12px;text-align:center">
-      {meta.title} — {meta.subtitle} · {meta.org} · {meta.version} · CC BY-SA 4.0
+      {meta.title}, {meta.subtitle} · {meta.org} · {meta.version} · CC BY-SA 4.0
     </footer>
   </body>
 </html>

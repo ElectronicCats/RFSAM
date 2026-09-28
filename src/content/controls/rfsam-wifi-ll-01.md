@@ -11,7 +11,7 @@ deferred: false
 objective: >-
   Determine, from a passive monitor-mode capture, whether the network protects
   its 802.11 management frames (802.11w / PMF) and how much device identity the
-  beacons, probe requests and association frames leak in the clear — establishing
+  beacons, probe requests and association frames leak in the clear, establishing
   exposure to deauthentication DoS, handshake-forcing and evil-twin targeting.
 intro: >-
   802.11 management frames (beacons, probe request/response, association and
@@ -27,16 +27,16 @@ prerequisites:
   software:
     - 'aircrack-ng (airodump-ng), Kismet or hcxdumptool for capture; Wireshark/tshark for decode'
   signal:
-    freq: '2.4 GHz (2.400–2.4835 GHz) · 5 GHz (UNII, ~5.15–5.85 GHz) · 6 GHz (5.925–7.125 GHz, Wi-Fi 6E/7)'
+    freq: '2.4 GHz (2.400 to 2.4835 GHz) · 5 GHz (UNII, ~5.15 to 5.85 GHz) · 6 GHz (5.925 to 7.125 GHz, Wi-Fi 6E/7)'
     bandwidth: '20/40/80/160 MHz channels (320 MHz in Wi-Fi 7)'
-    modulation: 'OFDM (a/g/n/ac/ax/be) / DSSS (legacy b) — demodulated on the adapter chipset'
+    modulation: 'OFDM (a/g/n/ac/ax/be) / DSSS (legacy b), demodulated on the adapter chipset'
   skill: intermediate
 attacks:
   - name: Deauthentication / disassociation DoS
     refs:
       - bellardo2003dos
     impact: >-
-      Forged deauth/disassoc frames evict one or all clients on demand — a denial
+      Forged deauth/disassoc frames evict one or all clients on demand, a denial
       of service, and the lever that forces a fresh 4-way handshake for offline
       cracking under RFSAM-WIFI-CR-01.
     preconditions: Management Frame Protection (802.11w / PMF) absent or not enforced on the BSS.
@@ -68,7 +68,7 @@ attacks:
       probe requests let devices be tracked even when the MAC address is randomized.
 references:
   - key: ieee80211w2009
-    title: 'IEEE 802.11w-2009 — Amendment 4: Protected Management Frames'
+    title: 'IEEE 802.11w-2009: Amendment 4: Protected Management Frames'
     authors: IEEE
     venue: IEEE Standards Association
     year: 2009
@@ -96,14 +96,14 @@ references:
     url: 'https://papers.mathyvanhoef.com/asiaccs2016.pdf'
     type: paper
   - key: mcdougall2022probing
-    title: 'Probing for Passwords — Privacy Implications of SSIDs in Probe Requests'
+    title: 'Probing for Passwords: Privacy Implications of SSIDs in Probe Requests'
     authors: 'J. Ansohn McDougall, C. Burkert, D. Demmler, M. Schwarz, V. Hubbe, H. Federrath'
     venue: 'ACNS 2022 (arXiv:2206.03745)'
     year: 2022
     url: 'https://arxiv.org/abs/2206.03745'
     type: paper
   - key: wireshark-wpa-induction
-    title: "wpa-Induction.pcap — Wireshark SampleCaptures wiki (Wifi / Wireless LAN captures / 802.11)"
+    title: "wpa-Induction.pcap: Wireshark SampleCaptures wiki (Wifi / Wireless LAN captures / 802.11)"
     authors: Wireshark project
     venue: Wireshark SampleCaptures wiki
     url: 'https://gitlab.com/wireshark/wireshark/-/wikis/SampleCaptures'
@@ -125,15 +125,15 @@ lastResearched: 2026-06-14
 ---
 ## Mechanism
 
-802.11 separates management, control and data frames. Beacons, probe request/response, and association/authentication frames are sent in the clear, and — critically — by default they carry no cryptographic authentication, so a receiver cannot tell a genuine frame from a forged one. The 802.11w-2009 amendment ("Protected Management Frames", PMF) was published specifically to close this: it adds integrity, origin authentication and replay protection to a subset of management frames, principally deauthentication, disassociation and robust action frames [ieee80211w2009]. By design the amendment cannot protect beacons or probe request/response frames, since those are exchanged before any security association exists [ieee80211w2009]. So even with PMF fully enforced, the *discovery* frames still leak; PMF only stops the *forged-deauth* class.
+802.11 separates management, control and data frames. Beacons, probe request/response, and association/authentication frames are sent in the clear, and, critically, by default they carry no cryptographic authentication, so a receiver cannot tell a genuine frame from a forged one. The 802.11w-2009 amendment ("Protected Management Frames", PMF) was published specifically to close this: it adds integrity, origin authentication and replay protection to a subset of management frames, principally deauthentication, disassociation and robust action frames [ieee80211w2009]. By design the amendment cannot protect beacons or probe request/response frames, since those are exchanged before any security association exists [ieee80211w2009]. So even with PMF fully enforced, the *discovery* frames still leak; PMF only stops the *forged-deauth* class.
 
 Where PMF is absent or not enforced, the canonical consequence is the deauthentication/disassociation denial-of-service: an attacker spoofs the AP or client MAC and transmits a single forged deauth frame to evict a station, repeatedly to deny service, or tactically to force a client to reconnect and emit a fresh 4-way handshake. Bellardo and Savage documented this management-frame DoS class in 2003 and noted that, unlike the confidentiality flaws of the era, these availability attacks need no key and target the protocol's own management plane [bellardo2003dos]. The forced-reconnect variant is the lever that feeds the handshake-capture path assessed under RFSAM-WIFI-CR-01.
 
-The second exposure is identity. A client doing *active* scanning broadcasts directed probe requests naming SSIDs it has joined before — its Preferred Network List. Cunche, Kaafar and Boreli showed in 2012 that these lists fingerprint a device and even let social links between owners be inferred from overlapping network histories [cunche2012linking]. MAC-address randomization was meant to blunt this, but Vanhoef et al. demonstrated in 2016 that probe-request information elements, scrambler seeds and sequence numbers fingerprint and track devices despite randomized MACs, correctly following a sizable fraction of devices for tens of minutes [vanhoef2016randomization]. More recently, McDougall et al. found users frequently type sensitive strings — including passwords and email addresses — into SSID fields, which then leak verbatim in probe requests [mcdougall2022probing]. Together these make management-frame capture both a tracking surface and the reconnaissance that seeds evil-twin (AP-impersonation) targeting, executed under the Wi-Fi Attack layer.
+The second exposure is identity. A client doing *active* scanning broadcasts directed probe requests naming SSIDs it has joined before, its Preferred Network List. Cunche, Kaafar and Boreli showed in 2012 that these lists fingerprint a device and even let social links between owners be inferred from overlapping network histories [cunche2012linking]. MAC-address randomization was meant to blunt this, but Vanhoef et al. demonstrated in 2016 that probe-request information elements, scrambler seeds and sequence numbers fingerprint and track devices despite randomized MACs, correctly following a sizable fraction of devices for tens of minutes [vanhoef2016randomization]. More recently, McDougall et al. found users frequently type sensitive strings, including passwords and email addresses, into SSID fields, which then leak verbatim in probe requests [mcdougall2022probing]. Together these make management-frame capture both a tracking surface and the reconnaissance that seeds evil-twin (AP-impersonation) targeting, executed under the Wi-Fi Attack layer.
 
 ## Procedure
 
-All capture below is **passive** and non-transmitting. Steps 1–4 observe only. The active deauth check in step 5 transmits and must be run **only on equipment you own or are explicitly authorised to test**, ideally in an RF-shielded enclosure; classic deauth is a real denial of service against bystanders. The active execution properly belongs to the Wi-Fi Attack layer — here it is a one-shot confirmation of the exposure read in step 4.
+All capture below is **passive** and non-transmitting. Steps 1 to 4 observe only. The active deauth check in step 5 transmits and must be run **only on equipment you own or are explicitly authorised to test**, ideally in an RF-shielded enclosure; classic deauth is a real denial of service against bystanders. The active execution properly belongs to the Wi-Fi Attack layer, here it is a one-shot confirmation of the exposure read in step 4.
 
 1. Put the adapter into monitor mode and park it on the target's channel (RFSAM-RES-11):
    ```bash
@@ -154,41 +154,41 @@ All capture below is **passive** and non-transmitting. Steps 1–4 observe only.
      -T fields -e wlan.ssid \
      -e wlan.rsn.capabilities.mfpr -e wlan.rsn.capabilities.mfpc
    ```
-   `mfpr=1` (MFP Required) means PMF is enforced — deauth DoS is blocked. `mfpc=1, mfpr=0` means capable but optional. Both `0` (or no RSN IE at all, i.e. Open/WEP) means management frames are unprotected.
+   `mfpr=1` (MFP Required) means PMF is enforced, deauth DoS is blocked. `mfpc=1, mfpr=0` means capable but optional. Both `0` (or no RSN IE at all, i.e. Open/WEP) means management frames are unprotected.
 
-4. Inventory the identity leakage — broadcast SSIDs and the probe-request history of nearby clients (their PNLs):
+4. Inventory the identity leakage, broadcast SSIDs and the probe-request history of nearby clients (their PNLs):
    ```bash
    tshark -r wifi-ll-01.cap -Y "wlan.fc.type_subtype == 0x04 && wlan.ssid != \"\"" \
      -T fields -e wlan.sa -e wlan.ssid | sort -u
    ```
-   Each line is a client MAC and an SSID it is actively seeking — the data the tracking and evil-twin work in [cunche2012linking] and [vanhoef2016randomization] consumes. Note any SSID strings that look like credentials [mcdougall2022probing].
+   Each line is a client MAC and an SSID it is actively seeking, the data the tracking and evil-twin work in [cunche2012linking] and [vanhoef2016randomization] consumes. Note any SSID strings that look like credentials [mcdougall2022probing].
 
 5. **(Authorised scope only)** If step 3 showed PMF absent, confirm deauth susceptibility against your own test client with a single, bounded burst, then stop:
    ```bash
    sudo aireplay-ng --deauth 1 -a AA:BB:CC:DD:EE:FF -c 11:22:33:44:55:66 wlan0mon
    ```
-   `--deauth 1` sends one round (not a flood). The test client disassociating confirms the exposure; airodump-ng on the same channel should then show the renewed association (and, if a client reconnects, an EAPOL handshake — the input to RFSAM-WIFI-CR-01). Against a PMF-enforced BSS the client stays connected.
+   `--deauth 1` sends one round (not a flood). The test client disassociating confirms the exposure; airodump-ng on the same channel should then show the renewed association (and, if a client reconnects, an EAPOL handshake, the input to RFSAM-WIFI-CR-01). Against a PMF-enforced BSS the client stays connected.
 
 ## Field case
 
-Steps 3–4 are demonstrated below against a documented public sample so the read-out can be reproduced exactly; the step-5 active confirmation is left as an illustrative lab walk-through, where every unmeasured datum is marked `[FILL: …]` and must not be cited as a real finding.
+Steps 3 to 4 are demonstrated below against a documented public sample so the read-out can be reproduced exactly; the step-5 active confirmation is left as an illustrative lab walk-through, where every unmeasured datum is marked `[FILL: …]` and must not be cited as a real finding.
 
-Worked against the public Wireshark sample capture `wpa-Induction.pcap` (Wireshark SampleCaptures wiki, "Wifi / Wireless LAN captures / 802.11") [wireshark-wpa-induction] — a passive 802.11 trace, not a live engagement of our own:
+Worked against the public Wireshark sample capture `wpa-Induction.pcap` (Wireshark SampleCaptures wiki, "Wifi / Wireless LAN captures / 802.11") [wireshark-wpa-induction], a passive 802.11 trace, not a live engagement of our own:
 
-- Step 3 on its WPA2-PSK beacon for SSID `Coherer` (BSSID `00:0c:41:82:b2:55`, AKM = PSK) returns `RSN Capabilities 0x0000` — `mfpr=0, mfpc=0`, PMF neither required nor capable — so management frames are unprotected and an associated client stays deauth-susceptible [wireshark-wpa-induction].
+- Step 3 on its WPA2-PSK beacon for SSID `Coherer` (BSSID `00:0c:41:82:b2:55`, AKM = PSK) returns `RSN Capabilities 0x0000`, `mfpr=0, mfpc=0`, PMF neither required nor capable, so management frames are unprotected and an associated client stays deauth-susceptible [wireshark-wpa-induction].
 - Step 4 over the same capture inventoried `2` distinct client MACs emitting directed probe requests (`00:0d:93:82:36:3a` probing `Coherer`, `00:0f:66:16:94:73` probing `linksys`) and `2` distinct probed SSIDs, of which `none observed` resembled credentials or email addresses [wireshark-wpa-induction].
 
-For the active confirmation, an illustrative lab walk-through against a consumer AP on channel 6 with an ALFA AWUS036ACH — substitute the values you capture:
+For the active confirmation, an illustrative lab walk-through against a consumer AP on channel 6 with an ALFA AWUS036ACH, substitute the values you capture:
 
 - Step 4 over a `[FILL: N]`-minute capture in a `[FILL: location type, e.g. office lobby]` would inventory the live PNLs of nearby clients.
 - Step 5, on the operator's own test laptop, a single `aireplay-ng --deauth 1` round dropped the client and airodump-ng captured the renewed EAPOL handshake within `[FILL: seconds]`.
 
-An Electronic Cats Minino (ESP32-C6) reproduces steps 1–4 standalone on 2.4 GHz, writing the capture to microSD and logging the survey geographically over its onboard GPS for the wardriving variant — useful where a laptop is impractical, with the caveat that it sees only 2.4 GHz management/handshake frames, not 5/6 GHz traffic. A WiFi Pineapple consumes the same step-4 PNL inventory to seed an evil-twin clone, but that is an Attack-layer action outside this control's scope and must be separately authorised.
+An Electronic Cats Minino (ESP32-C6) reproduces steps 1 to 4 standalone on 2.4 GHz, writing the capture to microSD and logging the survey geographically over its onboard GPS for the wardriving variant, useful where a laptop is impractical, with the caveat that it sees only 2.4 GHz management/handshake frames, not 5/6 GHz traffic. A WiFi Pineapple consumes the same step-4 PNL inventory to seed an evil-twin clone, but that is an Attack-layer action outside this control's scope and must be separately authorised.
 
 ## Remediation
 
-**Developer (client/STA firmware and OS):** Implement MAC-address randomization *and* minimize probe-request fingerprintability — randomize sequence numbers and avoid distinctive information-element ordering, since randomized MACs alone do not prevent tracking [vanhoef2016randomization]. Prefer passive scanning (listen for beacons) over directed active probing so the Preferred Network List is not broadcast [cunche2012linking]; never echo user-entered SSID strings that could carry secrets [mcdougall2022probing].
+**Developer (client/STA firmware and OS):** Implement MAC-address randomization *and* minimize probe-request fingerprintability, randomize sequence numbers and avoid distinctive information-element ordering, since randomized MACs alone do not prevent tracking [vanhoef2016randomization]. Prefer passive scanning (listen for beacons) over directed active probing so the Preferred Network List is not broadcast [cunche2012linking]; never echo user-entered SSID strings that could carry secrets [mcdougall2022probing].
 
-**Integrator (AP / network design):** Enable 802.11w with **MFP Required** (`mfpr=1`), not merely capable, on every BSS — this authenticates deauth/disassoc frames and defeats the forged-deauth DoS and handshake-forcing class [ieee80211w2009] [bellardo2003dos]. PMF is mandatory under WPA3 and on 6 GHz; enforce it on WPA2 too. Note that PMF does not protect beacons or probe frames, so identity leakage must be addressed at the client [ieee80211w2009].
+**Integrator (AP / network design):** Enable 802.11w with **MFP Required** (`mfpr=1`), not merely capable, on every BSS, this authenticates deauth/disassoc frames and defeats the forged-deauth DoS and handshake-forcing class [ieee80211w2009] [bellardo2003dos]. PMF is mandatory under WPA3 and on 6 GHz; enforce it on WPA2 too. Note that PMF does not protect beacons or probe frames, so identity leakage must be addressed at the client [ieee80211w2009].
 
-**Operator (deployment/policy):** Audit beacons for `mfpr` enforcement across the estate; treat any PMF-optional BSS as deauth-exposed. On managed clients, disable auto-join for sensitive SSIDs and clear stale saved networks to shrink the leaked PNL. Avoid hidden SSIDs as a security measure — they force clients to actively probe the hidden name, worsening the leakage this control measures rather than reducing it.
+**Operator (deployment/policy):** Audit beacons for `mfpr` enforcement across the estate; treat any PMF-optional BSS as deauth-exposed. On managed clients, disable auto-join for sensitive SSIDs and clear stale saved networks to shrink the leaked PNL. Avoid hidden SSIDs as a security measure, they force clients to actively probe the hidden name, worsening the leakage this control measures rather than reducing it.

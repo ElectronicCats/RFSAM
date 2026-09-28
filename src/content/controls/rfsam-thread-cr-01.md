@@ -9,9 +9,9 @@ applicability:
   - Matter-over-Thread
 deferred: false
 objective: >-
-  Determine whether the credentials that gate a Thread mesh — the Thread network
+  Determine whether the credentials that gate a Thread mesh, the Thread network
   key and the commissioning secrets that distribute it (the Commissioner PSKc, the
-  Joiner PSKd, and, for Matter devices, the SPAKE2+ setup passcode) — are
+  Joiner PSKd, and, for Matter devices, the SPAKE2+ setup passcode), are
   provisioned and protected such that an attacker cannot recover the network key
   or join the mesh from a weak, default, or exposed credential.
 intro: >-
@@ -30,7 +30,7 @@ prerequisites:
     - 'Wireshark (802.15.4 + Thread/6LoWPAN/MLE dissector, with the 802.15.4 decryption-keys table)'
     - 'nRF Sniffer for 802.15.4 / pyspinel for capture; chip-tool (Matter SDK) for setup-code / PASE testing'
   signal:
-    freq: '2.405–2.480 GHz (IEEE 802.15.4 channels 11–26, 5 MHz spacing; a Thread network sits on one channel)'
+    freq: '2.405 to 2.480 GHz (IEEE 802.15.4 channels 11 to 26, 5 MHz spacing; a Thread network sits on one channel)'
     bandwidth: '2 MHz occupied per 5 MHz channel'
     modulation: 'O-QPSK (DSSS), 250 kbit/s'
   skill: advanced
@@ -50,7 +50,7 @@ attacks:
       brute force against a random 27-bit passcode.
     summary: >-
       SPAKE2+ keys the first Matter session entirely from the 27-bit setup
-      passcode; that passcode — not the cipher — is the weak link when it is
+      passcode; that passcode, not the cipher, is the weak link when it is
       default, guessable, or exposed.
   - name: Thread commissioning credential recovery (PSKc / PSKd)
     refs:
@@ -77,14 +77,14 @@ attacks:
       - cve-2024-3297
     impact: >-
       Makes a commissioned Matter device unresponsive until it is power-cycled by
-      replaying manipulated CASE Sigma1 messages — a denial of the operational
+      replaying manipulated CASE Sigma1 messages, a denial of the operational
       session rather than a credential compromise.
     preconditions: >-
       Adjacent-network reach to a device running a Matter stack before Matter 1.1.
     summary: >-
       A replay weakness in CASE session establishment (before Matter 1.1) that
       bounds confidence in the operational handshake; included as a
-      representative advisory — check current CSA advisories.
+      representative advisory, check current CSA advisories.
 references:
   - key: matter-core-spec
     title: 'Matter Core Specification, Version 1.0'
@@ -126,7 +126,7 @@ references:
     url: 'https://nvd.nist.gov/vuln/detail/CVE-2024-3454'
     type: cve
   - key: matter-chip-tool-guide
-    title: 'Working with the CHIP Tool — Step 5: Determine Matter device''s discriminator and setup PIN code'
+    title: 'Working with the CHIP Tool: Step 5: Determine Matter device''s discriminator and setup PIN code'
     authors: Project CHIP / connectedhomeip
     venue: 'project-chip/connectedhomeip (docs/development_controllers/chip-tool/chip_tool_guide.md)'
     year: 2024
@@ -148,17 +148,17 @@ lastResearched: 2026-06-14
 
 ## Mechanism
 
-A Thread network is an IPv6 mesh whose MAC payloads are encrypted with AES-128-CCM* under a single shared **Thread network key**; possession of that key is what separates an insider from an outsider, and it is also what lets a passive capture be decrypted [thread-commissioning-wp]. The cipher is not the weak point — recovering the *credentials that distribute the key* is. New devices obtain the key through the **Mesh Commissioning Protocol (MeshCoP)**: a Joiner opens a DTLS session to the Commissioner and authenticates with a per-device Joiner credential (**PSKd**), while the Commissioner itself is admitted to the network using the **PSKc** (a pre-shared key derived from a commissioning passphrase); the handshake that protects this exchange is an EC-JPAKE password-authenticated key exchange over P-256 [thread-commissioning-wp][thread-meshcop-verification]. Because MeshCoP is a PAKE bootstrapped from these secrets, the practical exposure is the *strength and handling* of PSKc/PSKd — a default, printed, or low-entropy credential — not a break of the handshake; a formal symbolic analysis (ProVerif) of MeshCoP models exactly this commissioning protocol and its trust assumptions, and reports no exploitable weakness in the modelled handshake — it is cited here only to anchor that MeshCoP/EC-JPAKE is the modelled commissioning protocol, not a named attack [thread-meshcop-verification].
+A Thread network is an IPv6 mesh whose MAC payloads are encrypted with AES-128-CCM* under a single shared **Thread network key**; possession of that key is what separates an insider from an outsider, and it is also what lets a passive capture be decrypted [thread-commissioning-wp]. The cipher is not the weak point, recovering the *credentials that distribute the key* is. New devices obtain the key through the **Mesh Commissioning Protocol (MeshCoP)**: a Joiner opens a DTLS session to the Commissioner and authenticates with a per-device Joiner credential (**PSKd**), while the Commissioner itself is admitted to the network using the **PSKc** (a pre-shared key derived from a commissioning passphrase); the handshake that protects this exchange is an EC-JPAKE password-authenticated key exchange over P-256 [thread-commissioning-wp][thread-meshcop-verification]. Because MeshCoP is a PAKE bootstrapped from these secrets, the practical exposure is the *strength and handling* of PSKc/PSKd, a default, printed, or low-entropy credential, not a break of the handshake; a formal symbolic analysis (ProVerif) of MeshCoP models exactly this commissioning protocol and its trust assumptions, and reports no exploitable weakness in the modelled handshake, it is cited here only to anchor that MeshCoP/EC-JPAKE is the modelled commissioning protocol, not a named attack [thread-meshcop-verification].
 
-On a **Matter-over-Thread** device the same network key is reached through a second credential. Matter commissioning runs **PASE (Passcode-Authenticated Session Establishment)**, which is **SPAKE2+** over P-256 keyed entirely from a **27-bit setup passcode** (the printed 8-digit PIN); the device stores a SPAKE2+ *verifier*, not the passcode itself, and PASE only runs while a commissioning window is open [matter-core-spec][matter-security-analysis]. Once commissioned, all operational sessions use **CASE** — certificate-authenticated (a Node Operational Certificate under a fabric Root CA), not the passcode [matter-core-spec]. So for Matter the passcode, not the cipher, is the weak link: a default, guessable, or photographed setup code collapses the search, and a verifier extracted from an insecure device is open to offline recovery given the low passcode entropy [matter-security-analysis]. Online guessing is bounded by the spec (failed-PASE limits and a time-boxed commissioning window) and the obvious codes are disallowed — the reference connectedhomeip implementation rejects `00000000`, each repeated-digit value (`11111111` … `88888888`), `12345678` and `87654321`, and any value outside the `00000001`–`99999998` range — so the realistic win is a *weak vendor default or an exposed onboarding payload*, not brute force against a random code [matter-core-spec][matter-security-analysis].
+On a **Matter-over-Thread** device the same network key is reached through a second credential. Matter commissioning runs **PASE (Passcode-Authenticated Session Establishment)**, which is **SPAKE2+** over P-256 keyed entirely from a **27-bit setup passcode** (the printed 8-digit PIN); the device stores a SPAKE2+ *verifier*, not the passcode itself, and PASE only runs while a commissioning window is open [matter-core-spec][matter-security-analysis]. Once commissioned, all operational sessions use **CASE**, certificate-authenticated (a Node Operational Certificate under a fabric Root CA), not the passcode [matter-core-spec]. So for Matter the passcode, not the cipher, is the weak link: a default, guessable, or photographed setup code collapses the search, and a verifier extracted from an insecure device is open to offline recovery given the low passcode entropy [matter-security-analysis]. Online guessing is bounded by the spec (failed-PASE limits and a time-boxed commissioning window) and the obvious codes are disallowed, the reference connectedhomeip implementation rejects `00000000`, each repeated-digit value (`11111111` … `88888888`), `12345678` and `87654321`, and any value outside the `00000001` to `99999998` range, so the realistic win is a *weak vendor default or an exposed onboarding payload*, not brute force against a random code [matter-core-spec][matter-security-analysis].
 
 Two further advisories bound confidence in the surrounding handshakes and should be treated as representative (check current CSA advisories): **CVE-2024-3297** lets an attacker replay manipulated **CASE Sigma1** messages to render a device unresponsive until power-cycled, in Matter stacks before 1.1 (a DoS of the operational session, not a credential break) [cve-2024-3297]; and **CVE-2024-3454** is an intra-fabric **footprinting** disclosure in the connectedhomeip SDK (Matter 1.2) where a same-fabric party learns information the protocol intends to hide [cve-2024-3454]. Neither recovers the network key, but both are worth recording when profiling a device's stack version.
 
 ## Procedure
 
-Run every active or decrypt step only against your own equipment, test devices, and credentials you are authorised to hold — recovering a network key or driving PASE against a device you do not own is out of scope for an unauthorised tester.
+Run every active or decrypt step only against your own equipment, test devices, and credentials you are authorised to hold, recovering a network key or driving PASE against a device you do not own is out of scope for an unauthorised tester.
 
-1. **Capture the mesh and confirm it is Thread on its channel.** Park an 802.15.4 radio on the target channel (11–26) and stream frames into Wireshark.
+1. **Capture the mesh and confirm it is Thread on its channel.** Park an 802.15.4 radio on the target channel (11 to 26) and stream frames into Wireshark.
    ```bash
    # nRF52840 with the nRF Sniffer for 802.15.4 extcap, or via pyspinel:
    python sniffer.py -c 15 -u /dev/ttyACM0 -b 460800 --crc -o - | wireshark -k -i -
@@ -166,31 +166,31 @@ Run every active or decrypt step only against your own equipment, test devices, 
    Expected: 802.15.4 frames in Wireshark. Thread shows 6LoWPAN + MLE (and IPv6) above the MAC; the MAC payload is shown encrypted until you supply the key. Read the channel, PAN ID, Extended PAN ID and Network Name from beacons/MLE without any key.
 
 2. **Establish whether you hold (or can obtain) the network key, and that it decrypts the capture.** Enter the candidate Thread network key into Wireshark's 802.15.4 decryption-keys table (Preferences -> Protocols -> IEEE 802.15.4 -> Decryption Keys; key index/hash per the MLE security suite).
-   - If the mesh becomes readable (6LoWPAN/MLE/IPv6 in clear), the key is valid — the finding is *how you came to hold it* (default/exposed/weak commissioning credential), not that AES was broken.
-   - If it stays opaque, the key is unknown — proceed to assess the commissioning credentials below.
+   - If the mesh becomes readable (6LoWPAN/MLE/IPv6 in clear), the key is valid, the finding is *how you came to hold it* (default/exposed/weak commissioning credential), not that AES was broken.
+   - If it stays opaque, the key is unknown, proceed to assess the commissioning credentials below.
 
-3. **Assess the Thread commissioning posture (PSKc / PSKd).** Determine how the Joiner credential and Commissioner passphrase are set: are they vendor defaults, printed on the label, shared across a product line, or low-entropy? Is a Commissioner / Border Agent reachable, and is the commissioning window left open? Record the credential source and entropy — a default or printed PSKd that admits a Joiner is the finding [thread-commissioning-wp].
+3. **Assess the Thread commissioning posture (PSKc / PSKd).** Determine how the Joiner credential and Commissioner passphrase are set: are they vendor defaults, printed on the label, shared across a product line, or low-entropy? Is a Commissioner / Border Agent reachable, and is the commissioning window left open? Record the credential source and entropy, a default or printed PSKd that admits a Joiner is the finding [thread-commissioning-wp].
 
 4. **For a Matter device, decode the onboarding payload and test the setup passcode (authorised devices only).** Recover the passcode, discriminator and VID/PID from the printed QR / 11-digit manual code, then drive PASE with chip-tool against a *device you own* using the candidate (printed value or a known vendor default):
    ```bash
    # Pair over BLE onto Thread using the on-label setup code; this exercises PASE (SPAKE2+):
    chip-tool pairing ble-thread <node-id> hex:<operational-dataset> <setup-passcode> <discriminator>
    ```
-   Expected: success means the passcode admitted a commissioner (commission onto an attacker-controlled fabric on your own bench is the demonstration); on a Matter-over-Thread device this also yields the operational Thread credentials. Repeated failure eventually drives the node out of commissioning mode — that closure is itself a positive finding about the rate-limit posture. A *default or printed* code succeeding is the weakness; a *random* code resisting guessing is the expected, healthy result.
+   Expected: success means the passcode admitted a commissioner (commission onto an attacker-controlled fabric on your own bench is the demonstration); on a Matter-over-Thread device this also yields the operational Thread credentials. Repeated failure eventually drives the node out of commissioning mode, that closure is itself a positive finding about the rate-limit posture. A *default or printed* code succeeding is the weakness; a *random* code resisting guessing is the expected, healthy result.
 
 5. **Record the stack version against the representative advisories.** Note the SoC/SDK (e.g. nRF52840 / EFR32 / ESP32-H2) and whether the Matter stack predates 1.1 (CVE-2024-3297) or 1.2 (CVE-2024-3454); these do not recover the key but characterise the operational-session and footprinting exposure [cve-2024-3297][cve-2024-3454].
 
 ## Field case
 
-This walkthrough is grounded in the Matter SDK's own documented example onboarding payload, so the decoded values below are public reference data — not a measured engagement against a third-party device. Any value still marked `[FILL: …]` is a capture-specific placeholder and must not be treated as an observed finding.
+This walkthrough is grounded in the Matter SDK's own documented example onboarding payload, so the decoded values below are public reference data, not a measured engagement against a third-party device. Any value still marked `[FILL: …]` is a capture-specific placeholder and must not be treated as an observed finding.
 
-The Matter SDK's chip-tool guide documents how to recover a device's onboarding parameters from its printed payload, using the SDK reference example payload — QR `MT:Y.K9042C00KA0648G00` / manual pairing code `749701123365521327694` — as its worked case [matter-chip-tool-guide]. Decoding that payload (the guide's "Step 5: Determine Matter device's discriminator and setup PIN code") yields a setup passcode of `20202021`, discriminator `3840 (0xF00)`, Vendor Id `65521 (0xFFF1)` and Product Id `32768 (0x8000)` [matter-chip-tool-guide]. An 802.15.4 capture on channel `[FILL: channel 11–26]` shows 6LoWPAN + MLE frames — confirming Thread, not Zigbee — with the MAC payload encrypted; without the network key, Wireshark leaves the payloads opaque (the expected, healthy state).
+The Matter SDK's chip-tool guide documents how to recover a device's onboarding parameters from its printed payload, using the SDK reference example payload, QR `MT:Y.K9042C00KA0648G00` / manual pairing code `749701123365521327694`, as its worked case [matter-chip-tool-guide]. Decoding that payload (the guide's "Step 5: Determine Matter device's discriminator and setup PIN code") yields a setup passcode of `20202021`, discriminator `3840 (0xF00)`, Vendor Id `65521 (0xFFF1)` and Product Id `32768 (0x8000)` [matter-chip-tool-guide]. An 802.15.4 capture on channel `[FILL: channel 11-26]` shows 6LoWPAN + MLE frames, confirming Thread, not Zigbee, with the MAC payload encrypted; without the network key, Wireshark leaves the payloads opaque (the expected, healthy state).
 
-With a commissioning window open, the same guide drives PASE over BLE onto Thread with that on-label code via `./chip-tool pairing ble-thread 1 hex:<operational-dataset> 20202021 3840`, where `20202021` is the decoded setup passcode and `3840` the discriminator [matter-chip-tool-guide]. A successful pairing returns the operational Thread dataset, which then decrypts the capture in Wireshark — demonstrating that the entire chain hinges on the setup code, not on the AES-CCM* link layer. The audit question that determines criticality is whether that passcode is a unique high-entropy per-device value or a shared/guessable default. Here it is the latter: `20202021` (with discriminator `3840` and VID/PID `0xFFF1/0x8000`) is the SDK's shared example/test value, baked into the reference apps and reused across SDK documentation and sample builds [matter-chip-tool-guide] — exactly the kind of common, non-unique credential a real device must never ship, so on production hardware its presence would be a genuine exposure rather than a hardening note.
+With a commissioning window open, the same guide drives PASE over BLE onto Thread with that on-label code via `./chip-tool pairing ble-thread 1 hex:<operational-dataset> 20202021 3840`, where `20202021` is the decoded setup passcode and `3840` the discriminator [matter-chip-tool-guide]. A successful pairing returns the operational Thread dataset, which then decrypts the capture in Wireshark, demonstrating that the entire chain hinges on the setup code, not on the AES-CCM* link layer. The audit question that determines criticality is whether that passcode is a unique high-entropy per-device value or a shared/guessable default. Here it is the latter: `20202021` (with discriminator `3840` and VID/PID `0xFFF1/0x8000`) is the SDK's shared example/test value, baked into the reference apps and reused across SDK documentation and sample builds [matter-chip-tool-guide], exactly the kind of common, non-unique credential a real device must never ship, so on production hardware its presence would be a genuine exposure rather than a hardening note.
 
 ## Remediation
 
-**Developer (device / stack).** Provision a unique, high-entropy setup passcode per device (never a shared default, never one of the spec-prohibited codes) and store only the SPAKE2+ *verifier*, never the passcode, in device flash [matter-core-spec]. Enforce the spec's PASE failed-attempt limit and time-boxed commissioning window so online guessing stays bounded [matter-core-spec]. Keep the Matter stack current — at minimum past the versions named in CVE-2024-3297 (CASE Sigma1 replay, ≥ 1.1) and CVE-2024-3454 (intra-fabric footprinting) [cve-2024-3297][cve-2024-3454]. On the Thread side, use per-device Joiner credentials (PSKd) with real entropy and never ship a common PSKc/PSKd across a product line [thread-commissioning-wp].
+**Developer (device / stack).** Provision a unique, high-entropy setup passcode per device (never a shared default, never one of the spec-prohibited codes) and store only the SPAKE2+ *verifier*, never the passcode, in device flash [matter-core-spec]. Enforce the spec's PASE failed-attempt limit and time-boxed commissioning window so online guessing stays bounded [matter-core-spec]. Keep the Matter stack current, at minimum past the versions named in CVE-2024-3297 (CASE Sigma1 replay, ≥ 1.1) and CVE-2024-3454 (intra-fabric footprinting) [cve-2024-3297][cve-2024-3454]. On the Thread side, use per-device Joiner credentials (PSKd) with real entropy and never ship a common PSKc/PSKd across a product line [thread-commissioning-wp].
 
 **Integrator (product / fabric).** Treat the printed onboarding payload as a secret: do not log, photograph into asset systems, or expose setup codes; rotate or retire them after commissioning where the platform allows. Keep the commissioning window closed except during an intended onboarding, and prefer per-device credentials so one leaked code compromises one device, not a fleet.
 
