@@ -5,6 +5,13 @@ vendor: Sprite Lab (Northeastern University)
 type: software
 protocols:
   - 5G NR
+status: research
+statusNote: >-
+  Research code accompanying a 2023 IEEE Symposium on Security and Privacy
+  paper: FDD only, and its README recommends using a recorded file for this
+  release. Last commit 2024-11-14.
+statusSource: 'https://github.com/spritelab/5GSniffer/blob/master/README.md'
+statusChecked: '2026-09-28'
 repo: 'https://github.com/spritelab/5GSniffer'
 note: >-
   Open-source 5G NR Physical Downlink Control Channel (PDCCH) blind decoder:

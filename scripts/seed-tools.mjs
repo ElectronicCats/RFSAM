@@ -38,12 +38,14 @@ const tools = [
     slug: 'rtl-sdr-v4', name: 'RTL-SDR Blog V4', vendor: 'RTL-SDR Blog', type: 'hardware',
     protocols: ['RX-only SDR'], spec: '~2.4 MHz BW · 0.5 kHz to 1.766 GHz · RX only',
     homepage: 'https://www.rtl-sdr.com/v4/',
+    status: "eol", statusNote: "End of line since May 2026: RTL-SDR Blog states Rafael Micro no longer produces the R828D and the chip stockpile is exhausted. The R828S-based V4L (Lite) replacement has been on sale in limited stock since August 2026.", statusSource: "https://www.rtl-sdr.com/rtl-sdr-blog-v4-end-of-line/", statusChecked: "2026-09-28",
     note: 'Budget RX-only dongle. Does NOT reach 2.4 GHz, so it cannot receive BLE, Wi-Fi or Zigbee, but it is a fine cheap receiver for sub-GHz, LoRa and ADS-B (1090 MHz).',
   },
   {
     slug: 'ubertooth-one', name: 'Ubertooth One', vendor: 'Great Scott Gadgets', type: 'hardware',
     protocols: ['BLE', 'Bluetooth'], repo: 'https://github.com/greatscottgadgets/ubertooth',
     software: ['crackle', 'wireshark'],
+    status: "eol", statusNote: "Great Scott Gadgets lists Ubertooth One as a retired product with no current plan to manufacture more. The software repo is not archived but its latest release is 2020-12-R1 and the only commits since April 2023 are a documentation build fix in March 2026.", statusSource: "https://greatscottgadgets.com/ubertoothone/", statusChecked: "2026-09-28",
     note: 'Open BLE/Bluetooth sniffer that follows connections by default (target a BD_ADDR with -t) and captures some Basic Rate Classic. Affordable and battle-tested, but pre-BT5 and weaker on long-lived connections than modern CC1352 sniffers.',
   },
   {
@@ -72,6 +74,7 @@ const tools = [
     slug: 'alfa-awus036ach', name: 'ALFA AWUS036ACH', vendor: 'Alfa Network', type: 'hardware',
     protocols: ['Wi-Fi'], homepage: 'https://www.alfa.com.tw/products/awus036ach_1',
     software: ['aircrack-ng', 'bettercap', 'wireshark'],
+    status: "active", statusNote: "Listed on ALFA's site at alfa.com.tw (USB Type-C revision, RTL8812AU) and in stock at the reseller Rokland as of 2026-09-28. The alfa-network.com domain no longer resolves (NXDOMAIN), so the entry's homepage URL is dead and should point to alfa.com.tw.", statusSource: "https://www.alfa.com.tw/products/awus036ach_1", statusChecked: "2026-09-28",
     note: 'RTL8812AU dual-band Wi-Fi adapter with monitor mode and injection, the workhorse 802.11 capture/injection radio for surveys and handshake capture.',
   },
   {
@@ -92,6 +95,7 @@ const tools = [
   {
     slug: 'nrf52840-dongle', name: 'nRF52840 Dongle', vendor: 'Nordic Semiconductor', type: 'hardware',
     protocols: ['BLE'], homepage: 'https://www.nordicsemi.com', software: ['nrf-sniffer', 'injectable-firmware'],
+    status: "active", statusNote: "Listed as Active and in stock at DigiKey (checked 2026-09-28). Nordic lists it as supported hardware for nRF Sniffer, and WHAD documents installing the ButteRFly firmware on it.", statusSource: "https://www.digikey.com/en/products/detail/nordic-semiconductor-asa/NRF52840-DONGLE/9491124", statusChecked: "2026-09-28",
     note: 'Low-cost Nordic nRF52840 USB dongle; hosts the nRF Sniffer firmware (with the Wireshark plugin) and the InjectaBLE injection firmware.',
   },
   {
@@ -127,16 +131,19 @@ const tools = [
   {
     slug: 'crackle', name: 'crackle', vendor: 'Mike Ryan', type: 'software',
     protocols: ['BLE'], repo: 'https://github.com/mikeryan/crackle',
+    status: "mature", statusNote: "Last upstream commit 2020-12-12; packaged in kali-rolling as 0.1~git01282014-0kali4, which is a 2014 snapshot. Its FAQ states it targets LE Legacy pairing and that LE Secure Connections was designed to mitigate the attacks it implements.", statusSource: "https://pkg.kali.org/pkg/crackle", statusChecked: "2026-09-28",
     note: 'Cracks BLE LE Legacy pairing: brute-forces the TK (Just Works / 6-digit PIN), derives the session keys and decrypts the capture. Feed it a PCAP containing the pairing event (e.g. from Ubertooth). Does not apply to LE Secure Connections.',
   },
   {
     slug: 'btlejack', name: 'Btlejack', vendor: 'Damien Cauquil (virtualabs)', type: 'software',
     protocols: ['BLE'], repo: 'https://github.com/virtualabs/btlejack',
+    status: "stale", statusNote: "Supports micro:bit V1 and V2 since 2.1.0, but the author states that on the V2 (nRF52) the current firmware does not correctly detect access addresses, which affects sniffing already-established connections. Last commit 2023-10-04 and last PyPI release 2.1.1 (2022-11-18); no deprecation notice is published.", statusSource: "https://github.com/virtualabs/btlejack/issues/80#issuecomment-1493441509", statusChecked: "2026-09-28", successor: "whad",
     note: 'Sniff, jam and hijack BLE connections from low-cost hardware (BBC micro:bit / nRF51822). Established the practical jam-and-hijack technique for taking over a live connection. Version 2.1.0 (2022) added BBC micro:bit V2 support, but its author reported that on the V2 the detection of access addresses of already-established connections is unreliable, while sniffing new connections works. WHAD with an nRF52840 dongle, both in this catalogue, is an alternative for the same job.',
   },
   {
     slug: 'injectable-firmware', name: 'InjectaBLE firmware', vendor: 'Romain Cayre', type: 'project',
     protocols: ['BLE'], repo: 'https://github.com/RCayre/injectable-firmware',
+    status: "eol", statusNote: "Last commit 2022-06-23. The firmware continues as ButteRFly in the whad-team organisation, whose README says it was initially released as a proof of concept at DSN 2021 and whose latest release is v1.1.5 (2026-05-24).", statusSource: "https://github.com/whad-team/butterfly", statusChecked: "2026-09-28", successor: "whad",
     note: 'nRF52840-dongle firmware implementing the InjectaBLE strategy: eavesdrop a connection and inject link-layer frames to hijack a role or run a man-in-the-middle.',
   },
   {
@@ -152,6 +159,7 @@ const tools = [
   {
     slug: 'nrf-sniffer', name: 'nRF Sniffer for Bluetooth LE', vendor: 'Nordic Semiconductor', type: 'software',
     protocols: ['BLE'], homepage: 'https://www.nordicsemi.com',
+    status: "active", statusNote: "Still offered by Nordic and distributed as the nrfutil ble-sniffer command; the latest package in Nordic's registry is 0.21.0 from August 2026.", statusSource: "https://www.nordicsemi.com/Products/Development-tools/nRF-Sniffer-for-Bluetooth-LE", statusChecked: "2026-09-28",
     note: 'Vendor BLE sniffer firmware (nRF52 DK / dongle) with a Wireshark plugin. Easy and well-documented, but follows a single connection and is less capable than Sniffle for adversarial work.',
   },
   {
@@ -162,6 +170,7 @@ const tools = [
   {
     slug: 'universal-radio-hacker', name: 'Universal Radio Hacker', vendor: 'open source', type: 'software',
     protocols: ['any SDR'], repo: 'https://github.com/jopohl/urh',
+    status: "archived", statusNote: "Repo archived 2026-03-29; the last release v2.10.0 (2025-12-17) migrated to PyQt6, accepts NumPy 2 (numpy<3.0) and is published on PyPI. Homebrew deprecated the formula on 2026-07-17 with a 2027-07-17 disable date, and the PentHertz fork urh-ng describes itself as beta.", statusSource: "https://github.com/jopohl/urh/releases/tag/v2.10.0", statusChecked: "2026-09-28",
     note: 'Integrated reversing workbench: auto-detect modulation/bitrate, extract bitstreams, diff captures and replay, the fastest path from raw I/Q to a labelled frame format.',
   },
   {

@@ -8,6 +8,10 @@
     "homepage": "https://www.qorvo.com/products/p/DWM3000EVB",
     "spec": "Arduino-shield eval board · DWM3000 module (DW3110 transceiver) · IEEE 802.15.4z BPRF · UWB ch 5 (6.5 GHz) / ch 9 (8 GHz) · FiRa PHY/MAC, Apple U1/U2 interop",
     "software": ["seemoo-uwb-sniffer", "dwm3000-dwt-driver"],
+    "status": "active",
+    "statusNote": "Qorvo's own store lists the DWM3000EVB with status Standard and units in stock (6 in stock, factory stock 0, checked 2026-09-28).",
+    "statusSource": "https://store.qorvo.com/products/detail/dwm3000evb-qorvo/686020/",
+    "statusChecked": "2026-09-28",
     "note": "The reference DW3000-family UWB development shield: a DWM3000 module (DW3110 second-generation impulse-radio transceiver) on an Arduino form factor. Designed against the FiRa PHY/MAC and interoperable with Apple's U1 & U2 chips, on channels 5 (6.5 GHz) and 9 (8 GHz). Drive it from a host MCU (e.g. a NUCLEO-F429ZI or nRF52840) to range, log or, with the SEEMOO sniffer firmware, capture 802.15.4z frames. The same board (a ~$65 EVB + nRF52DK) was the attack platform in the Ghost Peak research."
   },
   {
@@ -29,7 +33,11 @@
     "protocols": ["UWB"],
     "homepage": "https://www.qorvo.com/products/p/MDEK1001",
     "spec": "12 × DWM1001-DEV boards (DW1000 transceiver) · nRF52832 host · RTLS anchor/tag/bridge · IEEE 802.15.4-2011 UWB",
-    "note": "The classic first-generation Decawave/Qorvo RTLS development kit: twelve enclosed DWM1001-DEV boards (each a DW1000 UWB transceiver plus an nRF52832 host), configurable as anchors, tags or bridge nodes to stand up a real-time location system out of the box. DW1000 is the older generation, it predates the 802.15.4z STS security enhancements that the DW3000 family adds, so it is ideal for learning UWB ranging mechanics, less so for assessing modern secure-ranging schemes. Note: end-of-life as of Dec 2025 (last orders mid-2026); Qorvo points new designs at the QM33-series kits."
+    "status": "eol",
+    "statusNote": "Qorvo PCN 25-0154 (2025-12-04) declares MDEK1001 end of life: last-time-buy 2026-06-15, last ship 2026-12-15, no alternate part named. The single DWM1001-DEV board is listed Active at DigiKey as of 2026-09-28.",
+    "statusSource": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/8458/PCN_25-0154.pdf",
+    "statusChecked": "2026-09-28",
+    "note": "The classic first-generation Decawave/Qorvo RTLS development kit: twelve enclosed DWM1001-DEV boards (each a DW1000 UWB transceiver plus an nRF52832 host), configurable as anchors, tags or bridge nodes to stand up a real-time location system out of the box. DW1000 is the older generation, it predates the 802.15.4z STS security enhancements that the DW3000 family adds, so it is ideal for learning UWB ranging mechanics, less so for assessing modern secure-ranging schemes. Note: end-of-life as of Dec 2025 (last orders mid-2026); Qorvo's notice names no alternate part."
   },
   {
     "slug": "murata-type2bp",
@@ -48,6 +56,10 @@
     "type": "software",
     "protocols": ["UWB"],
     "repo": "https://github.com/seemoo-lab/uwb-sniffer",
+    "status": "research",
+    "statusNote": "Matches the DWM3000EVB plus Nucleo-F429ZI sniffer described in the Ghost Peak paper (USENIX Security 2022); most UWB parameters must be known in advance and set in source. The SDK download link in its README now redirects to the Decawave home page; last commit 2022-03-02.",
+    "statusSource": "https://github.com/seemoo-lab/uwb-sniffer",
+    "statusChecked": "2026-09-28",
     "note": "The reference OPEN UWB sniffer: firmware for a Qorvo DWM3000EVB driven by a host (a NUCLEO-F429ZI in the reference build; an nRF52840 with code changes) that captures IEEE 802.15.4z UWB frames and forwards them to Wireshark over a sensniff named pipe, with timestamps at the DW3000's 15.65 ps accuracy. Comes out of the SEEMOO/ETH Ghost Peak line of research. Honest limits: UWB has many PHY parameters (channel, preamble code, data rate, STS mode and length) that must be known IN ADVANCE to lock onto a link, and it forwards malformed frames too, so it is a research instrument, not a push-button capture. It does NOT break the STS or recover keys; it captures the over-the-air frames you can already decode."
   },
   {
@@ -57,6 +69,10 @@
     "type": "project",
     "protocols": ["UWB"],
     "repo": "https://github.com/foldedtoad/dwm3000",
+    "status": "stale",
+    "statusNote": "README requires Zephyr 3.6 (Zephyr stable is 4.4.2) and the last commit is 2024-05-13. README states the nRF52840 (PCA10056) + DWS3000 combination is not completely functional, while nRF52832 is fully functional.",
+    "statusSource": "https://github.com/foldedtoad/dwm3000/blob/master/README.md",
+    "statusChecked": "2026-09-28",
     "note": "An open port of Qorvo/Decawave's DWM3000 driver and ranging examples (the dwt_uwb_driver API) to the DWS3000 Arduino shield, runnable under Zephyr. The practical glue for bringing up a DW3000 board, configuring its 802.15.4z PHY parameters (channel, preamble, PRF, STS mode), and running two-way-ranging exchanges you can log, the dev-board path for capturing/characterising ranging behaviour. A development driver, not an attack tool."
   },
   {

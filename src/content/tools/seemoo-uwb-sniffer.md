@@ -6,6 +6,14 @@ type: software
 protocols:
   - UWB
 repo: 'https://github.com/seemoo-lab/uwb-sniffer'
+status: research
+statusNote: >-
+  Matches the DWM3000EVB plus Nucleo-F429ZI sniffer described in the Ghost Peak
+  paper (USENIX Security 2022); most UWB parameters must be known in advance and
+  set in source. The SDK download link in its README now redirects to the
+  Decawave home page; last commit 2022-03-02.
+statusSource: 'https://github.com/seemoo-lab/uwb-sniffer'
+statusChecked: '2026-09-28'
 note: >-
   The reference OPEN UWB sniffer: firmware for a Qorvo DWM3000EVB driven by a
   host (a NUCLEO-F429ZI in the reference build; an nRF52840 with code changes)

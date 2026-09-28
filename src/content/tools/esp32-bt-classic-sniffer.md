@@ -6,6 +6,14 @@ type: software
 protocols:
   - Bluetooth Classic
 repo: 'https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer'
+status: mature
+statusNote: >-
+  The active BR/EDR sniffer developed during the BrakTooth research, described
+  by its authors as the cheapest BR/EDR active sniffer they are aware of. Last
+  commit 2023-05-10; an open issue reports the prebuilt firmware not booting on
+  an ESP32-D0WD-V3 rev 3.1 board, cause unconfirmed.
+statusSource: 'https://asset-group.github.io/code.html'
+statusChecked: '2026-09-28'
 note: >-
   The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4 to 10;
   ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump

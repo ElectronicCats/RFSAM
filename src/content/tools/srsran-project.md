@@ -5,6 +5,12 @@ vendor: Software Radio Systems (SRS)
 type: software
 protocols:
   - LTE
+status: eol
+statusNote: >-
+  Archived on GitHub on 2026-06-01. Its README says the project is now OCUDU and
+  that all development moved to gitlab.com/ocudu/ocudu as of December 2025.
+statusSource: 'https://github.com/srsran/srsRAN_Project'
+statusChecked: '2026-09-28'
 repo: 'https://github.com/srsran/srsRAN_Project'
 homepage: 'https://www.srsran.com'
 note: >-

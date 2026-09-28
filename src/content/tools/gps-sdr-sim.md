@@ -6,6 +6,13 @@ type: software
 protocols:
   - GNSS
 repo: 'https://github.com/osqzss/gps-sdr-sim'
+status: archived
+statusNote: >-
+  Archived (read-only) on GitHub since 2025-01-26; last commit 2025-01-07. The
+  single-file generator still compiles with the README gcc command (checked
+  2026-09-28 with Apple clang 21).
+statusSource: 'https://github.com/osqzss/gps-sdr-sim'
+statusChecked: '2026-09-28'
 note: >-
   Generates a GPS L1 C/A baseband I/Q file from a RINEX broadcast ephemeris and
   a chosen static or moving position, for transmission by an SDR (HackRF /

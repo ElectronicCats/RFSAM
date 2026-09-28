@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ToolCard.astro';
 import { toolchains } from '../data/toolchains.js';
+import { TOOL_STATUSES } from '../lib/taxonomy.js';
 
 const tools = await getCollection('tools');
 const hardware = tools.filter((t) => t.data.type === 'hardware').sort((a, b) => a.data.name.localeCompare(b.data.name));
@@ -29,6 +30,14 @@ for (const [pid, tc] of Object.entries(toolchains)) {
   }
 }
 const dataTech = (slug) => [...(techByTool[slug] || [])].join(' ');
+
+// Lifecycle summary, computed at build time from the status field. Entries with no
+// status are counted as unassessed rather than assumed current.
+const pct = (n) => Math.round((n / tools.length) * 100);
+const statusCounts = TOOL_STATUSES
+  .map((s) => ({ s, n: tools.filter((t) => t.data.status === s).length }))
+  .filter((x) => x.n > 0);
+const unassessed = tools.filter((t) => !t.data.status).length;
 const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.filter((t) => techByTool[t.id]?.has(id)).length }));
 ---
 <BaseLayout title="Tools">
@@ -38,6 +47,16 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
       The hardware and software behind the wayfinder kits. Hardware first, open a device to see the software that
       pairs with it. Representative, not exhaustive; check current advisories. Repo links go to each project's source.
     </p>
+
+    {statusCounts.length > 0 && (
+      <div class="mono" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;font-size:11px;color:var(--mut2)">
+        <span>{tools.length} entries:</span>
+        {statusCounts.map(({ s, n }) => (
+          <span class={`tstatus ${s}`}>{s} {n} · {pct(n)}%</span>
+        ))}
+        {unassessed > 0 && <span>{unassessed} not assessed ({pct(unassessed)}%)</span>}
+      </div>
+    )}
 
     <div class="tfilter" role="tablist">
       <button data-k="all" class="on">All</button>

@@ -10,6 +10,12 @@ homepage: >-
   https://web.archive.org/web/20220214114911/https://www.quectel.com/product/5g-rm500q-gl
 software:
   - qcsuper
+status: eol
+statusNote: >-
+  No longer listed on Quectel's 5G modules page, and the product URL redirects
+  (HTTP 301) to the category page. No formal Quectel EOL notice was found.
+statusSource: 'https://www.quectel.com/product/5g-rm500q-gl/'
+statusChecked: '2026-09-28'
 note: >-
   Commercial 5G NR Sub-6 (FR1) modem module built on the Qualcomm Snapdragon X55
   (SDX55). Being Qualcomm-based it exposes a DIAG interface, so QCSuper can pull

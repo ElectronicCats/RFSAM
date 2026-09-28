@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import matter from 'gray-matter';
-import { parseControlId, CRITICALITY_IDS } from '../src/lib/taxonomy.js';
+import { parseControlId, CRITICALITY_IDS, TOOL_STATUSES } from '../src/lib/taxonomy.js';
 
 export function checkControl({ data, body, file }, reg) {
   const errs = [];
@@ -32,6 +32,35 @@ export function checkControl({ data, body, file }, reg) {
   if (data.reviewStatus === 'reviewed' || data.reviewStatus === 'verified') {
     if (!(data.references ?? []).length) errs.push(`${tag}${data.reviewStatus} control needs at least one reference`);
     if (/\[!FLAG\]/.test(body)) errs.push(`${tag}${data.reviewStatus} control has unresolved [!FLAG] markers`);
+  }
+  return errs;
+}
+
+// Checks on one tool entry: software/successor slugs resolve, and a lifecycle
+// status is never stated without its reason, its source and the date it was checked.
+export function checkTool({ data, file }, reg) {
+  const errs = [];
+  const tag = `tools/${file}: `;
+  for (const s of data.software ?? []) {
+    if (!reg.toolSlugs.has(s)) errs.push(`${tag}unknown software slug '${s}'`);
+  }
+  if (data.successor && !reg.toolSlugs.has(data.successor)) {
+    errs.push(`${tag}unknown successor slug '${data.successor}'`);
+  }
+  if (data.successor && !['eol', 'stale'].includes(data.status)) {
+    errs.push(`${tag}successor is only meaningful with status 'eol' or 'stale'`);
+  }
+  if (data.status) {
+    if (!TOOL_STATUSES.includes(data.status)) errs.push(`${tag}invalid status '${data.status}'`);
+    if (data.status !== 'active' && !data.statusNote?.trim()) {
+      errs.push(`${tag}status '${data.status}' needs a statusNote saying why`);
+    }
+    if (!data.statusSource) errs.push(`${tag}status '${data.status}' needs a statusSource url`);
+    if (!data.statusChecked) errs.push(`${tag}status '${data.status}' needs a statusChecked date`);
+  } else {
+    for (const k of ['statusNote', 'statusSource', 'statusChecked']) {
+      if (data[k]) errs.push(`${tag}${k} is set but status is not`);
+    }
   }
   return errs;
 }
@@ -80,9 +109,7 @@ export async function runValidation() {
   }
   for (const f of readdirSync('src/content/tools').filter((f) => f.endsWith('.md'))) {
     const { data } = matter(readFileSync(join('src/content/tools', f), 'utf8'));
-    for (const s of data.software ?? []) {
-      if (!reg.toolSlugs.has(s)) all.push(`tools/${f}: unknown software slug '${s}'`);
-    }
+    all.push(...checkTool({ data, file: f }, reg));
   }
   return all;
 }

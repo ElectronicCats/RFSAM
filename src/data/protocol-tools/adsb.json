@@ -33,6 +33,10 @@
     "type": "software",
     "protocols": ["ADS-B"],
     "repo": "https://github.com/bistromath/gr-air-modes",
+    "status": "mature",
+    "statusNote": "Upstream stopped in February 2021 on its gr3.9 branch, and Debian packages that snapshot (0.0.20210211-3.1 in trixie and sid) built against GNU Radio 3.10.12. Debian carries two small patches (library soname, NumPy float), not a GNU Radio port.",
+    "statusSource": "https://sources.debian.org/src/gr-air-modes/0.0.20210211-3.1/debian/changelog/",
+    "statusChecked": "2026-09-28",
     "note": "A GNU Radio Mode S / ADS-B receiver: a flowgraph that demodulates 1090 MHz and decodes the Extended Squitter, with a live map output. The choice when you want the signal inside a GNU Radio flowgraph to see and modify each DSP block rather than a black-box decoder. Older codebase (last active ~2021), a learning/DSP receiver rather than a polished aggregator."
   },
   {
@@ -51,7 +55,11 @@
     "type": "project",
     "protocols": ["ADS-B"],
     "repo": "https://github.com/lyusupov/ADSB-Out",
-    "note": "A Python encoder that builds forged 1090ES ADS-B Extended Squitter frames (chosen ICAO address, position, altitude) into an I/Q sample file for transmission by a TX-capable SDR (HackRF via hackrf_transfer). The concrete way to demonstrate ADS-B spoofing/injection, there is no authentication on the link, so a higher-power forged frame is accepted as a real aircraft. Author states it is for academic purposes only. AUTHORIZED, RF-CONTAINED testing only: never radiate on-air, use a shielded enclosure or a conducted (cabled) setup. Stable but inactive (last commit ~2021)."
+    "status": "stale",
+    "statusNote": "Last commit 2021-01-07, and ADSB_Encoder.py uses Python 2 print statements, so it raises a SyntaxError under Python 3. It still contains a readable DF17 position-report encoder (df17_pos_rep_encode).",
+    "statusSource": "https://github.com/lyusupov/ADSB-Out/blob/master/ADSB_Encoder.py",
+    "statusChecked": "2026-09-28",
+    "note": "A Python encoder that builds forged 1090ES ADS-B Extended Squitter frames (chosen ICAO address, position, altitude) into an I/Q sample file for transmission by a TX-capable SDR (HackRF via hackrf_transfer). The concrete way to demonstrate ADS-B spoofing/injection, there is no authentication on the link, so a higher-power forged frame is accepted as a real aircraft. Author states it is for academic purposes only. AUTHORIZED, RF-CONTAINED testing only: never radiate on-air, use a shielded enclosure or a conducted (cabled) setup. Last commit January 2021; it is written for Python 2 and fails to parse under Python 3."
   },
   {
     "slug": "pymodes",

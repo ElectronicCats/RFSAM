@@ -16,6 +16,11 @@ export const CRITICALITY_IDS = ['info', 'low', 'medium', 'high', 'critical'];
 export const REVIEW_STATUSES = ['stub', 'draft', 'reviewed', 'verified'];
 export const CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
 
+// Lifecycle of a tool entry. Deliberately not derived from commit dates: a frozen
+// protocol tool can be current ('mature') and an archived repo can still be the
+// reference ('archived'). Left unset on entries nobody has checked yet.
+export const TOOL_STATUSES = ['active', 'mature', 'archived', 'research', 'eol', 'stale'];
+
 const ID_RE = new RegExp(
   `^RFSAM-(${PROTOCOL_IDS.join('|')})-(${LAYER_IDS.join('|')})-(\\d{2})$`,
 );

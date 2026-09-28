@@ -8,6 +8,13 @@ protocols:
   - Wi-Fi
   - BLE
 repo: 'https://github.com/matter-js/python-matter-server'
+status: eol
+statusNote: >-
+  Rewritten and moved to matterjs-server; its README names 8.1.2 (December 2025)
+  as the final version with no further updates or support. The repository was
+  archived on 2026-06-23.
+statusSource: 'https://github.com/matter-js/python-matter-server'
+statusChecked: '2026-09-28'
 note: >-
   A CSA-certified Matter Controller Server (the one behind Home Assistant's
   Matter integration) that wraps the CHIP SDK and exposes commissioning and the

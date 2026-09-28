@@ -6,6 +6,15 @@ type: software
 protocols:
   - Zigbee
 repo: 'https://github.com/riverloopsec/killerbee'
+status: mature
+statusNote: >-
+  KillerBee is not archived and zbdsniff is Python 3, but the last commit was
+  2022-08-19. Wireshark's Zigbee dissector extracts the key from an APS
+  Transport Key frame and adds it to its keyring once the link key is entered
+  under Pre-configured Keys.
+statusSource: >-
+  https://github.com/wireshark/wireshark/blob/master/epan/dissectors/packet-zbee-aps.c
+statusChecked: '2026-09-28'
 software: []
 note: >-
   KillerBee's key-extraction tool. Scans a capture for an over-the-air key

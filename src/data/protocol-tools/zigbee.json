@@ -6,6 +6,10 @@
     "type": "software",
     "protocols": ["Zigbee", "802.15.4"],
     "repo": "https://github.com/riverloopsec/killerbee",
+    "status": "stale",
+    "statusNote": "Last release is 3.0.0-beta.2 (2021-07-14) and last commit 2022-08-19; removed from kali-rolling on 2020-09-03. install_requires still lists pycrypto, whose last PyPI upload was 2014-06-20 and whose repo is archived.",
+    "statusSource": "https://pkg.kali.org/pkg/killerbee",
+    "statusChecked": "2026-09-28",
     "note": "The reference IEEE 802.15.4 / Zigbee security toolkit. A Python framework plus command tools, zbstumbler (active network discovery), zbid (list capture interfaces), zbdump (capture to PCAP), zbwireshark (live feed to Wireshark), zbreplay (replay frames) and zbdsniff (extract a network key from a join capture). Drives a range of capture radios (ApiMote, CC2531, nRF52840, RZUSBstick).",
     "software": []
   },
@@ -16,6 +20,10 @@
     "type": "software",
     "protocols": ["Zigbee"],
     "repo": "https://github.com/riverloopsec/killerbee",
+    "status": "mature",
+    "statusNote": "KillerBee is not archived and zbdsniff is Python 3, but the last commit was 2022-08-19. Wireshark's Zigbee dissector extracts the key from an APS Transport Key frame and adds it to its keyring once the link key is entered under Pre-configured Keys.",
+    "statusSource": "https://github.com/wireshark/wireshark/blob/master/epan/dissectors/packet-zbee-aps.c",
+    "statusChecked": "2026-09-28",
     "note": "KillerBee's key-extraction tool. Scans a capture for an over-the-air key transport (APS Transport-Key during a device join) and recovers the Zigbee network key, the classic break when the key is sent under the well-known default Trust Center link key 'ZigBeeAlliance09'. Feed it a PCAP of a join and it prints the network key.",
     "software": []
   },
@@ -47,6 +55,10 @@
     "protocols": ["Zigbee", "802.15.4"],
     "repo": "https://github.com/riverloopsec/apimote",
     "software": ["killerbee"],
+    "status": "eol",
+    "statusNote": "Design repo last committed 2014-06-01, and the Attify Store listing has shown sold out in archived snapshots from 2022-12 through today. No official discontinuation notice was found; the KiCad design files remain open hardware.",
+    "statusSource": "https://github.com/riverloopsec/apimote/commits/master",
+    "statusChecked": "2026-09-28",
     "note": "IEEE 802.15.4 / Zigbee sniffing-and-injection hardware (CC2420-based) built as the reference KillerBee radio, it can both capture and transmit frames, which makes it the go-to board for KillerBee's active and attack tools (zbreplay, zbstumbler)."
   },
   {

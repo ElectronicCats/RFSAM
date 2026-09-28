@@ -13,6 +13,12 @@ spec: >-
 software:
   - seemoo-uwb-sniffer
   - dwm3000-dwt-driver
+status: active
+statusNote: >-
+  Qorvo's own store lists the DWM3000EVB with status Standard and units in stock
+  (6 in stock, factory stock 0, checked 2026-09-28).
+statusSource: 'https://store.qorvo.com/products/detail/dwm3000evb-qorvo/686020/'
+statusChecked: '2026-09-28'
 note: >-
   The reference DW3000-family UWB development shield: a DWM3000 module (DW3110
   second-generation impulse-radio transceiver) on an Arduino form factor.

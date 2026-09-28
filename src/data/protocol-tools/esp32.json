@@ -12,6 +12,10 @@
     "spec": "Xtensa LX7 dual-core · 2.4 GHz Wi-Fi · Bluetooth 5 (LE) · native USB-OTG",
     "homepage": "https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html",
     "software": ["esp32-marauder", "bruce", "ghost-esp", "esp32-sour-apple", "esp32-airtag-scanner"],
+    "status": "active",
+    "statusNote": "Listed by Espressif among current ESP32-S3 development boards, not under its EOL boards section. The documentation moved from esp-idf to esp-dev-kits and the old URL returns a 301 redirect to the new page.",
+    "statusSource": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/index.html",
+    "statusChecked": "2026-09-28",
     "note": "Espressif's ESP32-S3: LX7 dual-core with Bluetooth 5 (LE), native USB-OTG and more RAM than the original ESP32, which is why most modern handheld pentest boards (Cardputer, LilyGo T-series) are S3-based. Supported by Marauder, Bruce and Ghost ESP, and the BLE-capable target for the focused BLE tools. Note: the S3 has BLE but NO Bluetooth Classic radio, for BR/EDR work use the original ESP32."
   },
   {
@@ -57,6 +61,10 @@
     "slug": "bruce", "name": "Bruce", "vendor": "BruceDevices (pr3y)", "type": "project",
     "protocols": ["Wi-Fi", "BLE", "Sub-GHz", "RFID", "IR"],
     "repo": "https://github.com/pr3y/Bruce",
+    "status": "active",
+    "statusNote": "Active firmware: latest release 1.16.1 on 2026-08-11 and pushes as recent as 2026-09-27. The repository now lives at BruceDevices/firmware and the old pr3y/Bruce path returns a 301 redirect to it.",
+    "statusSource": "https://github.com/BruceDevices/firmware",
+    "statusChecked": "2026-09-28",
     "note": "Predatory ESP32 red-team multitool firmware (~5.9k stars, AGPL-3.0; the repo moved from pr3y/Bruce to the BruceDevices org, the old path redirects). Wi-Fi: Evil Portal, wardriving, EAPOL handshake capture and deauth. BLE: scan, pairing-popup spam (AppleJuice / Sour Apple / Swift Pair / Android / Samsung) and Bad BLE (HID injection over a bonded link). Also drives sub-GHz, IR and RFID where the board supports it. Targets M5Stack and LilyGo boards plus the CYD. Authorised testing only."
   },
   {
@@ -69,12 +77,21 @@
     "slug": "esp32-wifi-penetration-tool", "name": "ESP32 Wi-Fi Penetration Tool", "vendor": "risinek", "type": "project",
     "protocols": ["Wi-Fi"],
     "repo": "https://github.com/risinek/esp32-wifi-penetration-tool",
+    "status": "mature",
+    "statusNote": "Developed against ESP-IDF 4.1; building on ESP-IDF 5.x needs patches that exist only as an unmerged PR (61) and an open issue (143). Prebuilt binaries from 2021-05-05 are shipped in the repo's build/ directory.",
+    "statusSource": "https://github.com/risinek/esp32-wifi-penetration-tool/issues/143",
+    "statusChecked": "2026-09-28",
     "note": "Focused ESP-IDF framework for ESP32 Wi-Fi attacks (~2.9k stars, MIT, last push 2024-02). Captures WPA/WPA2 PMKIDs and 4-way handshakes (passively, via a rogue duplicate AP, or by forcing re-auth), formats captures to PCAP and converts them to a hashcat-ready HCCAPX; also runs deauthentication and DoS attacks. Driven entirely from an on-device management-AP web UI, no screen needed. Includes a WSL bypasser to emit arbitrary 802.11 frames on a plain ESP32."
   },
   {
     "slug": "esp32-deauther-ganesh", "name": "ESP32 Deauther (GANESH-ICMC)", "vendor": "GANESH-ICMC", "type": "project",
     "protocols": ["Wi-Fi"],
     "repo": "https://github.com/GANESH-ICMC/esp32-deauther",
+    "status": "stale",
+    "statusNote": "Last commit 2020-09-13; the README builds with GNU make against an ESP-IDF 4.1-dev commit, and ESP-IDF 5.0 removed GNU make support. ESP32 Marauder is actively released (v1.17.0, 2026-09-16).",
+    "statusSource": "https://github.com/GANESH-ICMC/esp32-deauther/blob/master/README.md",
+    "statusChecked": "2026-09-28",
+    "successor": "esp32-marauder",
     "note": "An ESP-IDF port of the Spacehuhn deauther to the ESP32, built on the esp_wifi_80211_tx frame-injection function, the canonical bare-ESP32 deauth path referenced by risinek's penetration tool. NOTE: unmaintained since 2021 and ships no license file; confirm it builds against a current ESP-IDF before relying on it. (The famous Spacehuhn esp8266_deauther is ESP8266-only and does not run on the ESP32.)"
   },
   {
@@ -99,12 +116,20 @@
     "slug": "applejuice", "name": "AppleJuice", "vendor": "ECTO-1A", "type": "project",
     "protocols": ["BLE"],
     "repo": "https://github.com/ECTO-1A/AppleJuice",
+    "status": "mature",
+    "statusNote": "Apple fixed the denial of service in iOS 17.2 (2023-12-11, CVE-2023-42941, credited to the AppleJuice author); the author's write-up says patched iPhones may still show fleeting pop-ups. Repo last committed 2024-06-17.",
+    "statusSource": "https://support.apple.com/en-us/HT214035",
+    "statusChecked": "2026-09-28",
     "note": "The original Apple BLE proximity-pairing message-spoofing research/PoC (~1.9k stars, Apache-2.0, last push 2024-06), the upstream source of the 'Apple BLE spam' payloads reused by Marauder, Bruce, Ghost ESP and EvilAppleJuice. A reference corpus rather than a polished tool; payloads date as Apple patches, so treat as representative, not current."
   },
   {
     "slug": "esp32-airtag-scanner", "name": "ESP32 AirTag Scanner", "vendor": "MatthewKuKanich", "type": "project",
     "protocols": ["BLE"],
     "repo": "https://github.com/MatthewKuKanich/ESP32-AirTag-Scanner",
+    "status": "mature",
+    "statusNote": "Matches only the Apple Find My manufacturer-data patterns (1E FF 4C 00 and 4C 00 12 19), so it does not match the DULT service-data payload (UUID 0xFCB2) that second-generation AirTags are reported to send near their owner. Last commit 2024-04-08, 5 commits, no license file.",
+    "statusSource": "https://github.com/MatthewKuKanich/ESP32-AirTag-Scanner/blob/main/AirTag_Scanner.ino",
+    "statusChecked": "2026-09-28",
     "note": "ESP32 firmware that scans for Apple AirTag / Find My MAC addresses and BLE payloads without an Android phone or nRF Connect (~110 stars, last push 2024-04). Passive scan only, no spoofing or emulation; output over UART. Supports ESP32-WROOM and ESP32-S3. Useful at the survey step to detect trackers in the environment."
   },
   {
@@ -117,6 +142,10 @@
     "slug": "esp32-bt-classic-sniffer", "name": "ESP32 Bluetooth Classic Sniffer", "vendor": "Matheus Garbelini", "type": "software",
     "protocols": ["Bluetooth Classic"],
     "repo": "https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer",
+    "status": "mature",
+    "statusNote": "The active BR/EDR sniffer developed during the BrakTooth research, described by its authors as the cheapest BR/EDR active sniffer they are aware of. Last commit 2023-05-10; an open issue reports the prebuilt firmware not booting on an ESP32-D0WD-V3 rev 3.1 board, cause unconfirmed.",
+    "statusSource": "https://asset-group.github.io/code.html",
+    "statusChecked": "2026-09-28",
     "note": "The reference active BR/EDR sniffer on commodity ESP32 hardware (~$4 to 10; ~590 stars, GPL-2.0). It patches the ESP32 ROM Bluetooth stack to dump baseband packets, BT header, channel, device role, FHS, ACL and LMP, over USB serial to a host Python tool (BTSnifferBREDR.py) with Scapy/Wireshark output. This is Bluetooth CLASSIC (BR/EDR), not BLE. It actively connects to the target, so authorised testing only."
   },
   {
@@ -129,6 +158,10 @@
     "slug": "esp32-classic-bt-scan", "name": "ClassicBTScan", "vendor": "AntorFr", "type": "software",
     "protocols": ["Bluetooth Classic"],
     "repo": "https://github.com/AntorFr/ClassicBTScan",
+    "status": "eol",
+    "statusNote": "Espressif ships Bluetooth Classic discovery in arduino-esp32 with a maintained example (bt_classic_device_discovery, added 2021-04). This library's last commit is 2020-12-27 and issue 1, an undefined reference to BTAdvertisedDevice::getServiceUUID(), has been open since 2019-08-11.",
+    "statusSource": "https://github.com/AntorFr/ClassicBTScan/issues/1",
+    "statusChecked": "2026-09-28",
     "note": "A small Arduino-ESP32 library that performs a true Bluetooth Classic (BR/EDR) inquiry scan via the Bluedroid GAP API, returning each discovered device's MAC address, name, RSSI and Class-of-Device (CoD). The BR/EDR analogue of a BLE advertising scan (MIT, last push 2020). Only finds devices in discoverable / inquiry-scan mode; pin it to a known ESP-IDF as it is unmaintained."
   },
   {
