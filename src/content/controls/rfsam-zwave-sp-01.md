@@ -56,7 +56,7 @@ references:
     url: 'https://www.silabs.com/wireless/z-wave/z-wave-long-range-overview'
     type: standard
   - key: fouladi2013honey
-    title: "Honey, I'm Home!!: Hacking Z-Wave Home Automation Systems (Black Hat USA 2013, recorded talk)"
+    title: "Honey, I'm Home!! - Hacking Z-Wave Home Automation Systems (Black Hat USA 2013, recorded talk)"
     authors: Behrang Fouladi, Sahand Ghanoun (SensePost)
     venue: Black Hat USA 2013
     year: 2013

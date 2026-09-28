@@ -130,7 +130,7 @@ That same unprotected broadcast and pre-authentication information is what an at
    ```text
    AT+CPSI?
    ```
-   Per the SIMCom AT command manual the LTE read returns `LTE,<Operation Mode>,<MCC>-<MNC>,<TAC>,<ScellID>,<PcellID>,<Frequency Band>,<earfcn>,<dlbw>,<ulbw>...`, i.e. operator, Tracking Area Code, serving-cell ID, PCI, band and EARFCN on one line, e.g. `+CPSI: LTE,Online,<MCC>-<MNC>,0x<TAC>,<CellID>,<PCI>,EUTRAN-BAND<n>,<EARFCN>...`. For a deeper, still-passive read of the broadcast/paging the modem already receives, stream its Diag port into Wireshark with QCSuper [qcsuper].
+   Per the SIMCom AT command manual the LTE read returns `LTE,<Operation Mode>,<MCC>-<MNC>,<TAC>,<ScellID>,<PcellID>,<Frequency Band>,<earfcn>,<dlbw>,<ulbw>,...`, i.e. operator, Tracking Area Code, serving-cell ID, PCI, band and EARFCN on one line, e.g. `+CPSI: LTE,Online,<MCC>-<MNC>,0x<TAC>,<CellID>,<PCI>,EUTRAN-BAND<n>,<EARFCN>,...`. For a deeper, still-passive read of the broadcast/paging the modem already receives, stream its Diag port into Wireshark with QCSuper [qcsuper].
 
 5. **Record the inventory.** For each cell, capture: operator (PLMN MCC-MNC), band, downlink EARFCN, PCI, system bandwidth and TAC. Mark which cells fall inside your SDR's tuning and instantaneous-bandwidth envelope, those are the sniffable targets that scope the later LTE capture controls (RFSAM-RES-08).
 

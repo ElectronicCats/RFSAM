@@ -153,7 +153,7 @@ The canonical example of a fixed address is the EV1527/PT2262 OOK encoder family
    ```bash
    rtl_433 -f 433.92M -F json
    ```
-   Expected: one JSON line per burst, e.g. `{"model":"...","id":12345,"channel":1...}`. The `id` is the recovered link-layer address; `model` names the protocol/field layout for free [rtl433] [rtl433dataformat]. If nothing decodes, energy is present but the class is unknown, go to step 2.
+   Expected: one JSON line per burst, e.g. `{"model":"...","id":12345,"channel":1,...}`. The `id` is the recovered link-layer address; `model` names the protocol/field layout for free [rtl433] [rtl433dataformat]. If nothing decodes, energy is present but the class is unknown, go to step 2.
 
 2. **Record raw bursts for an unknown frame.** Capture I/Q at the carrier and bandwidth found at the Spectrum/PHY steps (RFSAM-RES-15), triggering the device several times:
    ```bash

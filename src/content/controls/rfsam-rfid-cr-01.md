@@ -102,7 +102,7 @@ references:
     url: 'https://doi.org/10.1109/SP.2009.6'
     type: paper
   - key: courtois2009darkside
-    title: 'The Dark Side of Security by Obscurity: and Cloning MiFare Classic Rail and Building Passes, Anywhere, Anytime'
+    title: 'The Dark Side of Security by Obscurity and Cloning MiFare Classic Rail and Building Passes Anywhere, Anytime'
     authors: N. T. Courtois
     venue: 'SECRYPT 2009 / IACR ePrint 2009/137'
     year: 2009
@@ -276,7 +276,7 @@ sec | key A        | key B        | access | note
   1 | D203A62D6106 | 602A34A75AA4 | 787788 | both non-default
   2 | A0A1A2A3A4A5 | 0000014B5C31 | 0F00FF | key B non-default
   6 | FFFFFFFFFFFF | 96A301BCE267 | 0F00FF | key B non-default
-  3 to 5, 7 to 15        | default FFFFFFFFFFFF / FFFFFFFFFFFF
+  3-5, 7-15        | default FFFFFFFFFFFF / FFFFFFFFFFFF
   hidden config sector | key A 3E64977BDF58 | key B 00005BF0055A
 ```
 

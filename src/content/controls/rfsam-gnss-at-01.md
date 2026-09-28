@@ -85,7 +85,7 @@ references:
     url: 'https://doi.org/10.1109/JPROC.2016.2526658'
     type: paper
   - key: texbat
-    title: 'TEXBAT, Texas Spoofing Test Battery (civil GPS L1 C/A spoofing recordings)'
+    title: 'TEXBAT: Texas Spoofing Test Battery (civil GPS L1 C/A spoofing recordings)'
     authors: 'T. E. Humphreys, J. A. Bhatti, D. P. Shepard, K. D. Wesson (UT Austin Radionavigation Laboratory)'
     venue: UT Austin Radionavigation Laboratory
     year: 2012

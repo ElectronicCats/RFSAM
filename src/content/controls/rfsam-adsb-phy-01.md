@@ -236,7 +236,7 @@ modes decode 8D40058B58C901375147EFD09357 --reference 49.0 6.0
 
 These are the canonical pyModeS test vectors, so the expected outputs are stable: a
 `40058B` position near the 49.0 N, 6.0 E reference and the `406B90` / `EZY85MH`
-identity. This is the verifiable, reproducible core of the field case — the decode
+identity. This is the verifiable, reproducible core of the field case, the decode
 chain confirmed against fixed, published frames, with no air capture or transmitter
 required.
 

@@ -79,7 +79,7 @@ references:
     url: 'https://doi.org/10.1109/SP.2009.6'
     type: paper
   - key: courtois2009darkside
-    title: 'The Dark Side of Security by Obscurity: and Cloning MiFare Classic Rail and Building Passes, Anywhere, Anytime'
+    title: 'The Dark Side of Security by Obscurity and Cloning MiFare Classic Rail and Building Passes Anywhere, Anytime'
     authors: N. T. Courtois
     venue: SECRYPT 2009
     year: 2009

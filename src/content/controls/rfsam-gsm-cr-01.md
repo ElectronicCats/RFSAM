@@ -93,7 +93,7 @@ references:
     url: 'https://www.iacr.org/archive/crypto2003/27290598/27290598.pdf'
     type: paper
   - key: nohl2009gsm
-    title: GSM, SRSLY? (A5/1 rainbow tables / Berlin A5/1 Security Project)
+    title: 'GSM: SRSLY? (A5/1 rainbow tables / Berlin A5/1 Security Project)'
     authors: 'K. Nohl, C. Paget'
     venue: 26th Chaos Communication Congress (26C3), Berlin
     year: 2009
