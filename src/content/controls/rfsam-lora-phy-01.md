@@ -91,9 +91,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-07
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-10
 ---
 ## Mechanism
 
@@ -141,15 +141,34 @@ Work only on signals you are authorised to receive and analyse. Receiving and de
 
 ## Field case
 
-A representative, reproducible setup (the values below marked `[FILL]` are *not* measured RFSAM results — substitute your own bench numbers):
+Two bench sessions in the Electronic Cats lab, both receive-only on the SDR side, against the lab's own transmitters at 1 m line of sight. Receiver: RTL-SDR with its stock telescopic antenna. Each capture is 30 s at 1 MS/s.
 
-Target: an EU868 LoRaWAN sensor, channel 0 (868.1 MHz), SF7, BW 125 kHz. Capture with `rtl_sdr -f 868100000 -s 1000000 -g 40 -n 6000000 lora_eu868_ch0.iq`, then demodulate with gr-lora_sdr (sf=7, bw=125000) and observe the per-frame decode output. Repeat the same capture with the demodulator in hard-decision mode and compare CRC-OK frame yield.
+**Session 1: SF7, 125 kHz, 916.0 MHz.** Transmitter: the laboratory FlatSat.
 
-On a clean, close-range capture both modes recover essentially every frame, and the PHY check simply confirms the de-chirp path works on this SF/BW. The interesting case is a weak-signal capture at the edge of range: there, soft-decision is expected to recover frames that hard-decision drops.
+```bash
+rtl_sdr -f 916000000 -s 1000000 -g 40 -n 30000000
+```
 
-> [!NOTE] [FILL: measured CRC-OK frame yield, hard vs soft-decision, at a recorded SNR for one capture]. Earlier stub copy asserted "~25% more bits recovered"; that specific figure is not an RFSAM measurement and is SF/BW/SNR/decoder-dependent, so it is withheld rather than fabricated. The *direction* (soft ≥ hard at low SNR) is supported by [marquet2020] and [xu2022]; the magnitude must be measured on the actual target capture.
+Demodulated with the gr-lora_sdr receiver flowgraph set to 916 MHz, 125 kHz, SF7, once with `soft_decoding` on and once off. The operator recorded 12 frames with a valid CRC out of 12 in both modes, so on this capture the two modes gave the same yield. The decoder logs of this session were not kept.
 
-For a passive survey aiming to enumerate a network, every frame the demodulator drops is potentially a device or a join you never see — which is why this PHY-completeness check precedes the link-layer enumeration rather than being assumed.
+**Session 2: SF11, 250 kHz, 915.0 MHz.** Transmitter: an STM32F446 with a DX-LR30 transceiver, CR 4/5, sync word `0x34`, one packet every 5 s, numbered payloads.
+
+```bash
+rtl_sdr -f 915000000 -s 1000000 -g 40 -n 30000000
+```
+
+The capture holds 5 frames (packets #314 to #318). Both modes found all 5 and validated all 5 headers. The payload CRC is where they differ:
+
+| Mode | Headers valid | Payload CRC valid |
+|---|---|---|
+| Soft-decision | 5 of 5 | 3 of 5 |
+| Hard-decision | 5 of 5 | 1 of 5 |
+
+The counts are from the decoder output of each run. Packet #315 is the clearest single example: soft-decision returned it with a valid CRC, hard-decision returned the same packet with one payload character missing and an invalid CRC.
+
+How far this goes. The direction agrees with the literature: soft-decision recovers frames that hard-decision drops [marquet2020] [xu2022]. The size of the gap here comes from 5 frames in one capture, so it is a single observation and not a yield figure to generalise. Signal-to-noise ratio was not measured in either session.
+
+For a passive survey aiming to enumerate a network, every frame the demodulator drops is potentially a device or a join you never see, which is why this PHY-completeness check precedes the link-layer enumeration rather than being assumed.
 
 ## Remediation
 
