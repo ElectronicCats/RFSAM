@@ -20,11 +20,11 @@ software:
   - braktooth
   - esp32-bluejammer
 note: >-
-  The generic original ESP32 dev board (WROOM-32 / WROVER module) — the cheapest
+  The generic original ESP32 dev board (WROOM-32 / WROVER module), the cheapest
   substrate for the umbrella firmwares (Marauder, Bruce, Ghost ESP) and the
   bare-metal Wi-Fi/BLE tools. Crucially, the ORIGINAL ESP32 is the only variant
   with a Bluetooth Classic (BR/EDR) radio, so it is also the board the BR/EDR
-  sniffer and BrakTooth PoC run on. A bare board with no screen or SD — add a
+  sniffer and BrakTooth PoC run on. A bare board with no screen or SD, add a
   microSD for capture-to-card firmwares. 2.4 GHz only (no 5/6 GHz).
 ---
-The generic original ESP32 dev board (WROOM-32 / WROVER module) — the cheapest substrate for the umbrella firmwares (Marauder, Bruce, Ghost ESP) and the bare-metal Wi-Fi/BLE tools. Crucially, the ORIGINAL ESP32 is the only variant with a Bluetooth Classic (BR/EDR) radio, so it is also the board the BR/EDR sniffer and BrakTooth PoC run on. A bare board with no screen or SD — add a microSD for capture-to-card firmwares. 2.4 GHz only (no 5/6 GHz).
+The generic original ESP32 dev board (WROOM-32 / WROVER module), the cheapest substrate for the umbrella firmwares (Marauder, Bruce, Ghost ESP) and the bare-metal Wi-Fi/BLE tools. Crucially, the ORIGINAL ESP32 is the only variant with a Bluetooth Classic (BR/EDR) radio, so it is also the board the BR/EDR sniffer and BrakTooth PoC run on. A bare board with no screen or SD, add a microSD for capture-to-card firmwares. 2.4 GHz only (no 5/6 GHz).

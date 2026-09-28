@@ -12,14 +12,14 @@ objective: >-
   Establish which baseband (modem SoC + firmware) the target device runs and,
   where the network is in scope, which RAN/core implementation and version the
   eNodeB/EPC runs, then determine whether either carries a known, named,
-  CVE-tracked vulnerability — before any behavioural or over-the-air testing.
+  CVE-tracked vulnerability, before any behavioural or over-the-air testing.
 intro: >-
   LTE has two distinct software surfaces worth inventorying before any RF work:
   the device-side baseband (the modem SoC running its own RTOS, reachable over
   the air) and, where the network is in scope, the RAN/core stack (eNodeB + EPC,
   increasingly open-source). Identify both and cross-reference the published
   corpora. Unlike BLE, the BSAM registry covers only Bluetooth, so there is no
-  BSAM information-gathering control to defer to — RFSAM owns this control end to
+  BSAM information-gathering control to defer to, RFSAM owns this control end to
   end.
 prerequisites:
   hardware:
@@ -29,7 +29,7 @@ prerequisites:
     - 'An AT terminal for reading modem identity (AT+CGMI / AT+CGMM / AT+CGMR); QCSuper or MobileInsight to confirm the Qualcomm baseband and read its firmware from the DIAG feed'
     - 'For network-side scope: the source tree / package metadata of the RAN-core stack under test (srsRAN, Open5GS, OpenAirInterface, Magma, NextEPC) to read its version'
   signal:
-    freq: 'Licensed cellular — common bands ~700 MHz to 2.6 GHz (full E-UTRA ~450 MHz–3.8 GHz); FDD and TDD'
+    freq: 'Licensed cellular, common bands ~700 MHz to 2.6 GHz (full E-UTRA ~450 MHz to 3.8 GHz); FDD and TDD'
     bandwidth: '1.4 / 3 / 5 / 10 / 15 / 20 MHz channels; carrier identified by EARFCN'
     modulation: 'Downlink OFDMA, uplink SC-FDMA; QPSK/16/64/256-QAM'
   skill: intermediate
@@ -49,7 +49,7 @@ attacks:
       Domain-informed (ASN.1-structure-aware) fuzzing of LTE/5G RAN-core
       interfaces that reported 119 vulnerabilities (the paper states 93 assigned
       CVEs in its abstract and 96 in its introduction) across seven cellular core
-      implementations, three of which are also 5G. Representative — check the
+      implementations, three of which are also 5G. Representative, check the
       per-stack advisories for the build in scope.
   - name: UNISOC NAS-parsing buffer overflow
     cve:
@@ -65,7 +65,7 @@ attacks:
       potential for code execution.
     preconditions: >-
       Target device uses an affected, unpatched UNISOC baseband; attacker can
-      deliver the malformed NAS message — in practice from a rogue cell the device
+      deliver the malformed NAS message, in practice from a rogue cell the device
       camps on.
     summary: >-
       Missing bounds checks in UNISOC NAS message parsing, found by Check Point
@@ -88,7 +88,7 @@ attacks:
     summary: >-
       Use-after-free in the Qualcomm DSP/FASTRPC path, credited to Google Project
       Zero and Amnesty Security Lab and flagged by Google TAG as possibly
-      exploited — a baseband-adjacent SoC bug the inventory should surface.
+      exploited, a baseband-adjacent SoC bug the inventory should surface.
   - name: LLFuzz baseband lower-layer (L2) memory corruption
     refs:
       - hoang2025llfuzz
@@ -108,8 +108,8 @@ attacks:
     refs:
       - weinmann2012baseband
     impact: >-
-      Arbitrary code execution on the baseband processor — below the application
-      processor and its hardening — from over-the-air message handling.
+      Arbitrary code execution on the baseband processor, below the application
+      processor and its hardening, from over-the-air message handling.
     preconditions: >-
       A memory-corruption bug in the baseband's over-the-air protocol stack and
       an attacker able to deliver the triggering messages (e.g. a rogue cell).
@@ -181,9 +181,9 @@ lastResearched: 2026-06-14
 
 The baseband is a second computer inside every cellular device: a modem SoC running its own real-time OS on a dedicated core, with firmware that parses attacker-influenceable radio messages over the air. Memory-corruption bugs there yield code execution *below* the application processor and its hardening (ASLR/DEP/code-signing), which is exactly the gap Weinmann's foundational WOOT 2012 work demonstrated by exploiting memory corruptions in deployed cellular protocol stacks [weinmann2012baseband]. That surface has stayed live and moved down the stack: the UNISOC NAS-parser overflow is a CVE-tracked remote DoS/RCE in the modem's Non-Access-Stratum message parsing [cpr2022unisoc] [cve-2022-20210], and LLFuzz's over-the-air fuzzing of the *lower* layers (PDCP/RLC/MAC) found eleven previously-unknown memory corruptions across fifteen commercial basebands from five vendors, seven of them assigned CVEs [hoang2025llfuzz]. Baseband-adjacent SoC bugs reach real targeted-surveillance use, too: CVE-2024-43047, a use-after-free in the Qualcomm DSP/FASTRPC path, was credited to Google Project Zero and Amnesty Security Lab and flagged by Google TAG as possibly under limited, targeted exploitation [cve-2024-43047] [securityweek2024qualcomm].
 
-Symmetrically, where the network side is in scope, the eNodeB/EPC parses attacker-influenced RRC/NAS messages and is increasingly open-source. The RANsacked study applied ASN.1-structure-aware fuzzing to the RAN-core interface and reported 119 vulnerabilities (the paper gives the assigned-CVE total as 93 in its abstract and 96 in its introduction) across seven cellular core implementations — srsRAN/srsEPC, Open5GS, Magma, OpenAirInterface, NextEPC, SD-Core and HPE Athonet, three of which (Magma, Open5GS, OAI) are also exercised as 5G cores — several of which let a single unauthenticated, pre-authentication packet persistently crash the MME/AMF, with the NAS-reachable findings triggerable before the UE is verified (i.e. without a valid SIM) [bennett2024ransacked]. That makes the implementation-and-version of an in-scope core a finding in its own right: an unpatched build can be matched to a known single-packet crash on inventory alone.
+Symmetrically, where the network side is in scope, the eNodeB/EPC parses attacker-influenced RRC/NAS messages and is increasingly open-source. The RANsacked study applied ASN.1-structure-aware fuzzing to the RAN-core interface and reported 119 vulnerabilities (the paper gives the assigned-CVE total as 93 in its abstract and 96 in its introduction) across seven cellular core implementations, srsRAN/srsEPC, Open5GS, Magma, OpenAirInterface, NextEPC, SD-Core and HPE Athonet, three of which (Magma, Open5GS, OAI) are also exercised as 5G cores, several of which let a single unauthenticated, pre-authentication packet persistently crash the MME/AMF, with the NAS-reachable findings triggerable before the UE is verified (i.e. without a valid SIM) [bennett2024ransacked]. That makes the implementation-and-version of an in-scope core a finding in its own right: an unpatched build can be matched to a known single-packet crash on inventory alone.
 
-This control therefore inventories two things — (1) the device baseband vendor and firmware version, and (2), where the eNodeB/EPC is in scope, the RAN/core implementation and version — and cross-references both against the corpora above. It is the LTE analogue of RFSAM-BLE-IG-01; the difference is that BLE defers the corpus check to BSAM, whereas the BSAM registry has no cellular control, so RFSAM owns the cross-reference here. The corpora below are representative; CVE inventories date fast, so confirm against current vendor security bulletins for the exact chipset/build in scope rather than treating any list as exhaustive [bennett2024ransacked]. No single RANsacked CVE ID is asserted here: the paper's per-stack, per-version CVE mapping lives in its appendix (Table 6), so pull the specific CVE IDs for the exact build in scope from the paper or NVD before relying on any one of them.
+This control therefore inventories two things, (1) the device baseband vendor and firmware version, and (2), where the eNodeB/EPC is in scope, the RAN/core implementation and version, and cross-references both against the corpora above. It is the LTE analogue of RFSAM-BLE-IG-01; the difference is that BLE defers the corpus check to BSAM, whereas the BSAM registry has no cellular control, so RFSAM owns the cross-reference here. The corpora below are representative; CVE inventories date fast, so confirm against current vendor security bulletins for the exact chipset/build in scope rather than treating any list as exhaustive [bennett2024ransacked]. No single RANsacked CVE ID is asserted here: the paper's per-stack, per-version CVE mapping lives in its appendix (Table 6), so pull the specific CVE IDs for the exact build in scope from the paper or NVD before relying on any one of them.
 
 ## Procedure
 
@@ -200,7 +200,7 @@ All steps below are passive inventory on equipment you own or are authorised to 
    AT+CGMM
    AT+CGMR
    ```
-   Expected: `AT+CGMI` returns the manufacturer (e.g. `SIMCOM INCORPORATED` / `QUALCOMM`), `AT+CGMM` the model, and `AT+CGMR` the firmware/revision string (e.g. `LE11B...`). Record the vendor and exact revision — this is the key you will look up. `AT+CPSI?` additionally returns the serving system mode, operator (MCC-MNC), band, EARFCN and Cell ID if you also want the cell identity.
+   Expected: `AT+CGMI` returns the manufacturer (e.g. `SIMCOM INCORPORATED` / `QUALCOMM`), `AT+CGMM` the model, and `AT+CGMR` the firmware/revision string (e.g. `LE11B...`). Record the vendor and exact revision, this is the key you will look up. `AT+CPSI?` additionally returns the serving system mode, operator (MCC-MNC), band, EARFCN and Cell ID if you also want the cell identity.
 
 2. **Confirm the baseband family from the DIAG feed.** Qualcomm-based modems (the SIM7600 included) expose a `/dev/diag` port; QCSuper reads the chipset and signalling from it:
    ```bash
@@ -221,11 +221,11 @@ All steps below are passive inventory on equipment you own or are authorised to 
 
 5. **Cross-reference the RAN/core stack** version against RANsacked [bennett2024ransacked] and the upstream issue trackers / release notes for that build. Flag any version at or below a build named in a single-packet-MME-crash finding.
 
-6. **Record patch status and risk.** Flag end-of-life basebands with no OEM patch path, and unpatched open-source cores reachable by attacker-influenced packets, as high-risk on inventory alone — before any custom fuzzing or over-the-air testing.
+6. **Record patch status and risk.** Flag end-of-life basebands with no OEM patch path, and unpatched open-source cores reachable by attacker-influenced packets, as high-risk on inventory alone, before any custom fuzzing or over-the-air testing.
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture. Working a fixed-LTE CPE (a UNISOC-based router) in an authorised lab, the inventory step runs before any RF capture. `AT+CGMI` / `AT+CGMM` / `AT+CGMR` over the device's AT port return the UNISOC modem family and a firmware revision string; if the device's reported security-patch level predates the UNISOC NAS fix, then on inventory alone that places the device within the published exposure window of the UNISOC NAS-parsing overflow [cve-2022-20210] [cpr2022unisoc] — a CVE-tracked remote modem-crash reachable from a NAS message — so the engagement is reframed around that known finding rather than starting from blind fuzzing. The exact firmware revision and patch date are device-specific and are recorded per engagement:
+Illustrative walkthrough, substitute the values you capture. Working a fixed-LTE CPE (a UNISOC-based router) in an authorised lab, the inventory step runs before any RF capture. `AT+CGMI` / `AT+CGMM` / `AT+CGMR` over the device's AT port return the UNISOC modem family and a firmware revision string; if the device's reported security-patch level predates the UNISOC NAS fix, then on inventory alone that places the device within the published exposure window of the UNISOC NAS-parsing overflow [cve-2022-20210] [cpr2022unisoc], a CVE-tracked remote modem-crash reachable from a NAS message, so the engagement is reframed around that known finding rather than starting from blind fuzzing. The exact firmware revision and patch date are device-specific and are recorded per engagement:
 
 - Baseband vendor/family: UNISOC (confirmed via `AT+CGMI`/`AT+CGMM`)
 - Firmware revision read: [FILL: AT+CGMR revision string for the unit under test]
@@ -238,8 +238,8 @@ The symmetric network-side version applies unchanged: if the in-scope eNodeB/EPC
 
 ## Remediation
 
-**Developer (baseband / stack vendors).** Apply memory-safety discipline to NAS and lower-layer (PDCP/RLC/MAC/RRC) parsers — bounds-check every length-prefixed field — since these are the surfaces the UNISOC overflow [cve-2022-20210] and the LLFuzz L2 corpus [hoang2025llfuzz] hit; harden the baseband core toward parity with the application processor, the gap Weinmann identified [weinmann2012baseband]. For RAN/core implementations, treat RAN-facing inputs as untrusted and fuzz the ASN.1 decode paths the way RANsacked did [bennett2024ransacked].
+**Developer (baseband / stack vendors).** Apply memory-safety discipline to NAS and lower-layer (PDCP/RLC/MAC/RRC) parsers, bounds-check every length-prefixed field, since these are the surfaces the UNISOC overflow [cve-2022-20210] and the LLFuzz L2 corpus [hoang2025llfuzz] hit; harden the baseband core toward parity with the application processor, the gap Weinmann identified [weinmann2012baseband]. For RAN/core implementations, treat RAN-facing inputs as untrusted and fuzz the ASN.1 decode paths the way RANsacked did [bennett2024ransacked].
 
 **Integrator (device OEMs / network operators).** Maintain a current baseband-firmware update path and surface the modem patch level, not just the application-processor patch date; track each shipped chipset against its vendor's security bulletins. For deployed cores, pin the RAN/core build to a patched release and subscribe to the upstream advisories for that stack.
 
-**Operator (defenders / assessors).** Inventory first: record baseband vendor + firmware revision and (where in scope) the RAN/core implementation + version, and match both against current advisories and the corpora here — flag end-of-life basebands and unpatched cores as high-risk. Never expose an unauthenticated MME/AMF to attacker-reachable packets [bennett2024ransacked]. Any step that goes beyond inventory into transmitting (standing up a test cell to deliver the triggering message) is authorised-testing-only: your own equipment and test SIMs, inside RF shielding, under explicit permission. There is no BSAM cellular control to defer to — this cross-reference is RFSAM's domain.
+**Operator (defenders / assessors).** Inventory first: record baseband vendor + firmware revision and (where in scope) the RAN/core implementation + version, and match both against current advisories and the corpora here, flag end-of-life basebands and unpatched cores as high-risk. Never expose an unauthenticated MME/AMF to attacker-reachable packets [bennett2024ransacked]. Any step that goes beyond inventory into transmitting (standing up a test cell to deliver the triggering message) is authorised-testing-only: your own equipment and test SIMs, inside RF shielding, under explicit permission. There is no BSAM cellular control to defer to, this cross-reference is RFSAM's domain.

@@ -13,7 +13,7 @@ const CHIP = {
   ZIGBEE: 'Zigbee', ZWAVE: 'Z-Wave', THREAD: 'Thread', GNSS: 'GNSS', ADSB: 'ADS-B',
   NR5G: '5G NR', GSM: 'GSM', UWB: 'UWB',
 };
-// Which technologies actually USE each tool — derived from the wayfinder toolchains
+// Which technologies actually USE each tool, derived from the wayfinder toolchains
 // (a tool's step + dep + decoder membership), NOT from blanket tags. So SDRs show
 // under BLE/LTE/Sub-GHz where they're used, but not under near-field RFID/NFC.
 const techByTool = {};
@@ -35,7 +35,7 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
   <div class="container">
     <h1 style="font-size:34px">Tools</h1>
     <p style="color:var(--mut);margin-top:8px;max-width:64ch">
-      The hardware and software behind the wayfinder kits. Hardware first — open a device to see the software that
+      The hardware and software behind the wayfinder kits. Hardware first, open a device to see the software that
       pairs with it. Representative, not exhaustive; check current advisories. Repo links go to each project's source.
     </p>
 

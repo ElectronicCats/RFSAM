@@ -22,7 +22,7 @@ const link = tool.repo ?? tool.homepage;
 // Compatible software declared on this hardware tool.
 const compatible = (tool.software ?? []).map(bySlug).filter(Boolean);
 
-// Where this tool appears in a technology's toolchain — as the primary tool, as a
+// Where this tool appears in a technology's toolchain, as the primary tool, as a
 // dependency (the hardware a tool runs on), or as the step's decoder.
 const usedIn = [];
 for (const [proto, tc] of Object.entries(toolchains)) {
