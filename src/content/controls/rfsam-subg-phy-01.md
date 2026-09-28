@@ -202,7 +202,13 @@ Result, from 10:16:48 to 10:42:04 (about 25 minutes):
 - Each of the three Toyota sensors was received as two frames within the same second, carrying the same sensor ID, pressure and temperature and differing only in the status field (130, then 131). This is the repeat check of step 4 on live traffic: two transmissions from the same sensor demodulate to the same identifier and readings.
 - The readings are plausible for tyres in use: 34.5 to 34.75 PSI on the Toyota sensors, 223.5 to 225 kPa on the Renault sensors, 29 to 35 C.
 
-The sensor IDs are not reproduced here. They belong to vehicles passing in the street, and a TPMS ID is a stable identifier of a vehicle.
+| Time | Decoder | Sensor ID | Pressure | Temperature | Frames |
+|---|---|---|---|---|---|
+| 10:16:48 | Toyota TPMS | `d784124a` | 34.75 PSI | 30 C | 2 (status 130, 131) |
+| 10:31:04 | Renault TPMS | `1cd96e` | 225 kPa | 35 C | 1 |
+| 10:31:06 | Renault TPMS | `1cd963` | 223.5 kPa | 34 C | 1 |
+| 10:42:04 | Toyota TPMS | `d7874db3` | 34.5 PSI | 34 C | 2 (status 130, 131) |
+| 10:42:04 | Toyota TPMS | `d7840ef3` | 34.5 PSI | 29 C | 2 (status 130, 131) |
 
 PHY parameters. These come from the decoders that produced the frames, not from a measurement of our own: both sensors are FSK with a 52 us symbol (12 to 13 samples at 250 kHz); the Toyota sensor uses differential Manchester coding and the Renault sensor Manchester coding, each closed by a CRC-8 [rtl433tpmstoyota][rtl433tpmsrenault]. A frame that passes that CRC means the modulation, symbol rate and line coding were all right for that burst.
 
