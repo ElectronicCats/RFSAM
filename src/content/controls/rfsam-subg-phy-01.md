@@ -111,6 +111,20 @@ references:
     year: 2024
     url: 'https://github.com/merbanan/rtl_433/blob/master/src/devices/generic_remote.c'
     type: tool
+  - key: rtl433tpmstoyota
+    title: 'rtl_433: Toyota TPMS decoder (tpms_toyota.c)'
+    authors: 'C. W. Zuckschwerdt et al.'
+    venue: merbanan/rtl_433
+    year: 2017
+    url: 'https://github.com/merbanan/rtl_433/blob/master/src/devices/tpms_toyota.c'
+    type: tool
+  - key: rtl433tpmsrenault
+    title: 'rtl_433: Renault TPMS decoder (tpms_renault.c)'
+    authors: 'C. W. Zuckschwerdt et al.'
+    venue: merbanan/rtl_433
+    year: 2017
+    url: 'https://github.com/merbanan/rtl_433/blob/master/src/devices/tpms_renault.c'
+    type: tool
 tools:
   - universal-radio-hacker
   - rtl-433
@@ -121,9 +135,9 @@ tools:
 bsam: []
 resources:
   - RFSAM-RES-15
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-21
 ---
 ## Mechanism
 
@@ -171,12 +185,34 @@ All steps below are passive receive-and-demodulate. They involve no transmission
 
 ## Field case
 
-Documented public walkthrough, substitute the values you capture. This is a worked example for the most common class on the band, an EV1527/PT2262-class OOK fixed-code remote (doorbell or socket remote), anchored to rtl_433's published decoder and shipped sample corpus for this exact device class rather than to a live capture of our own [rtl433ev1527]. The modulation family (OOK/ASK), the fixed-code outcome and the per-press repetition are the general, citable behaviour of this device class [rtl433primer][rtl433repo]; the concrete timings below are the ones rtl_433 documents for it, but for any specific unit they must still be re-measured.
+Passive reception run on 2026-09-18 at Electronic Cats, Aguascalientes, from a window facing the street. Receiver: an RTL-SDR (R820T tuner) with its stock whip antenna on a magnetic base, placed on the metal window frame. Receive only: nothing was transmitted and no vehicle was interacted with.
 
-- The carrier sits at **433.92 MHz**; the waterfall shows short OOK bursts (blinking blocks, not two stacked FSK lines) each time the button is pressed.
-- rtl_433's decoder for this exact class, `Generic Remote SC226x EV1527` (`src/devices/generic_remote.c`), characterises the burst as **OOK_PWM** with a short pulse of **464 µs** and a long pulse of **1404 µs** (tolerance 200 µs), i.e. a PWM bit period of roughly **1868 µs (~535 baud)** [rtl433ev1527]. The sibling in-repo EV1527 flex spec (`conf/EV1527-4Button-Universal-Remote.conf`, `m=OOK_PWM s=369 l=1072 g=1400 r=12840 bits>=24 repeats>=3`) records the same OOK_PWM family with comparable timings for a 4-button variant [rtl433ev1527].
-- Loaded into URH, autodetect labels the signal **ASK**, bit length `[FILL: samples-per-symbol]`, and resolves the frame to **25** bits per burst, 24 data bits plus a trailing always-1 stop bit, per the decoder's `bits != 25` / "Last bit (MSB here) is always 1" framing check [rtl433ev1527]. The 24-bit data word repeats several times per press: rtl_433's EV1527 family confirms a row by requiring it to recur **≥ 3** times per transmission (`bitbuffer_find_repeated_row(bitbuffer, 3, 24)`) [rtl433ev1527].
-- Two captures of the same button press demodulate to an **identical** bitstream, establishing this as a *fixed code* (the fixed-vs-rolling determination this PHY framing hands to the link/attack layers), so a plain capture-and-replay is the relevant downstream test rather than a RollJam-class technique. The rtl_433_tests corpus (`tests/generic_remote/01/`, with `gfile001.cu8` and its expected `gfile001.json`) ships exactly such a repeated fixed-code burst for this decoder [rtl433ev1527].
+rtl_433 25.12 was left hopping between the two bands where tyre-pressure sensors (TPMS) are expected, 10 s on each, at its default 250 kHz sample rate:
+
+```bash
+rtl_433 -f 315M -f 433.92M -H 10 -F json -M time:iso
+```
+
+This is the recognised-device route of step 2: rtl_433 already has a decoder for these sensors, so it names the device instead of printing raw pulse timings.
+
+Result, from 10:16:48 to 10:42:04 (about 25 minutes):
+
+- 8 frames were decoded, from 5 different sensors: 3 reporting as Toyota TPMS and 2 as Renault TPMS.
+- Every frame passed the decoder's integrity check (`"mic" : "CRC"`).
+- Each of the three Toyota sensors was received as two frames within the same second, carrying the same sensor ID, pressure and temperature and differing only in the status field (130, then 131). This is the repeat check of step 4 on live traffic: two transmissions from the same sensor demodulate to the same identifier and readings.
+- The readings are plausible for tyres in use: 34.5 to 34.75 PSI on the Toyota sensors, 223.5 to 225 kPa on the Renault sensors, 29 to 35 C.
+
+| Time | Decoder | Sensor ID | Pressure | Temperature | Frames |
+|---|---|---|---|---|---|
+| 10:16:48 | Toyota TPMS | `d784124a` | 34.75 PSI | 30 C | 2 (status 130, 131) |
+| 10:31:04 | Renault TPMS | `1cd96e` | 225 kPa | 35 C | 1 |
+| 10:31:06 | Renault TPMS | `1cd963` | 223.5 kPa | 34 C | 1 |
+| 10:42:04 | Toyota TPMS | `d7874db3` | 34.5 PSI | 34 C | 2 (status 130, 131) |
+| 10:42:04 | Toyota TPMS | `d7840ef3` | 34.5 PSI | 29 C | 2 (status 130, 131) |
+
+PHY parameters. These come from the decoders that produced the frames, not from a measurement of our own: both sensors are FSK with a 52 us symbol (12 to 13 samples at 250 kHz); the Toyota sensor uses differential Manchester coding and the Renault sensor Manchester coding, each closed by a CRC-8 [rtl433tpmstoyota][rtl433tpmsrenault]. A frame that passes that CRC means the modulation, symbol rate and line coding were all right for that burst.
+
+What this session does not show. The manual route of steps 1 and 3 (record I/Q, then demodulate and frame in URH) was not completed for these sensors: no I/Q recording of a TPMS burst was demodulated to a bitstream matching the decoded frames. The rtl_433 output kept from this session also does not say which of the two bands each frame arrived on, so the band per sensor is not recorded.
 
 ## Remediation
 
