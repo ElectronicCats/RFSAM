@@ -89,9 +89,9 @@ bsam: []
 resources:
   - RFSAM-RES-01
   - RFSAM-RES-07
-reviewStatus: reviewed
+reviewStatus: verified
 confidence: high
-lastResearched: 2026-06-14
+lastResearched: 2026-09-02
 ---
 ## Mechanism
 
@@ -140,17 +140,19 @@ All steps below are passive receive-only. No transmission is involved; even so, 
 
 ## Field case
 
-Illustrative walkthrough — substitute the values you capture: run an EU868 survey with an RTL-SDR Blog V4 on 868.3 MHz in gqrx. The waterfall typically looks almost flat — a handful of faint diagonal streaks during the watch window, easy to dismiss as "a couple of devices, mostly quiet". Capturing the channel to I/Q and de-chirping it with gr-lora_sdr swept across SF7–SF12 is where the gap shows: frames can resolve at several spreading factors, including transmissions that left no visible mark on the plain FFT at all. The point this control makes is exactly that contrast — an energy-detector read ("band mostly empty") and a de-chirped read of the same capture can disagree completely, and only the de-chirped read reflects the real occupancy.
+Survey run on 2026-09-01 in the Electronic Cats lab on US915, with a HackRF One and its stock telescopic antenna in a fixed position. Receive only.
 
-Concrete numbers to record in a worked write-up (mark unmeasured values rather than inventing them):
+Capture (step 3), 106.6 s at 2 MS/s, int8 I/Q:
 
-- Region / sub-band surveyed: EU868, centre 868.3 MHz, 125 kHz channel.
-- Watch window before declaring "quiet": [FILL: minutes/hours observed].
-- Frames the plain FFT showed vs frames gr-lora_sdr recovered after de-chirp: [FILL: counts].
-- Lowest SNR at which a frame still decoded: [FILL: measured dB] — Semtech's stated envelope is up to 20 dB below the thermal noise floor [semtech2019longrange].
-- Spreading factors observed once de-chirp locked: [FILL: e.g. SF7, SF9, SF12].
+```bash
+hackrf_transfer -f 916000000 -s 2000000 -a 1 -l 32 -g 32
+```
 
-The reproducible lesson is the gap itself: establishing the de-chirp / processing-gain baseline is what lets a passive observer see an entire LoRaWAN deployment that an energy-only survey misses. The bracketed `[FILL: …]` values above are placeholders — fill them from a real survey before citing this section as a measured finding; do not present the placeholders as measured results.
+- **Waterfall (step 2).** In gqrx 2.17.7, with the full span on screen, no diagonal chirp structure could be made out; the transmissions showed only as short marks at 916.0 MHz.
+- **Energy in the capture.** A plain power threshold over 10 ms windows finds the transmissions directly: in the first 30 s, 12 bursts of about 0.08 s each, arriving as six pairs roughly 5.2 s apart. The bursts reach full scale, with 1.16% of those samples clipped.
+- **De-chirp (step 4).** gr-lora_sdr at 125 kHz, swept over SF7 to SF12 with sync words `0x12` and `0x34`, returned 4 frames with a valid CRC at SF7 with sync word `0x12`, and none for any other combination.
+
+What this session does and does not show. The transmitter was close and strong enough to clip the receiver, so this is the strong-signal case: the bursts are found by a simple energy threshold, and the de-chirp identifies what the waterfall could not, namely the spreading factor (SF7) and the sync word (`0x12`, private network). It does not demonstrate reception below the noise floor, which is the case this control is ultimately about [semtech2019longrange]; that needs a repeat with the transmitter attenuated or at distance.
 
 ## Remediation
 
