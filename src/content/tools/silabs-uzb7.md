@@ -14,9 +14,9 @@ software:
   - zwave-pc-controller
   - zwave-zniffer
 note: >-
-  Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host
-  — the controller adapter the Z-Wave PC Controller drives, and (re-flashed with
-  Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official
-  native-radio hardware for both vendor tools, ~US$21.
+  Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a
+  host, the controller adapter the Z-Wave PC Controller drives, and (re-flashed
+  with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The
+  official native-radio hardware for both vendor tools, ~US$21.
 ---
-Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host — the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21.
+Silicon Labs' EFR32ZG14 USB stick that exposes the Z-Wave Serial API to a host, the controller adapter the Z-Wave PC Controller drives, and (re-flashed with Zniffer firmware) the capture adapter for the Z-Wave Zniffer. The official native-radio hardware for both vendor tools, ~US$21.

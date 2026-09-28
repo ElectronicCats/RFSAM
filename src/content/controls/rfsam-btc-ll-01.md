@@ -9,27 +9,27 @@ applicability:
 deferred: false
 objective: >-
   Determine whether Bluetooth Classic (BR/EDR) baseband frames can be pulled off
-  the air into a dissector on commodity hardware — getting the BT header,
+  the air into a dissector on commodity hardware, getting the BT header,
   channel, role, FHS, ACL and LMP of a live piconet into Wireshark/Scapy so the
   link-and-above assessment can begin.
 intro: >-
   A software-defined radio cannot follow a BR/EDR piconet hopping ~1600 times a
   second across 79 channels, so the accessible capture path uses a device that
   owns a real Bluetooth controller. The reference option is the Garbelini ESP32
-  BR/EDR sniffer — it patches the chip's ROM Bluetooth stack to dump baseband
+  BR/EDR sniffer, it patches the chip's ROM Bluetooth stack to dump baseband
   packets over USB serial into Wireshark/Scapy; the Ubertooth One is a legacy,
   partial Basic-Rate option. RFSAM owns this RF-capture floor and feeds the
   resulting frames to BSAM's link-and-above controls.
 prerequisites:
   hardware:
-    - 'An original ESP32 (BR/EDR-capable Classic radio — not an ESP32-S3/C-series, which are LE-only), e.g. ESP32-DOIT (~$4) or ESP32-DevKitC (~$10)'
+    - 'An original ESP32 (BR/EDR-capable Classic radio, not an ESP32-S3/C-series, which are LE-only), e.g. ESP32-DOIT (~$4) or ESP32-DevKitC (~$10)'
     - 'Optionally an Ubertooth One for legacy partial Basic-Rate capture'
   software:
     - 'The Garbelini esp32_bluetooth_classic_sniffer firmware + BTSnifferBREDR.py host tool (Scapy, with the h4bcm Wireshark dissector)'
     - 'Ubertooth host tools (ubertooth-rx) + libbtbb for the legacy path'
     - 'Wireshark for dissection'
   signal:
-    freq: '2.402–2.480 GHz (79 RF channels × 1 MHz, adaptive frequency hopping ~1600 hops/s)'
+    freq: '2.402 to 2.480 GHz (79 RF channels × 1 MHz, adaptive frequency hopping ~1600 hops/s)'
     bandwidth: '1 MHz per channel'
     modulation: 'GFSK 1 Mbps (Basic Rate); π/4-DQPSK 2 Mbps & 8DPSK 3 Mbps (EDR)'
   skill: intermediate
@@ -40,8 +40,8 @@ attacks:
       - braktooth-repo
     impact: >-
       Captured baseband/LMP framing is the raw material for directed fuzzing of
-      the BR/EDR Link Manager — crashes, deadlocks and, on some controllers,
-      code execution — but this control covers only the capture step that
+      the BR/EDR Link Manager, crashes, deadlocks and, on some controllers,
+      code execution, but this control covers only the capture step that
       exposes that framing.
     preconditions: An original ESP32 with the patched BR/EDR stack and a reachable, authorised target device.
     summary: >-
@@ -51,7 +51,7 @@ attacks:
       that toolchain.
 references:
   - key: garbelini2022esp32sniffer
-    title: 'esp32_bluetooth_classic_sniffer — Active Bluetooth BR/EDR Sniffer/Injector on the ESP32'
+    title: 'esp32_bluetooth_classic_sniffer, Active Bluetooth BR/EDR Sniffer/Injector on the ESP32'
     authors: M. E. Garbelini
     venue: GitHub (GPL-2.0)
     year: 2021
@@ -65,14 +65,14 @@ references:
     url: 'https://www.usenix.org/conference/usenixsecurity22/presentation/garbelini'
     type: paper
   - key: braktooth-repo
-    title: 'braktooth_esp32_bluetooth_classic_attacks — Baseband & LMP exploits against Bluetooth Classic controllers'
+    title: 'braktooth_esp32_bluetooth_classic_attacks, Baseband & LMP exploits against Bluetooth Classic controllers'
     authors: M. E. Garbelini
     venue: GitHub
     year: 2021
     url: 'https://github.com/Matheus-Garbelini/braktooth_esp32_bluetooth_classic_attacks'
     type: tool
   - key: ubertooth-rx
-    title: 'ubertooth-rx(1) — Classic Bluetooth discovery, sniffing, and decoding'
+    title: 'ubertooth-rx(1), Classic Bluetooth discovery, sniffing, and decoding'
     authors: Great Scott Gadgets
     venue: Ubertooth host tools
     year: 2023
@@ -101,11 +101,11 @@ lastResearched: 2026-06-14
 ---
 ## Mechanism
 
-Bluetooth Classic (BR/EDR) carries data over 79 RF channels of 1 MHz each across 2.402–2.480 GHz, using adaptive frequency hopping at roughly 1600 hops per second; Basic Rate is GFSK at 1 Mbps, while Enhanced Data Rate adds π/4-DQPSK (2 Mbps) and 8DPSK (3 Mbps) (bt-core-spec). This is a different PHY/MAC from BLE — never conflate the two. The fast 79-channel hop is exactly what makes a static software-defined radio impractical as a capture front end: by the time you have demodulated one burst, the piconet is several channels away, so there is no clean per-packet read of a live link from raw I/Q.
+Bluetooth Classic (BR/EDR) carries data over 79 RF channels of 1 MHz each across 2.402 to 2.480 GHz, using adaptive frequency hopping at roughly 1600 hops per second; Basic Rate is GFSK at 1 Mbps, while Enhanced Data Rate adds π/4-DQPSK (2 Mbps) and 8DPSK (3 Mbps) (bt-core-spec). This is a different PHY/MAC from BLE, never conflate the two. The fast 79-channel hop is exactly what makes a static software-defined radio impractical as a capture front end: by the time you have demodulated one burst, the piconet is several channels away, so there is no clean per-packet read of a live link from raw I/Q.
 
-The accessible capture path therefore borrows a device that already owns a real Bluetooth controller and exposes the packets the controller has *already* demodulated. The reference approach is the Garbelini ESP32 BR/EDR sniffer: it patches the ESP32's ROM Bluetooth stack so that, after the standard paging procedure, baseband packets — the BT header, channel, device role, FHS, ACL and LMP — are forwarded over USB serial to a host Python tool, `BTSnifferBREDR.py`, which decodes them with Scapy and feeds Wireshark live via an extended `h4bcm` dissector (garbelini2022esp32sniffer). This is an **active** sniffer: it connects itself to the target to follow it, rather than passively listening, so it is for authorised testing only. The same research lineage (Garbelini et al., SUTD/ASSET) built directed Link-Manager fuzzing (BrakTooth) on top of this same baseband-stack patching, which is why a clean capture here is also the first step of the BR/EDR attack surface (garbelini2022braktooth, braktooth-repo).
+The accessible capture path therefore borrows a device that already owns a real Bluetooth controller and exposes the packets the controller has *already* demodulated. The reference approach is the Garbelini ESP32 BR/EDR sniffer: it patches the ESP32's ROM Bluetooth stack so that, after the standard paging procedure, baseband packets, the BT header, channel, device role, FHS, ACL and LMP, are forwarded over USB serial to a host Python tool, `BTSnifferBREDR.py`, which decodes them with Scapy and feeds Wireshark live via an extended `h4bcm` dissector (garbelini2022esp32sniffer). This is an **active** sniffer: it connects itself to the target to follow it, rather than passively listening, so it is for authorised testing only. The same research lineage (Garbelini et al., SUTD/ASSET) built directed Link-Manager fuzzing (BrakTooth) on top of this same baseband-stack patching, which is why a clean capture here is also the first step of the BR/EDR attack surface (garbelini2022braktooth, braktooth-repo).
 
-A legacy alternative is the Ubertooth One with `ubertooth-rx`, which can passively pick up *some* Basic-Rate Classic — recovering the LAP/UAP and clock to follow a piconet — but it is partial and lower-fidelity next to the ESP32 baseband sniffer, and it does not see EDR (ubertooth-rx). Either way, the export target is Wireshark for dissection. This control owns only the RF-capture floor: the link-and-above findings (host-stack vulnerabilities, packet injection, replay) are assessed under BSAM once the frames are in a dissector (BSAM-IG-03, BSAM-AP-06).
+A legacy alternative is the Ubertooth One with `ubertooth-rx`, which can passively pick up *some* Basic-Rate Classic, recovering the LAP/UAP and clock to follow a piconet, but it is partial and lower-fidelity next to the ESP32 baseband sniffer, and it does not see EDR (ubertooth-rx). Either way, the export target is Wireshark for dissection. This control owns only the RF-capture floor: the link-and-above findings (host-stack vulnerabilities, packet injection, replay) are assessed under BSAM once the frames are in a dissector (BSAM-IG-03, BSAM-AP-06).
 
 ## Procedure
 
@@ -143,18 +143,18 @@ A legacy alternative is the Ubertooth One with `ubertooth-rx`, which can passive
 
 ## Field case
 
-A sample capture shipped with the Garbelini sniffer (`Matheus-Garbelini/esp32_bluetooth_classic_sniffer`, `logs/samples/ESP32.pcapng`) records exactly this workflow against a BlueKitchen "SPP Counter" btstack demo target running on an ESP32 with BD_ADDR `E0:D4:E8:19:C7:68` — a documented public example of the capture chain end to end, not a live capture of our own (garbelini2022esp32sniffer). To reproduce the same run, an original ESP32-DevKitC running the sniffer pages that BD_ADDR:
+A sample capture shipped with the Garbelini sniffer (`Matheus-Garbelini/esp32_bluetooth_classic_sniffer`, `logs/samples/ESP32.pcapng`) records exactly this workflow against a BlueKitchen "SPP Counter" btstack demo target running on an ESP32 with BD_ADDR `E0:D4:E8:19:C7:68`, a documented public example of the capture chain end to end, not a live capture of our own (garbelini2022esp32sniffer). To reproduce the same run, an original ESP32-DevKitC running the sniffer pages that BD_ADDR:
 
 ```bash
 ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --target=E0:D4:E8:19:C7:68 --live-terminal --live-wireshark
 ```
 
-In the shipped PCAP the ESP32 pages and follows the link, and the frames include the baseband header, FHS, ACL and LMP that the repo README lists as the sniffer's forwarded packet types; the same BD_ADDR appears little-endian in the capture's FHS frames as the bytes `68 c7 19 e8 d4 e0`, and the target's device-name string reads `SPP Counter E0:D4:E8:19:C7:68` (garbelini2022esp32sniffer). The captured LMP makes the device's pairing and encryption negotiation visible — the raw material the BSAM encryption controls (e.g. minimum key size, force-use-of-encryption) then assess. The same workflow applies unchanged to any authorised Classic target; the btstack SPP demo is simply the concrete, redistributable example the project ships. By contrast, an Ubertooth One on the same target typically returns only intermittent Basic-Rate LAPs and never the LMP, illustrating the wayfinder's note that it is a partial, legacy option for serious BR/EDR work.
+In the shipped PCAP the ESP32 pages and follows the link, and the frames include the baseband header, FHS, ACL and LMP that the repo README lists as the sniffer's forwarded packet types; the same BD_ADDR appears little-endian in the capture's FHS frames as the bytes `68 c7 19 e8 d4 e0`, and the target's device-name string reads `SPP Counter E0:D4:E8:19:C7:68` (garbelini2022esp32sniffer). The captured LMP makes the device's pairing and encryption negotiation visible, the raw material the BSAM encryption controls (e.g. minimum key size, force-use-of-encryption) then assess. The same workflow applies unchanged to any authorised Classic target; the btstack SPP demo is simply the concrete, redistributable example the project ships. By contrast, an Ubertooth One on the same target typically returns only intermittent Basic-Rate LAPs and never the LMP, illustrating the wayfinder's note that it is a partial, legacy option for serious BR/EDR work.
 
 ## Remediation
 
-Capture feasibility itself is low-criticality — it is the price of using an unlicensed, hopping 2.4 GHz radio, and BR/EDR baseband is observable to anyone with the right controller — so remediation targets what the capture *exposes*, not the capture.
+Capture feasibility itself is low-criticality, it is the price of using an unlicensed, hopping 2.4 GHz radio, and BR/EDR baseband is observable to anyone with the right controller, so remediation targets what the capture *exposes*, not the capture.
 
 - **Developer / device maker:** do not treat the link as a confidential channel by default. Enforce encryption on every connection (reject unencrypted/role-switched-before-encryption links) and use Secure Simple Pairing with a strong association model; assume LMP and ACL are visible to an attacker with an ESP32. Keep the controller firmware patched against the BrakTooth family, since the same baseband visibility this control uses is the attacker's fuzzing entry point (garbelini2022braktooth).
 - **Integrator:** prefer dual-mode/LE where the threat model allows, pin firmware to versions with current BR/EDR controller patches, and disable discoverability and unused profiles to shrink what a follower can reach.
-- **Operator / assessor:** run active BR/EDR capture only under authorisation and ideally in an RF-shielded environment; treat the resulting PCAP as input to the BSAM host-stack and injection/replay controls (BSAM-IG-03, BSAM-AP-06) rather than a finding in itself. Frame any CVE corpus (BrakTooth and successors) as representative — check current vendor advisories, as BR/EDR controller patch status moves.
+- **Operator / assessor:** run active BR/EDR capture only under authorisation and ideally in an RF-shielded environment; treat the resulting PCAP as input to the BSAM host-stack and injection/replay controls (BSAM-IG-03, BSAM-AP-06) rather than a finding in itself. Frame any CVE corpus (BrakTooth and successors) as representative, check current vendor advisories, as BR/EDR controller patch status moves.

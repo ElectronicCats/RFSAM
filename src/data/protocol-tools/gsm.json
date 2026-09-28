@@ -23,7 +23,7 @@
     "vendor": "Oros42",
     "type": "software",
     "protocols": ["GSM"],
-    "note": "Python tool that reads the GSMTAP stream produced by gr-gsm and pulls the IMSI / TMSI identities the network pages over the air, printing the cellphones it sees around you. A PASSIVE IMSI catcher — it harvests identities off the broadcast/control channels without transmitting anything (no rogue cell); the active catcher is a rogue BTS (osmo-bts / OpenBTS).",
+    "note": "Python tool that reads the GSMTAP stream produced by gr-gsm and pulls the IMSI / TMSI identities the network pages over the air, printing the cellphones it sees around you. A PASSIVE IMSI catcher, it harvests identities off the broadcast/control channels without transmitting anything (no rogue cell); the active catcher is a rogue BTS (osmo-bts / OpenBTS).",
     "repo": "https://github.com/Oros42/IMSI-catcher"
   },
   {
@@ -34,7 +34,7 @@
     "protocols": ["GSM"],
     "spec": "osmo-trx + osmo-bts + osmo-bsc + osmo-msc + osmo-hlr",
     "repo": "https://github.com/osmocom/osmo-bts",
-    "note": "The Osmocom open GSM network stack: osmo-trx drives the SDR, osmo-bts is the base station, with osmo-bsc / osmo-msc / osmo-hlr forming the core. Together they stand up a full 2G cell on an SDR — the reference open platform for a test/rogue BTS and active IMSI-catcher research. Actively maintained."
+    "note": "The Osmocom open GSM network stack: osmo-trx drives the SDR, osmo-bts is the base station, with osmo-bsc / osmo-msc / osmo-hlr forming the core. Together they stand up a full 2G cell on an SDR, the reference open platform for a test/rogue BTS and active IMSI-catcher research. Actively maintained."
   },
   {
     "slug": "openbts",
@@ -51,7 +51,7 @@
     "vendor": "SRLabs / Joshua Wright fork",
     "type": "project",
     "protocols": ["GSM"],
-    "note": "GPU/CPU cracker that recovers an A5/1 session key from a captured keystream segment using the ~1.6–2 TB A5/1 rainbow tables (the Berlin A5/1 Security Project). Recovers Kc, which decrypts the rest of a captured call/SMS session. Old but the reference open A5/1 attack; requires the bulky precomputed tables and a known-keystream slice from the capture.",
+    "note": "GPU/CPU cracker that recovers an A5/1 session key from a captured keystream segment using the ~1.6 to 2 TB A5/1 rainbow tables (the Berlin A5/1 Security Project). Recovers Kc, which decrypts the rest of a captured call/SMS session. Old but the reference open A5/1 attack; requires the bulky precomputed tables and a known-keystream slice from the capture.",
     "repo": "https://github.com/joswr1ght/kraken"
   }
 ]
