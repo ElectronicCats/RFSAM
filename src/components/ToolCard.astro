@@ -6,12 +6,16 @@ const { tool, role, why, caveat, needs, software = [], compact = false } = Astro
 const typeColor = { hardware: 'var(--cyan)', software: 'var(--green)', project: 'var(--purple)' }[tool.type] ?? 'var(--mut)';
 const link = tool.repo ?? tool.homepage;
 const linkLabel = tool.repo ? 'repo ↗' : (tool.homepage ? 'site ↗' : null);
+// Lifecycle badge: every tool shows one. No status means nobody has assessed it.
+const status = tool.status ?? 'none';
+const statusLabel = tool.status ? tool.status.toUpperCase() : 'NOT ASSESSED';
 const slugify = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 ---
 <div style="border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--panel);height:100%;box-sizing:border-box">
   <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
     <a href={`/RFSAM/tools/${tool.slug ?? slugify(tool.name)}`} style="font-family:var(--disp);font-weight:600;font-size:15px">{tool.name}</a>
     <span class="mono" style={`font-size:9px;letter-spacing:.08em;color:${typeColor};border:1px solid ${typeColor};border-radius:3px;padding:1px 5px`}>{tool.type.toUpperCase()}</span>
+    <span class={`tstatus ${status}`} style="font-size:9px;padding:1px 5px">{statusLabel}</span>
     <span class="mono" style="font-size:10px;color:var(--mut2)">{tool.vendor}</span>
     {link && <a href={link} target="_blank" rel="noopener" class="mono" style="font-size:10.5px;color:var(--amber);margin-left:auto">{linkLabel}</a>}
   </div>
