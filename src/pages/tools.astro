@@ -54,7 +54,7 @@ const chips = Object.keys(CHIP).map((id) => ({ id, label: CHIP[id], n: tools.fil
         {statusCounts.map(({ s, n }) => (
           <span class={`tstatus ${s}`}>{s} {n} · {pct(n)}%</span>
         ))}
-        {unassessed > 0 && <span>{unassessed} not assessed ({pct(unassessed)}%)</span>}
+        {unassessed > 0 && <span class="tstatus none">not assessed {unassessed} · {pct(unassessed)}%</span>}
       </div>
     )}
 

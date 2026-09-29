@@ -45,12 +45,18 @@ const protoName = (pid) => protocols.find((p) => p.id === pid)?.name ?? pid;
     <div style="display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap">
       <h1 style="font-size:32px">{tool.name}</h1>
       <span class="mono" style={`font-size:10px;letter-spacing:.08em;color:${typeColor};border:1px solid ${typeColor};border-radius:3px;padding:2px 7px`}>{tool.type.toUpperCase()}</span>
-      {tool.status && <span class={`tstatus ${tool.status}`}>{tool.status.toUpperCase()}</span>}
+      <span class={`tstatus ${tool.status ?? 'none'}`}>{tool.status ? tool.status.toUpperCase() : 'NOT ASSESSED'}</span>
     </div>
     <div class="mono" style="font-size:12px;color:var(--mut2);margin-top:4px">{tool.vendor} · {tool.protocols.join(' · ')}</div>
     {link && <a href={link} target="_blank" rel="noopener" class="mono" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--amber)">{tool.repo ? 'GitHub repository ↗' : 'Project site ↗'}</a>}
 
     <p style="font-size:15px;color:#CFD9E4;line-height:1.7;margin-top:18px">{tool.note}</p>
+
+    {!tool.status && (
+      <p style="font-size:13px;color:var(--mut);line-height:1.6;margin-top:14px;border-left:2px solid var(--line2);padding-left:12px">
+        Lifecycle not assessed: nobody has checked yet whether this tool is still maintained, sold or working. Check the project's own page before relying on it.
+      </p>
+    )}
 
     {tool.statusNote && (
       <p style="font-size:13px;color:var(--mut);line-height:1.6;margin-top:14px;border-left:2px solid var(--line2);padding-left:12px">

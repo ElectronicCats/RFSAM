@@ -48,3 +48,4 @@ blockquote.flag { border-left:3px solid var(--amber); background:rgba(255,194,75
 .tstatus.research { color:var(--purple); border-color:var(--purple); }
 .tstatus.eol { color:var(--red, #E06C75); border-color:var(--red, #E06C75); }
 .tstatus.stale { color:var(--mut2); }
+.tstatus.none { color:var(--mut2); border-style:dashed; }
