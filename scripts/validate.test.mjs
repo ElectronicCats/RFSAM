@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkControl, checkTool } from './validate.mjs';
+import { checkControl, checkTool, checkCoverage } from './validate.mjs';
 
 const registries = {
   bsamKeys: new Set(['BSAM-EN-01']),
@@ -91,4 +91,15 @@ test('a successor must resolve and is only accepted with eol or stale', () => {
 
 test('lifecycle fields without a status are rejected', () => {
   assert.match(checkTool(tool({ statusNote: 'x' }), registries)[0], /status is not/);
+});
+
+test('coverage map and control files must agree', () => {
+  const map = [{ id: 'BLE', controls: [
+    { id: 'RFSAM-BLE-SP-01', status: 'existing' },
+    { id: 'RFSAM-BLE-AT-02', status: 'planned' },
+  ] }];
+  assert.deepEqual(checkCoverage(map, new Set(['RFSAM-BLE-SP-01'])), []);
+  assert.match(checkCoverage(map, new Set())[0], /'existing' but has no control file/);
+  assert.match(checkCoverage(map, new Set(['RFSAM-BLE-SP-01', 'RFSAM-BLE-AT-02']))[0], /a control file exists/);
+  assert.match(checkCoverage(map, new Set(['RFSAM-BLE-SP-01', 'RFSAM-BLE-LL-09']))[0], /is not listed/);
 });

@@ -65,6 +65,25 @@ export function checkTool({ data, file }, reg) {
   return errs;
 }
 
+// The coverage map and the controls directory must agree: an entry marked
+// 'existing' has a control file, and every control file is listed in the map.
+export function checkCoverage(coverageMap, controlIds) {
+  const errs = [];
+  const mapped = new Set();
+  for (const p of coverageMap) {
+    for (const c of p.controls ?? []) {
+      mapped.add(c.id);
+      const has = controlIds.has(c.id);
+      if (c.status === 'existing' && !has) errs.push(`coverage-map: ${c.id} is 'existing' but has no control file`);
+      if (c.status !== 'existing' && has) errs.push(`coverage-map: ${c.id} is '${c.status}' but a control file exists`);
+    }
+  }
+  for (const id of controlIds) {
+    if (!mapped.has(id)) errs.push(`coverage-map: control ${id} is not listed`);
+  }
+  return errs;
+}
+
 function idsFromDir(dir, field) {
   const out = new Set();
   for (const f of readdirSync(dir).filter((f) => f.endsWith('.md'))) {
@@ -88,10 +107,14 @@ export async function runValidation() {
   const dir = 'src/content/controls';
   const files = readdirSync(dir).filter((f) => f.endsWith('.md') && !f.startsWith('_'));
   const all = [];
+  const controlIds = new Set();
   for (const f of files) {
     const { data, content } = matter(readFileSync(join(dir, f), 'utf8'));
+    controlIds.add(data.id);
     all.push(...checkControl({ data, body: content, file: f }, reg));
   }
+  const { coverageMap } = await import('../src/data/coverage-map.js');
+  all.push(...checkCoverage(coverageMap, controlIds));
 
   // Toolchain integrity: every referenced tool slug must exist, and every
   // hardware tool's `software` slugs must exist.
